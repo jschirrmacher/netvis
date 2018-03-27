@@ -3,6 +3,9 @@ class netvis {
     this.network = initialNetwork
     const svg = d3.select(domSelector)
     const defs = svg.append('defs')
+    const svgGroup = svg
+      .append('svg:g')
+      .attr('id', 'svgGroup')
 
     const simulation = d3.forceSimulation()
       .velocityDecay(0.55)
@@ -11,13 +14,22 @@ class netvis {
       .force('collide', d3.forceCollide().radius(100).iterations(2))
       .force('center', d3.forceCenter(+svg.attr('width') / 2, +svg.attr('height') / 2))
 
-    const link = svg.append('g')
+    const drag = d3.drag()
+      .on('start', d => this.handleDragStarted(d, simulation))
+      .on('drag', d => this.handleDragged(d))
+      .on('end', d => this.handleDragEnded(d, simulation))
+
+    svg
+      .call(d3.zoom().on('zoom', () => this.handleZoom(svgGroup)))
+      .call(drag)
+
+    const link = svgGroup.append('g')
       .attr('class', 'links')
       .selectAll('line')
       .data(this.network.links)
       .enter().append('line')
 
-    const node = svg.append('g')
+    const node = svgGroup.append('g')
       .attr('class', 'nodes')
       .selectAll('circle')
       .data(this.network.nodes)
@@ -25,7 +37,7 @@ class netvis {
       .attr('class', 'node')
       .attr('r', 50)
 
-    const title = svg.append('g')
+    const title = svgGroup.append('g')
       .attr('class', 'title')
       .selectAll('text')
       .data(this.network.nodes)
@@ -54,12 +66,10 @@ class netvis {
     simulation.force('link')
       .links(this.network.links)
 
-    d3.timer(() => this.loadImages(defs), 2000)
-  }
-
-  loadImages(defs) {
-    d3.selectAll('.node')
-      .attr('fill', d => this.getBackground(d.id, d.logo, defs))
+    const timer = d3.timer(() => {
+      d3.selectAll('.node').attr('fill', d => this.getBackground(d.id, d.logo, defs))
+      timer.stop()
+    }, 2000)
   }
 
   getBackground(id, logo, defs) {
@@ -98,6 +108,32 @@ class netvis {
         }
       }
     })
+  }
+
+  handleDragStarted(d, simulation) {
+    if (!d3.event.active) simulation.alphaTarget(0.3).restart()
+
+    d.fx = d.x
+    d.fy = d.y
+  }
+
+  handleDragged(d) {
+    d.fx = d3.event.x
+    d.fy = d3.event.y
+  }
+
+  handleDragEnded(d, simulation) {
+    if (!d3.event.active) simulation.alphaTarget(0)
+
+    d.fx = undefined
+    d.fy = undefined
+  }
+
+  handleZoom(svgGroup) {
+    svgGroup
+      .attr('transform',
+        `translate(${d3.event.transform.x}, ${d3.event.transform.y})` + ' ' +
+        `scale(${d3.event.transform.k})`)
   }
 
   isNode(id) {
