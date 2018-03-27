@@ -36,6 +36,7 @@ class netvis {
       .enter().append('circle')
       .attr('class', 'node')
       .attr('r', 50)
+      .attr('fill', '#ffe')
 
     const title = svgGroup.append('g')
       .attr('class', 'title')
@@ -75,7 +76,7 @@ class netvis {
   getBackground(id, logo, defs) {
     if (logo) {
       defs.append('pattern')
-        .attr('id', d => 'bg-' + id)
+        .attr('id', () => 'bg-' + id)
         .attr('height', 1).attr('width', 1)
         .append('image')
         .attr('xlink:href', logo.replace(/ /g, '%20'))
@@ -91,7 +92,6 @@ class netvis {
       const text = d3.select(this)
       const words = node.name.split(/[\s-]+/).reverse()
       const lineHeight = 1.1
-      let lineNumber = 0
       let line = []
       let tspan = text.text(null).append('tspan')
       let word
