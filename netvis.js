@@ -1,71 +1,34 @@
 class netvis {
   constructor(initialNetwork, domSelector) {
     this.network = initialNetwork
+    const getNode = id => this.network.nodes.find(this.isNode(id))
+    this.network.links = this.network.links.map(d => ({source: getNode(d.source), target: getNode(d.target)}))
     const svg = d3.select(domSelector)
-    const defs = svg.append('defs')
-    const svgGroup = svg
+    this.defs = svg.append('defs')
+    this.svgGroup = svg
       .append('svg:g')
       .attr('id', 'svgGroup')
 
-    const simulation = d3.forceSimulation()
+    this.simulation = d3.forceSimulation()
       .velocityDecay(0.55)
       .force('link', d3.forceLink().distance(100).id(d => d.id))
-      .force('charge', d3.forceManyBody().strength(-100).distanceMin(10000))
+      .force('charge', d3.forceManyBody().strength(-100).distanceMin(1000))
       .force('collide', d3.forceCollide().radius(100).iterations(2))
-      .force('center', d3.forceCenter(+svg.attr('width') / 2, +svg.attr('height') / 2))
 
-    const drag = d3.drag()
-      .on('start', d => this.handleDragStarted(d, simulation))
+    this.drag = d3.drag()
+      .on('start', d => this.handleDragStarted(d))
       .on('drag', d => this.handleDragged(d))
-      .on('end', d => this.handleDragEnded(d, simulation))
+      .on('end', d => this.handleDragEnded(d))
 
     svg
-      .call(d3.zoom().on('zoom', () => this.handleZoom(svgGroup)))
-      .call(drag)
+      .call(d3.zoom().on('zoom', () => this.handleZoom()))
+      .call(this.drag)
 
-    const link = svgGroup.append('g')
-      .attr('class', 'links')
-      .selectAll('line')
-      .data(this.network.links)
-      .enter().append('line')
+    this.linkContainer = this.svgGroup.append('g').attr('class', 'links')
+    this.nodeContainer = this.svgGroup.append('g').attr('class', 'nodes')
+    this.titleContainer = this.svgGroup.append('g').attr('class', 'title')
 
-    const node = svgGroup.append('g')
-      .attr('class', 'nodes')
-      .selectAll('circle')
-      .data(this.network.nodes)
-      .enter().append('circle')
-      .attr('class', 'node')
-      .attr('r', 50)
-      .attr('fill', d => this.getBackground(d.id, d.logo, defs))
-
-    const title = svgGroup.append('g')
-      .attr('class', 'title')
-      .selectAll('text')
-      .data(this.network.nodes)
-      .enter().append('text')
-      .text(d => d.name)
-      .call(d => this.wrap(d, 90))
-
-    simulation
-      .nodes(this.network.nodes)
-      .on('tick', () => {
-        link
-          .attr('x1', d => d.source.x)
-          .attr('y1', d => d.source.y)
-          .attr('x2', d => d.target.x)
-          .attr('y2', d => d.target.y)
-
-        node
-          .attr('cx', d => d.x)
-          .attr('cy', d => d.y)
-
-        title
-          .attr('x', d => d.x)
-          .attr('y', d => d.y + 5)
-      })
-
-    simulation.force('link')
-      .links(this.network.links)
+    this.update()
 
     const timer = d3.timer(() => {
       svg.attr('class', 'initialized')
@@ -73,9 +36,55 @@ class netvis {
     }, 50)
   }
 
-  getBackground(id, logo, defs) {
+  update() {
+    this.link = this.linkContainer.selectAll('line').data(this.network.links)
+    const linkEnter = this.link.enter().append('line')
+    this.link.exit().remove()
+    this.link = linkEnter.merge(this.link)
+
+    this.node = this.nodeContainer.selectAll('circle').data(this.network.nodes)
+    const nodeEnter = this.node
+      .enter().append('circle')
+      .attr('class', 'node')
+      .attr('r', 50)
+      .attr('fill', d => this.getBackground(d.id, d.logo))
+      .call(this.drag)
+    this.node.exit().remove()
+    this.node = nodeEnter.merge(this.node)
+
+    this.title = this.titleContainer.selectAll('text').data(this.network.nodes)
+    const titleEnter = this.title
+      .enter().append('text')
+      .text(d => d.name)
+      .call(d => this.wrap(d, 90))
+    this.title.exit().remove()
+    this.title = titleEnter.merge(this.title)
+
+    this.simulation.nodes(this.network.nodes).on('tick', () => this.tick())
+    this.simulation.force('link').links(this.network.links)
+    this.simulation.restart()
+    this.simulation.alpha(1)
+  }
+
+  tick() {
+    this.link
+      .attr('x1', d => d.source.x)
+      .attr('y1', d => d.source.y)
+      .attr('x2', d => d.target.x)
+      .attr('y2', d => d.target.y)
+
+    this.node
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y)
+
+    this.title
+      .attr('x', d => d.x)
+      .attr('y', d => d.y + 5)
+  }
+
+  getBackground(id, logo) {
     if (logo) {
-      defs.append('pattern')
+      this.defs.append('pattern')
         .attr('id', () => 'bg-' + id)
         .attr('height', 1).attr('width', 1)
         .append('image')
@@ -110,9 +119,10 @@ class netvis {
     })
   }
 
-  handleDragStarted(d, simulation) {
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart()
-
+  handleDragStarted(d) {
+    if (!d3.event.active) {
+      this.simulation.alphaTarget(0.3).restart()
+    }
     d.fx = d.x
     d.fy = d.y
   }
@@ -122,15 +132,16 @@ class netvis {
     d.fy = d3.event.y
   }
 
-  handleDragEnded(d, simulation) {
-    if (!d3.event.active) simulation.alphaTarget(0)
-
+  handleDragEnded(d) {
+    if (!d3.event.active) {
+      this.simulation.alphaTarget(0)
+    }
     d.fx = undefined
     d.fy = undefined
   }
 
-  handleZoom(svgGroup) {
-    svgGroup
+  handleZoom() {
+    this.svgGroup
       .attr('transform',
         `translate(${d3.event.transform.x}, ${d3.event.transform.y})` + ' ' +
         `scale(${d3.event.transform.k})`)
