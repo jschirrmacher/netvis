@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>Network Visualizer</title>
     <style>
-        html, body {
+        html, body, #root {
             margin: 0;
+            width: 100%;
+            height: 100%;
         }
         .links line {
             stroke: #aaa;
@@ -25,7 +27,7 @@
     </style>
 </head>
 <body>
-    <svg id="root" width="4000" height="2400"></svg>
+    <svg id="root"></svg>
     <script src="//d3js.org/d3.v4.min.js"></script>
     <script src="dist/netvis.js"></script>
     <script>
