@@ -36,7 +36,7 @@ class netvis {
       .enter().append('circle')
       .attr('class', 'node')
       .attr('r', 50)
-      .attr('fill', '#ffe')
+      .attr('fill', d => this.getBackground(d.id, d.logo, defs))
 
     const title = svgGroup.append('g')
       .attr('class', 'title')
@@ -68,9 +68,9 @@ class netvis {
       .links(this.network.links)
 
     const timer = d3.timer(() => {
-      d3.selectAll('.node').attr('fill', d => this.getBackground(d.id, d.logo, defs))
+      svg.attr('class', 'initialized')
       timer.stop()
-    }, 2000)
+    }, 50)
   }
 
   getBackground(id, logo, defs) {
