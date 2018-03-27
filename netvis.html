@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Network Visualizer</title>
+    <style>
+        html, body {
+            margin: 0;
+        }
+        .links line {
+            stroke: #aaa;
+        }
+        .nodes circle {
+            pointer-events: all;
+            stroke: #000;
+            stroke-width: 1px;
+        }
+        .title tspan {
+            font: 14px Helvetica, Arial, sans-serif;
+            fill: #000;
+            stroke-width: 0;
+            text-anchor: middle;
+            text-shadow: 0 0 5px white;
+        }
+    </style>
+</head>
+<body>
+    <svg id="root" width="4000" height="2400"></svg>
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script src="dist/netvis.js"></script>
+    <script>
+      d3.json('/NetVis/data.json', function (error, data) {
+        if (error) throw error
+        var net = new netvis(data, "#root")
+        // net.handleChange({command: 'createNode', info: {id: 32823, name: 'Test'}})
+      })
+    </script>
+</body>
+</html>
