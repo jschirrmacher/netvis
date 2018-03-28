@@ -4,33 +4,46 @@ html, body, #root {
   height: 100%;
 }
 
-.links line {
-  stroke: #aaa;
-}
-
-.nodes circle {
-  pointer-events: all;
-  stroke: #000;
-  stroke-width: 1px;
-}
-
-.title tspan {
-  font: 14px Helvetica, Arial, sans-serif;
-  fill: #000;
-  stroke-width: 0;
-  text-anchor: middle;
-  text-shadow: 0 0 5px white;
-}
-
 svg {
-  .nodes, .title, .links {
+  .nodes, .links {
     opacity: 0.001;
     transition: opacity 1s 1s;
   }
 
   &.initialized {
-    .nodes, .title, .links {
+    .nodes, .links {
       opacity: 1;
+    }
+  }
+
+  .links line {
+    stroke: #aaa;
+  }
+
+  .node {
+    pointer-events: all;
+    stroke: #000;
+    stroke-width: 1px;
+
+    &.open {
+      stroke: #f00;
+      stroke-width: 2px;
+    }
+
+    text {
+      transition: 0.5s;
+    }
+
+    text tspan {
+      font: 14px Helvetica, Arial, sans-serif;
+      fill: #000;
+      stroke-width: 0;
+      text-anchor: middle;
+      text-shadow: 0 0 5px white;
+    }
+
+    &:hover text {
+      transform: translateY(5em) scale(1.5);
     }
   }
 }

@@ -26,7 +26,6 @@ class netvis {
 
     this.linkContainer = this.svgGroup.append('g').attr('class', 'links')
     this.nodeContainer = this.svgGroup.append('g').attr('class', 'nodes')
-    this.titleContainer = this.svgGroup.append('g').attr('class', 'title')
 
     this.update()
 
@@ -36,34 +35,53 @@ class netvis {
     }, 50)
   }
 
+  getFilteredLinks() {
+    return this.network.links.filter(d => {
+      if (d.source.open || d.target.open) {
+        d.source.visible = d.target.visible = true
+      }
+      return d.source.visible && d.target.visible
+    })
+  }
+
+  getFilteredNodes() {
+    return this.network.nodes.filter(d => d.visible)
+  }
+
   update() {
-    this.link = this.linkContainer.selectAll('line').data(this.network.links)
+    const filteredLinks = this.getFilteredLinks()
+    this.link = this.linkContainer.selectAll('line').data(filteredLinks)
     const linkEnter = this.link.enter().append('line')
     this.link.exit().remove()
     this.link = linkEnter.merge(this.link)
 
-    this.node = this.nodeContainer.selectAll('circle').data(this.network.nodes)
-    const nodeEnter = this.node
-      .enter().append('circle')
-      .attr('class', 'node')
+    const filteredNodes = this.getFilteredNodes()
+    this.node = this.nodeContainer.selectAll('node').data(filteredNodes)
+    const nodeEnter = this.node.enter().append('g')
+      .attr('class', d => 'node' + (d.open ? ' open' : ''))
+      .on('click', d => this.toggleNode(d))
+      .call(this.drag)
+
+    nodeEnter.append('circle')
       .attr('r', 50)
       .attr('fill', d => this.getBackground(d.id, d.logo))
-      .call(this.drag)
+
+    nodeEnter.append('text')
+      .text(d => d.name)
+      .call(d => this.wrap(d, 90))
+
     this.node.exit().remove()
     this.node = nodeEnter.merge(this.node)
 
-    this.title = this.titleContainer.selectAll('text').data(this.network.nodes)
-    const titleEnter = this.title
-      .enter().append('text')
-      .text(d => d.name)
-      .call(d => this.wrap(d, 90))
-    this.title.exit().remove()
-    this.title = titleEnter.merge(this.title)
-
-    this.simulation.nodes(this.network.nodes).on('tick', () => this.tick())
-    this.simulation.force('link').links(this.network.links)
+    this.simulation.nodes(filteredNodes).on('tick', () => this.tick())
+    this.simulation.force('link').links(filteredLinks)
     this.simulation.restart()
-    this.simulation.alpha(1)
+    this.simulation.alpha(0.1)
+  }
+
+  toggleNode(d) {
+    d.open = !d.open
+    this.update()
   }
 
   tick() {
@@ -74,12 +92,7 @@ class netvis {
       .attr('y2', d => d.target.y)
 
     this.node
-      .attr('cx', d => d.x)
-      .attr('cy', d => d.y)
-
-    this.title
-      .attr('x', d => d.x)
-      .attr('y', d => d.y + 5)
+      .attr('transform', d => 'translate(' + d.x + ', ' + d.y + ')')
   }
 
   getBackground(id, logo) {
@@ -104,18 +117,19 @@ class netvis {
       let line = []
       let tspan = text.text(null).append('tspan')
       let word
-      let dx = 0
+      let lineCount = 0
       while (word = words.pop()) {
         line.push(word)
         tspan.text(line.join(' '))
         if (tspan.node().getComputedTextLength() > width) {
           line.pop()
           tspan.text(line.join(' '))
-          dx = -tspan.node().getComputedTextLength()
+          lineCount++
           line = [word]
-          tspan = text.append('tspan').attr('dx', dx + 'px').attr('dy', lineHeight + 'em').text(word)
+          tspan = text.append('tspan').attr('x', 0).attr('dy', lineHeight + 'em').text(word)
         }
       }
+      text.attr('y', (-lineCount * 0.3) + 'em')
     })
   }
 
