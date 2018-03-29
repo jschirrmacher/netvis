@@ -4,9 +4,13 @@ class netvis {
     const getNode = id => this.network.nodes.find(this.isNode(id))
     this.network.links = this.network.links.map(d => ({source: getNode(d.source), target: getNode(d.target)}))
     const svg = d3.select(domSelector)
+    const w = +svg.node().clientWidth
+    const h = +svg.node().clientHeight
     this.defs = svg.append('defs')
     this.svgGroup = svg
       .append('svg:g')
+      .attr('transform', 'translate(' + w / 2 + ',' + h / 2 + ')')
+      .append('g')
       .attr('id', 'svgGroup')
 
     this.simulation = d3.forceSimulation()
@@ -14,6 +18,7 @@ class netvis {
       .force('link', d3.forceLink().distance(100).id(d => d.id))
       .force('charge', d3.forceManyBody().strength(-100).distanceMin(1000))
       .force('collide', d3.forceCollide().radius(100).iterations(2))
+      .on('tick', () => this.tick())
 
     this.drag = d3.drag()
       .on('start', d => this.handleDragStarted(d))
@@ -25,7 +30,9 @@ class netvis {
       .call(this.drag)
 
     this.linkContainer = this.svgGroup.append('g').attr('class', 'links')
+    this.visibleLinks = this.getFilteredLinks()
     this.nodeContainer = this.svgGroup.append('g').attr('class', 'nodes')
+    this.visibleNodes = this.getFilteredNodes()
 
     this.update()
 
@@ -49,14 +56,13 @@ class netvis {
   }
 
   update() {
-    const filteredLinks = this.getFilteredLinks()
-    this.link = this.linkContainer.selectAll('line').data(filteredLinks)
+    this.link = this.linkContainer.selectAll('line').data(this.visibleLinks)
     const linkEnter = this.link.enter().append('line')
     this.link.exit().remove()
     this.link = linkEnter.merge(this.link)
+    this.simulation.force('link').links(this.visibleLinks)
 
-    const filteredNodes = this.getFilteredNodes()
-    this.node = this.nodeContainer.selectAll('node').data(filteredNodes)
+    this.node = this.nodeContainer.selectAll('node').data(this.visibleNodes, d => d.id)
     const nodeEnter = this.node.enter().append('g')
       .attr('class', d => 'node' + (d.open ? ' open' : ''))
       .on('click', d => this.toggleNode(d))
@@ -72,11 +78,9 @@ class netvis {
 
     this.node.exit().remove()
     this.node = nodeEnter.merge(this.node)
+    this.simulation.nodes(this.visibleNodes)
 
-    this.simulation.nodes(filteredNodes).on('tick', () => this.tick())
-    this.simulation.force('link').links(filteredLinks)
-    this.simulation.restart()
-    this.simulation.alpha(0.1)
+    this.simulation.alpha(0.1).restart()
   }
 
   toggleNode(d) {
