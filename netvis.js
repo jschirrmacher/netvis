@@ -84,7 +84,22 @@ class netvis {
   }
 
   toggleNode(d) {
+    const otherNode = (l, d) => l.source.id === d.id ? l.target : l.source
     d.open = !d.open
+    this.network.links.filter(l => l.source.id === d.id || l.target.id === d.id).forEach(l => {
+      if (!d.open) {
+        if (!l.source.open && !l.target.open) {
+          this.visibleLinks.splice(this.visibleLinks.indexOf(l), 1)
+          otherNode(l, d).visible = false
+        }
+      } else {
+        if (this.visibleLinks.indexOf(l) !== false) {
+          this.visibleLinks.push(l)
+          otherNode(l, d).visible = true
+        }
+      }
+    })
+
     this.update()
   }
 
