@@ -12,8 +12,7 @@
     <script>
       d3.json('/NetVis/data.json', function (error, data) {
         if (error) throw error
-        var net = new netvis(data, "#root")
-        // net.handleChange({command: 'createNode', info: {id: 32823, name: 'Test'}})
+        const net = new netvis(data, "#root")
       })
     </script>
 </body>
