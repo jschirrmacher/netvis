@@ -93,6 +93,9 @@ does an action which requires the network to be changed permanently.
 
 These are the possible events:
 
+- `nameRequired` - The user is required to enter or select a node name. This
+  event is sent, if a new connection is to be created. The handler should
+  open a dialog and return a Promise which receives the entered node name.
 - `newNode` - a new node was created. The handler gets the node name as a
   parameter. It should return a data structure for the new node which is then
   added to the network visualization.

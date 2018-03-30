@@ -12,6 +12,9 @@
     <script src="../dist/ForceDiagram.js"></script>
     <script>
       new Network('data.json', '#root', {
+        nameRequired: function() {
+          return Promise.resolve(window.prompt('Name'))
+        },
         newNode: function(name) {
           console.log('New node', name)
           return {name, shape: 'circle'}

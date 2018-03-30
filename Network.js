@@ -5,7 +5,9 @@ class Network {
       if (error) throw error
       this.diagram = new ForceDiagram(document.querySelector(domSelector), data.auth)
       this.diagram.addHandler('click', this.toggle.bind(this))
-      this.diagram.addHandler('newConnection', this.newConnection.bind(this))
+      if (this.handlers.nameRequired) {
+        this.diagram.addHandler('newConnection', this.newConnection.bind(this))
+      }
       const getNode = id => {
         const result = data.nodes.find(node => node.id === id)
         if (!result) {
@@ -54,30 +56,33 @@ class Network {
     this.diagram.update()
   }
 
-  newConnection(node, name) {
-    let link
-    let existing = this.nodes.find(node => node.name === name)
-    if (!existing) {
-      if (this.handlers.newNode) {
-        existing = this.handlers.newNode(name)
-      } else {
-        existing = {name}
-      }
-      if (!existing.id) {
-        existing.id = this.nodes.reduce((id, node) => Math.max(id, node.id), 0) + 1
-      }
-      this.diagram.add([existing], [])
-    } else {
-      link = this.links.find(link => link.source.id === existing.id || link.target.id === existing.id)
-    }
-    if (!link) {
-      const newLink = {source: node, target: existing}
-      if (this.handlers.newLink) {
-        this.handlers.newLink(newLink)
-      }
-      this.diagram.add([], [newLink])
-    }
+  newConnection(node) {
+    this.handlers.nameRequired()
+      .then(name => {
+        let link
+        let existing = this.nodes.find(node => node.name === name)
+        if (!existing) {
+          if (this.handlers.newNode) {
+            existing = this.handlers.newNode(name)
+          } else {
+            existing = {name}
+          }
+          if (!existing.id) {
+            existing.id = this.nodes.reduce((id, node) => Math.max(id, node.id), 0) + 1
+          }
+          this.diagram.add([existing], [])
+        } else {
+          link = this.links.find(link => link.source.id === existing.id || link.target.id === existing.id)
+        }
+        if (!link) {
+          const newLink = {source: node, target: existing}
+          if (this.handlers.newLink) {
+            this.handlers.newLink(newLink)
+          }
+          this.diagram.add([], [newLink])
+        }
 
-    this.diagram.update()
+        this.diagram.update()
+      })
   }
 }

@@ -105,11 +105,13 @@ var ForceDiagram = function () {
         return wrap(d, 90);
       });
 
-      nodeEnter.filter(function (d) {
-        return d.connectable;
-      }).call(function (d) {
-        return addButton(d, 'newConnection', '↗', 'New Connection', newConnection.bind(_this2));
-      });
+      if (this.handlers.newConnection) {
+        nodeEnter.filter(function (d) {
+          return d.connectable;
+        }).call(function (d) {
+          return addButton(d, 'newConnection', '↗', 'New Connection', _this2.handlers.newConnection.bind(_this2));
+        });
+      }
 
       nodeData = nodeEnter.merge(nodeData);
       this.simulation.nodes(this.nodes).on('tick', function () {
@@ -118,10 +120,6 @@ var ForceDiagram = function () {
 
       this.simulation.restart();
       this.simulation.alpha(1);
-
-      function newConnection(node) {
-        this.handlers.newConnection(node, window.prompt('Name des neuen Knotens'));
-      }
 
       function bindHandlers(node) {
         var _this3 = this;

@@ -17,7 +17,9 @@ var Network = function () {
       if (error) throw error;
       _this.diagram = new ForceDiagram(document.querySelector(domSelector), data.auth);
       _this.diagram.addHandler('click', _this.toggle.bind(_this));
-      _this.diagram.addHandler('newConnection', _this.newConnection.bind(_this));
+      if (_this.handlers.nameRequired) {
+        _this.diagram.addHandler('newConnection', _this.newConnection.bind(_this));
+      }
       var getNode = function getNode(id) {
         var result = data.nodes.find(function (node) {
           return node.id === id;
@@ -81,37 +83,41 @@ var Network = function () {
     }
   }, {
     key: 'newConnection',
-    value: function newConnection(node, name) {
-      var link = void 0;
-      var existing = this.nodes.find(function (node) {
-        return node.name === name;
-      });
-      if (!existing) {
-        if (this.handlers.newNode) {
-          existing = this.handlers.newNode(name);
-        } else {
-          existing = { name: name };
-        }
-        if (!existing.id) {
-          existing.id = this.nodes.reduce(function (id, node) {
-            return Math.max(id, node.id);
-          }, 0) + 1;
-        }
-        this.diagram.add([existing], []);
-      } else {
-        link = this.links.find(function (link) {
-          return link.source.id === existing.id || link.target.id === existing.id;
-        });
-      }
-      if (!link) {
-        var newLink = { source: node, target: existing };
-        if (this.handlers.newLink) {
-          this.handlers.newLink(newLink);
-        }
-        this.diagram.add([], [newLink]);
-      }
+    value: function newConnection(node) {
+      var _this3 = this;
 
-      this.diagram.update();
+      this.handlers.nameRequired().then(function (name) {
+        var link = void 0;
+        var existing = _this3.nodes.find(function (node) {
+          return node.name === name;
+        });
+        if (!existing) {
+          if (_this3.handlers.newNode) {
+            existing = _this3.handlers.newNode(name);
+          } else {
+            existing = { name: name };
+          }
+          if (!existing.id) {
+            existing.id = _this3.nodes.reduce(function (id, node) {
+              return Math.max(id, node.id);
+            }, 0) + 1;
+          }
+          _this3.diagram.add([existing], []);
+        } else {
+          link = _this3.links.find(function (link) {
+            return link.source.id === existing.id || link.target.id === existing.id;
+          });
+        }
+        if (!link) {
+          var newLink = { source: node, target: existing };
+          if (_this3.handlers.newLink) {
+            _this3.handlers.newLink(newLink);
+          }
+          _this3.diagram.add([], [newLink]);
+        }
+
+        _this3.diagram.update();
+      });
     }
   }]);
 

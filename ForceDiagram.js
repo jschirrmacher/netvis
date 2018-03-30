@@ -87,19 +87,17 @@ class ForceDiagram {
       .text(d => d.name)
       .call(d => wrap(d, 90))
 
-    nodeEnter
-      .filter(d => d.connectable)
-      .call(d => addButton(d, 'newConnection', '↗', 'New Connection', newConnection.bind(this)))
+    if (this.handlers.newConnection) {
+      nodeEnter
+        .filter(d => d.connectable)
+        .call(d => addButton(d, 'newConnection', '↗', 'New Connection', this.handlers.newConnection.bind(this)))
+    }
 
     nodeData = nodeEnter.merge(nodeData)
     this.simulation.nodes(this.nodes).on('tick', () => handleTicks.bind(this)(this.center))
 
     this.simulation.restart()
     this.simulation.alpha(1)
-
-    function newConnection(node) {
-      this.handlers.newConnection(node, window.prompt('Name des neuen Knotens'))
-    }
 
     function bindHandlers(node) {
       Object.keys(this.handlers).forEach(type => node.on(type, this.handlers[type]))
