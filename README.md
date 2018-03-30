@@ -103,7 +103,9 @@ These are the possible events:
   gets the data structure `{source, target}` of the link as a parameter.
 
 Normally, an application should store the new data in a database or a file
-system.
+system, when newNode or newLink events arrive.
+
+If the handlers aren't defined, simply nothing happens.
 
 ## Contributing
 
