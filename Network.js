@@ -21,6 +21,8 @@ class Network {
       const nodes = this.nodes.filter(d => d.visible)
       this.diagram.add(nodes, links)
       this.diagram.update()
+
+      setTimeout(() => document.body.className = 'initialized', 1)
     })
   }
 

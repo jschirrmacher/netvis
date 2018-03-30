@@ -5,17 +5,15 @@ html, body, #root {
 }
 
 svg {
-  .nodes, .links {
-    opacity: 0.001;
-    transition: opacity 1s 1s;
-  }
+  opacity: 0.001;
+  transition: opacity 1s 1s;
+}
 
-  &.initialized {
-    .nodes, .links {
-      opacity: 1;
-    }
-  }
+body.initialized svg {
+  opacity: 1;
+}
 
+svg {
   .links line {
     stroke: #aaa;
   }

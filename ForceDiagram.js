@@ -32,11 +32,6 @@ class ForceDiagram {
 
     this.update()
 
-    const timer = d3.timer(() => {
-      svg.attr('class', 'initialized')
-      timer.stop()
-    }, 50)
-
     function handleZoom() {
       svgGroup.attr('transform',
         `translate(${d3.event.transform.x}, ${d3.event.transform.y})` + ' ' +
@@ -91,12 +86,12 @@ class ForceDiagram {
       .append('circle')
       .classed('node', true)
       .attr('r', 50)
-      .attr('fill', d => this.getBackground(d.id, d.logo))
+      .attr('fill', d => getBackground(d.id, d.logo, this.defs))
 
     graphNodesEnter
       .append('text')
       .text(d => d.name)
-      .call(d => this.wrap(d, 90))
+      .call(d => wrap(d, 90))
 
     graphNodesData = graphNodesEnter.merge(graphNodesData)
     this.simulation.nodes(this.nodes).on('tick', handleTicks)
@@ -113,44 +108,44 @@ class ForceDiagram {
 
       graphNodesData.attr('transform', d => 'translate(' + [d.x, d.y] + ')')
     }
-  }
 
-  getBackground(id, logo) {
-    if (logo) {
-      this.defs.append('pattern')
-        .attr('id', () => 'bg-' + id)
-        .attr('height', 1).attr('width', 1)
-        .append('image')
-        .attr('xlink:href', logo.replace(/ /g, '%20'))
-        .attr('height', '100px').attr('width', '100px')
-        .attr('preserveAspectRatio', 'xMidYMid slice')
+    function getBackground(id, logo, defs) {
+      if (logo) {
+        defs.append('pattern')
+          .attr('id', () => 'bg-' + id)
+          .attr('height', 1).attr('width', 1)
+          .append('image')
+          .attr('xlink:href', logo.replace(/ /g, '%20'))
+          .attr('height', '100px').attr('width', '100px')
+          .attr('preserveAspectRatio', 'xMidYMid slice')
+      }
+
+      return logo ? 'url(#bg-' + id + ')' : '#ffe'
     }
 
-    return logo ? 'url(#bg-' + id + ')' : '#ffe'
-  }
-
-  wrap(text, width) {
-    text.each(function (node) {
-      const text = d3.select(this)
-      const words = node.name.split(/[\s-]+/).reverse()
-      const lineHeight = 1.1
-      let line = []
-      let tspan = text.text(null).append('tspan')
-      let word
-      let lineCount = 0
-      while (word = words.pop()) {
-        line.push(word)
-        tspan.text(line.join(' '))
-        if (tspan.node().getComputedTextLength() > width) {
-          line.pop()
+    function wrap(text, width) {
+      text.each(function (node) {
+        const text = d3.select(this)
+        const words = node.name.split(/[\s-]+/).reverse()
+        const lineHeight = 1.1
+        let line = []
+        let tspan = text.text(null).append('tspan')
+        let word
+        let lineCount = 0
+        while (word = words.pop()) {
+          line.push(word)
           tspan.text(line.join(' '))
-          lineCount++
-          line = [word]
-          tspan = text.append('tspan').attr('x', 0).attr('dy', lineHeight + 'em').text(word)
+          if (tspan.node().getComputedTextLength() > width) {
+            line.pop()
+            tspan.text(line.join(' '))
+            lineCount++
+            line = [word]
+            tspan = text.append('tspan').attr('x', 0).attr('dy', lineHeight + 'em').text(word)
+          }
         }
-      }
-      text.attr('y', (-lineCount * 0.3) + 'em')
-    })
+        text.attr('y', (-lineCount * 0.3) + 'em')
+      })
+    }
   }
 
   add(nodesToAdd, linksToAdd) {
