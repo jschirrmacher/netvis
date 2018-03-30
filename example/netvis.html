@@ -11,7 +11,15 @@
     <script src="../dist/Network.js"></script>
     <script src="../dist/ForceDiagram.js"></script>
     <script>
-      new Network('data.json', '#root')
+      new Network('data.json', '#root', {
+        newNode: function(name) {
+          console.log('New node', name)
+          return {name, shape: 'circle'}
+        },
+        newLink: function(link) {
+          console.log('New link', link)
+        }
+      })
     </script>
 </body>
 </html>

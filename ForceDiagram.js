@@ -77,34 +77,61 @@ class ForceDiagram {
       .attr('class', d => 'node' + (d.open ? ' open' : ''))
       .call(this.drag)
 
-    Object.keys(this.handlers).forEach(type => nodeEnter.on(type, this.handlers[type]))
     nodeData.exit().remove()
 
-    nodeEnter.filter(d => d.shape === 'circle')
-      .append('circle')
-      .classed('node', true)
-      .attr('r', 50)
-      .attr('fill', d => getBackground(d.id, d.logo, this.defs))
+    nodeEnter.filter(d => d.shape === 'circle').call(addCircleNode.bind(this))
+    nodeEnter.filter(d => d.shape !== 'circle').call(addRectNode.bind(this))
 
-    nodeEnter.filter(d => d.shape === 'rect')
-      .append('rect')
-      .classed('node', true)
-      .attr('x', -50)
-      .attr('y', -35)
-      .attr('width', 100)
-      .attr('height', 70)
-      .attr('fill', d => getBackground(d.id, d.logo, this.defs))
-
-    nodeEnter
-      .append('text')
+    nodeEnter.append('text')
+      .classed('title', true)
       .text(d => d.name)
       .call(d => wrap(d, 90))
 
+    nodeEnter
+      .filter(d => d.connectable)
+      .call(d => addButton(d, 'newConnection', '↗', 'New Connection', newConnection.bind(this)))
+
     nodeData = nodeEnter.merge(nodeData)
-    this.simulation.nodes(this.nodes).on('tick', () => handleTicks(this.center))
+    this.simulation.nodes(this.nodes).on('tick', () => handleTicks.bind(this)(this.center))
 
     this.simulation.restart()
     this.simulation.alpha(1)
+
+    function newConnection(node) {
+      this.handlers.newConnection(node, window.prompt('Name des neuen Knotens'))
+    }
+
+    function bindHandlers(node) {
+      Object.keys(this.handlers).forEach(type => node.on(type, this.handlers[type]))
+    }
+
+    function addCircleNode(enter) {
+      enter.append('circle')
+        .classed('node', true)
+        .classed('open', d => d.open)
+        .attr('r', 50)
+        .attr('fill', getBackground.bind(this))
+        .call(bindHandlers.bind(this))
+    }
+
+    function addRectNode(enter) {
+      enter.append('rect')
+        .classed('node', true)
+        .classed('open', d => d.open)
+        .attr('x', -50)
+        .attr('y', -35)
+        .attr('width', 100)
+        .attr('height', 70)
+        .attr('fill', getBackground.bind(this))
+        .call(bindHandlers.bind(this))
+    }
+
+    function addButton(enter, className, text, altText, action) {
+      const group = enter.append('g').classed(className, true)
+      group.append('circle').attr('r', 12.5).on('click', action)
+      group.append('text').text(text)
+      group.append('text').classed('alt-text', true).text(altText)
+    }
 
     function handleTicks(center) {
       linkData
@@ -116,18 +143,18 @@ class ForceDiagram {
       nodeData.attr('transform', d => 'translate(' + [d.x + center.x, d.y + center.y] + ')')
     }
 
-    function getBackground(id, logo, defs) {
-      if (logo) {
-        defs.append('pattern')
-          .attr('id', () => 'bg-' + id)
+    function getBackground(node) {
+      if (node.logo) {
+        this.defs.append('pattern')
+          .attr('id', () => 'bg-' + node.id)
           .attr('height', 1).attr('width', 1)
           .append('image')
-          .attr('xlink:href', logo.replace(/ /g, '%20'))
+          .attr('xlink:href', node.logo.replace(/ /g, '%20'))
           .attr('height', '100px').attr('width', '100px')
           .attr('preserveAspectRatio', 'xMidYMid slice')
       }
 
-      return logo ? 'url(#bg-' + id + ')' : '#ffe'
+      return node.logo ? 'url(#bg-' + node.id + ')' : '#eef'
     }
 
     function wrap(text, width) {

@@ -90,36 +90,65 @@ var ForceDiagram = function () {
         return 'node' + (d.open ? ' open' : '');
       }).call(this.drag);
 
-      Object.keys(this.handlers).forEach(function (type) {
-        return nodeEnter.on(type, _this2.handlers[type]);
-      });
       nodeData.exit().remove();
 
       nodeEnter.filter(function (d) {
         return d.shape === 'circle';
-      }).append('circle').classed('node', true).attr('r', 50).attr('fill', function (d) {
-        return getBackground(d.id, d.logo, _this2.defs);
-      });
-
+      }).call(addCircleNode.bind(this));
       nodeEnter.filter(function (d) {
-        return d.shape === 'rect';
-      }).append('rect').classed('node', true).attr('x', -50).attr('y', -35).attr('width', 100).attr('height', 70).attr('fill', function (d) {
-        return getBackground(d.id, d.logo, _this2.defs);
-      });
+        return d.shape !== 'circle';
+      }).call(addRectNode.bind(this));
 
-      nodeEnter.append('text').text(function (d) {
+      nodeEnter.append('text').classed('title', true).text(function (d) {
         return d.name;
       }).call(function (d) {
         return wrap(d, 90);
       });
 
+      nodeEnter.filter(function (d) {
+        return d.connectable;
+      }).call(function (d) {
+        return addButton(d, 'newConnection', '↗', 'New Connection', newConnection.bind(_this2));
+      });
+
       nodeData = nodeEnter.merge(nodeData);
       this.simulation.nodes(this.nodes).on('tick', function () {
-        return handleTicks(_this2.center);
+        return handleTicks.bind(_this2)(_this2.center);
       });
 
       this.simulation.restart();
       this.simulation.alpha(1);
+
+      function newConnection(node) {
+        this.handlers.newConnection(node, window.prompt('Name des neuen Knotens'));
+      }
+
+      function bindHandlers(node) {
+        var _this3 = this;
+
+        Object.keys(this.handlers).forEach(function (type) {
+          return node.on(type, _this3.handlers[type]);
+        });
+      }
+
+      function addCircleNode(enter) {
+        enter.append('circle').classed('node', true).classed('open', function (d) {
+          return d.open;
+        }).attr('r', 50).attr('fill', getBackground.bind(this)).call(bindHandlers.bind(this));
+      }
+
+      function addRectNode(enter) {
+        enter.append('rect').classed('node', true).classed('open', function (d) {
+          return d.open;
+        }).attr('x', -50).attr('y', -35).attr('width', 100).attr('height', 70).attr('fill', getBackground.bind(this)).call(bindHandlers.bind(this));
+      }
+
+      function addButton(enter, className, text, altText, action) {
+        var group = enter.append('g').classed(className, true);
+        group.append('circle').attr('r', 12.5).on('click', action);
+        group.append('text').text(text);
+        group.append('text').classed('alt-text', true).text(altText);
+      }
 
       function handleTicks(center) {
         linkData.attr('x1', function (d) {
@@ -137,14 +166,14 @@ var ForceDiagram = function () {
         });
       }
 
-      function getBackground(id, logo, defs) {
-        if (logo) {
-          defs.append('pattern').attr('id', function () {
-            return 'bg-' + id;
-          }).attr('height', 1).attr('width', 1).append('image').attr('xlink:href', logo.replace(/ /g, '%20')).attr('height', '100px').attr('width', '100px').attr('preserveAspectRatio', 'xMidYMid slice');
+      function getBackground(node) {
+        if (node.logo) {
+          this.defs.append('pattern').attr('id', function () {
+            return 'bg-' + node.id;
+          }).attr('height', 1).attr('width', 1).append('image').attr('xlink:href', node.logo.replace(/ /g, '%20')).attr('height', '100px').attr('width', '100px').attr('preserveAspectRatio', 'xMidYMid slice');
         }
 
-        return logo ? 'url(#bg-' + id + ')' : '#ffe';
+        return node.logo ? 'url(#bg-' + node.id + ')' : '#eef';
       }
 
       function wrap(text, width) {
@@ -174,23 +203,23 @@ var ForceDiagram = function () {
   }, {
     key: 'add',
     value: function add(nodesToAdd, linksToAdd) {
-      var _this3 = this;
+      var _this4 = this;
 
       if (nodesToAdd) {
         nodesToAdd.forEach(function (n) {
-          return _this3.nodes.push(n);
+          return _this4.nodes.push(n);
         });
       }
       if (linksToAdd) {
         linksToAdd.forEach(function (l) {
-          return _this3.links.push(l);
+          return _this4.links.push(l);
         });
       }
     }
   }, {
     key: 'remove',
     value: function remove(dToRemove) {
-      var _this4 = this;
+      var _this5 = this;
 
       var nIndex = this.nodes.indexOf(dToRemove);
       if (nIndex > -1) {
@@ -201,7 +230,7 @@ var ForceDiagram = function () {
         return link.source.id === id || link.target.id === id;
       };
       this.links.forEach(function (l, index) {
-        return isidConnected(l, dToRemove.id) && _this4.links.splice(index, 1);
+        return isidConnected(l, dToRemove.id) && _this5.links.splice(index, 1);
       });
     }
   }]);

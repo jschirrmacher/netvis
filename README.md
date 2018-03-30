@@ -79,8 +79,29 @@ There are some optional attributes in a node:
   even if the user clicks on it. By making important nodes (the root
   of the network for example) always visible, the user cannot by
   inadvertenty close all nodes in the network.
+- `connectable` - when set `true`, an icon is shown when the user hovers over
+  a node, allowing to create a new node connected to the current one. See the
+  chapter "Handlers" to learn what you should do to make that persistent.
 
 You find a more complete example in the file `example/data.json`.
+
+## Handlers
+
+When calling `new Network()` (see above), there is an optional third parameter,
+which is an object containing event handlers which are called, if the user
+does an action which requires the network to be changed permanently.
+
+These are the possible events:
+
+- `newNode` - a new node was created. The handler gets the node name as a
+  parameter. It should return a data structure for the new node which is then
+  added to the network visualization. This structure should at least contain
+  the name and the new ID, but should normally have `visible=true` as well.
+- `newLink` - a new link between two nodes was created. The handler
+  gets the data structure `{source, target}` of the link as a parameter.
+
+Normally, an application should store the new data in a database or a file
+system.
 
 ## Contributing
 

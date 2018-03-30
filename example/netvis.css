@@ -1,7 +1,8 @@
 html, body, #root {
   margin: 0;
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  background: radial-gradient(#ffffff, #eeffff); }
 
 svg {
   opacity: 0.001;
@@ -14,20 +15,41 @@ svg .links line {
   stroke: #aaa; }
 svg .node {
   pointer-events: all;
+  cursor: pointer;
   stroke: #000;
   stroke-width: 1px; }
-  svg .node.open {
+  svg .node.open > circle, svg .node.open > rect {
     stroke: #f00;
     stroke-width: 2px; }
-  svg .node text {
-    transition: 0.5s; }
-  svg .node text tspan {
-    font: 14px Helvetica, Arial, sans-serif;
-    fill: #000;
-    stroke-width: 0;
-    text-anchor: middle;
-    text-shadow: 0 0 5px white; }
-  svg .node:hover text {
+  svg .node > text {
+    transition: 0.5s 0.5s; }
+    svg .node > text tspan {
+      font: 14px Helvetica, Arial, sans-serif;
+      fill: #000;
+      stroke-width: 0;
+      text-anchor: middle;
+      text-shadow: 0 0 5px white; }
+  svg .node .newConnection {
+    opacity: 0;
+    transition: 0.5s 0.5s; }
+    svg .node .newConnection circle {
+      fill: none; }
+    svg .node .newConnection text {
+      transform: translate(-8px, 6px); }
+    svg .node .newConnection .alt-text {
+      font: 10px Helvetica, Arial, sans-serif;
+      transform: translate(15px, 3px);
+      stroke-width: 0; }
+  svg .node:hover .title {
+    transition: 0.5s;
     transform: translateY(5em) scale(1.5); }
+  svg .node:hover .newConnection {
+    opacity: 1;
+    transition: 0.5s;
+    transform: translate(45px, -45px); }
+    svg .node:hover .newConnection:hover circle {
+      fill: #dddddd; }
+    svg .node:hover .newConnection:active circle {
+      fill: #cccccc; }
 
 /*# sourceMappingURL=netvis.css.map */

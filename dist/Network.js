@@ -8,14 +8,16 @@ var Network = function () {
   function Network(dataUrl, domSelector) {
     var _this = this;
 
+    var handlers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
     _classCallCheck(this, Network);
 
+    this.handlers = handlers;
     d3.json(dataUrl, function (error, data) {
       if (error) throw error;
-      _this.diagram = new ForceDiagram(document.querySelector(domSelector));
-      _this.diagram.addHandler('click', function (node) {
-        return _this.toggle(node);
-      });
+      _this.diagram = new ForceDiagram(document.querySelector(domSelector), data.auth);
+      _this.diagram.addHandler('click', _this.toggle.bind(_this));
+      _this.diagram.addHandler('newConnection', _this.newConnection.bind(_this));
       var getNode = function getNode(id) {
         var result = data.nodes.find(function (node) {
           return node.id === id;
@@ -74,6 +76,40 @@ var Network = function () {
           }
         }
       });
+
+      this.diagram.update();
+    }
+  }, {
+    key: 'newConnection',
+    value: function newConnection(node, name) {
+      var link = void 0;
+      var existing = this.nodes.find(function (node) {
+        return node.name === name;
+      });
+      if (!existing) {
+        if (this.handlers.newNode) {
+          existing = this.handlers.newNode(name);
+        } else {
+          existing = { name: name };
+        }
+        if (!existing.id) {
+          existing.id = this.nodes.reduce(function (id, node) {
+            return Math.max(id, node.id);
+          }, 0) + 1;
+        }
+        this.diagram.add([existing], []);
+      } else {
+        link = this.links.find(function (link) {
+          return link.source.id === existing.id || link.target.id === existing.id;
+        });
+      }
+      if (!link) {
+        var newLink = { source: node, target: existing };
+        if (this.handlers.newLink) {
+          this.handlers.newLink(newLink);
+        }
+        this.diagram.add([], [newLink]);
+      }
 
       this.diagram.update();
     }

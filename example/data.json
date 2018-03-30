@@ -1,5 +1,4 @@
 {
-  "name": "LCFRM3",
   "nodes": [
     {
       "id": 2032,
@@ -34,7 +33,8 @@
       "name": "Joachim Schirrmacher",
       "shape": "circle",
       "logo": "https://xp-net.com\/network\/LCFRM3\/2037\/Joachim.jpg",
-      "visible": true
+      "visible": true,
+      "connectable": true
     },
     {
       "id": 2038,
