@@ -32,16 +32,12 @@ class Network {
     this.links
       .filter(link => link.source.id === node.id || link.target.id === node.id)
       .forEach(link => {
-        if (node.open) {  // node was opened
-          if (this.links.indexOf(link) !== false) {
-            otherNode(link).visible = true
-            this.diagram.add([otherNode(link)], [link])
-          }
-        } else {  // node was closed
-          if (!link.source.open && !link.target.open) {
-            otherNode(link).visible = false
-            this.diagram.remove(otherNode(link))
-          }
+        if (node.open && this.links.indexOf(link) !== false) {
+          otherNode(link).visible = true
+          this.diagram.add([otherNode(link)], [link])
+        } else if (!node.open && !link.source.open && !link.target.open) {
+          otherNode(link).visible = false
+          this.diagram.remove(otherNode(link))
         }
       })
 
