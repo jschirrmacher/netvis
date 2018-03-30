@@ -58,8 +58,8 @@ Each node therefore has an ID, which can be referenced in `links`:
 
     {
         "nodes": [
-            {"id": 1, "name": "First", "type": "circle", "open": true},
-            {"id": 2, "name": "Second", "type": "rect", "open": true}
+            {"id": 1, "name": "First", "shape": "circle", "open": true},
+            {"id": 2, "name": "Second", "shape": "rect", "open": true}
         ],
         "links": [
             {"source": 1, "target": 2}
@@ -67,7 +67,7 @@ Each node therefore has an ID, which can be referenced in `links`:
     }
 
 The `name` contains the name of the node and is displayed inside the node,
-the `type` defines the shape of the node.
+the `shape` defines the shape of the node.
 
 There are some optional attributes in a node:
 
