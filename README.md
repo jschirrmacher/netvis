@@ -20,8 +20,8 @@ Features:
 To use the package, all you need to do is include some JavaScripts into your html
 
     <script src="//d3js.org/d3.v4.min.js"></script>
-    <script src="https://raw.githubusercontent.com/jschirrmacher/netvis/master/dist/Network.js"></script>
-    <script src="https://raw.githubusercontent.com/jschirrmacher/netvis/master/dist/ForceDiagram.js"></script>
+    <script src="https://jschirrmacher.github.io/netvis/dist/Network.js"></script>
+    <script src="https://jschirrmacher.github.io/netvis/dist/ForceDiagram.js"></script>
 
 and define a SVG image like that:
 
