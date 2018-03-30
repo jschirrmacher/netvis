@@ -1,0 +1,413 @@
+{
+  "name": "LCFRM3",
+  "nodes": [
+    {
+      "id": 2032,
+      "name": "X Camp",
+      "shape": "circle",
+      "open": true,
+      "visible": true,
+      "keepOpen": true
+    },
+    {
+      "id": 2033,
+      "name": "Lean Startup",
+      "shape": "rect"
+    },
+    {
+      "id": 2034,
+      "name": "Design Thinking",
+      "shape": "rect"
+    },
+    {
+      "id": 2035,
+      "name": "Agile Development",
+      "shape": "rect"
+    },
+    {
+      "id": 2036,
+      "name": "User Experience",
+      "shape": "rect"
+    },
+    {
+      "id": 2037,
+      "name": "Joachim Schirrmacher",
+      "shape": "circle",
+      "logo": "https://xp-net.com\/network\/LCFRM3\/2037\/Joachim.jpg",
+      "visible": true
+    },
+    {
+      "id": 2038,
+      "name": "Christiane Gerigk",
+      "shape": "circle",
+      "logo": "https://xp-net.com\/network\/LCFRM3\/2038\/Christiane.jpg",
+      "visible": true
+    },
+    {
+      "id": 2242,
+      "name": "Management3.0",
+      "shape": "rect"
+    },
+    {
+      "id": 2243,
+      "name": "Organisations-Entwicklung",
+      "shape": "rect"
+    },
+    {
+      "id": 2244,
+      "name": "LeSS",
+      "shape": "rect"
+    },
+    {
+      "id": 2245,
+      "name": "Scrum",
+      "shape": "rect"
+    },
+     {
+      "id": 2248,
+      "name": "Wolf N\u00f6ding",
+      "shape": "circle",
+      "logo": "https://xp-net.com\/network\/LCFRM3\/2248\/Profil_2.png",
+      "visible": true
+    },
+    {
+      "id": 2256,
+      "name": "Jens Bothmer",
+      "shape": "circle",
+      "logo": "https://xp-net.com\/network\/LCFRM3\/2256\/Jens_Bothmer_1024_v1.jpg",
+      "visible": true
+    },
+    {
+      "id": 2275,
+      "name": "Product Management",
+      "shape": "rect"
+    },
+   {
+      "id": 2277,
+      "name": "Lean Analytics",
+      "shape": "rect"
+    },
+    {
+      "id": 2278,
+      "name": "Scaling Lean",
+      "shape": "rect"
+    },
+    {
+      "id": 2279,
+      "name": "leanstack",
+      "shape": "rect"
+    },
+    {
+      "id": 2280,
+      "name": "ashmaurya",
+      "shape": "rect"
+    },
+    {
+      "id": 2281,
+      "name": "Transformation",
+      "shape": "rect"
+    },
+    {
+      "id": 2282,
+      "name": "Ideenentwicklung",
+      "shape": "rect"
+    },
+    {
+      "id": 2283,
+      "name": "Confluence Fachadmin",
+      "shape": "rect"
+    },
+    {
+      "id": 2284,
+      "name": "Business Modelling",
+      "shape": "rect"
+    },
+    {
+      "id": 2290,
+      "name": "Holacracy",
+      "shape": "rect"
+    },
+    {
+      "id": 2297,
+      "name": "Innovationsmanagement",
+      "shape": "rect"
+    },
+    {
+      "id": 2298,
+      "name": "Improvisation",
+      "shape": "rect"
+    },
+    {
+      "id": 2299,
+      "name": "Teamentwickl",
+      "shape": "rect"
+    },
+    {
+      "id": 2300,
+      "name": "Oliver Krekel",
+      "shape": "circle"
+    },
+    {
+      "id": 2302,
+      "name": "Growth Hacking",
+      "shape": "rect"
+    },
+    {
+      "id": 2303,
+      "name": "Agile Marketing",
+      "shape": "rect"
+    },
+    {
+      "id": 2304,
+      "name": "Angelo Buoro",
+      "shape": "circle"
+    },
+    {
+      "id": 2307,
+      "name": "Lean Management",
+      "shape": "rect"
+    },
+    {
+      "id": 2308,
+      "name": "Kanban",
+      "shape": "rect"
+    },
+    {
+      "id": 2309,
+      "name": "Enterprise Services Planning",
+      "shape": "rect"
+    },
+    {
+      "id": 2310,
+      "name": "Flow Based Product Development",
+      "shape": "rect"
+    },
+    {
+      "id": 2313,
+      "name": "Bianca  K\u00f6llner",
+      "shape": "circle",
+      "visible": true
+    },
+    {
+      "id": 2316,
+      "name": "remote",
+      "shape": "rect"
+    },
+    {
+      "id": 2317,
+      "name": "futureofwork",
+      "shape": "rect"
+    },
+    {
+      "id": 2450,
+      "name": "Social Entrepreneuship",
+      "shape": "rect"
+    },
+    {
+      "id": 2451,
+      "name": "Social Innovation",
+      "shape": "rect"
+    },
+    {
+      "id": 2453,
+      "name": "Crowdfunding",
+      "shape": "rect"
+    },
+    {
+      "id": 2454,
+      "name": "Crowdinvesting",
+      "shape": "rect"
+    },
+    {
+      "id": 2455,
+      "name": "Business Plan",
+      "shape": "rect"
+    },
+    {
+      "id": 2456,
+      "name": "Kommunikation",
+      "shape": "rect"
+    },
+    {
+      "id": 2457,
+      "name": "Finanzierung",
+      "shape": "rect"
+    },
+    {
+      "id": 2491,
+      "name": "E-Learning",
+      "shape": "rect"
+    },
+    {
+      "id": 2500,
+      "name": "corporatestartup",
+      "shape": "rect"
+    },
+    {
+      "id": 2515,
+      "name": "Agile Organisation",
+      "shape": "rect"
+    },
+    {
+      "id": 2547,
+      "name": "Customer Experience",
+      "shape": "rect"
+    },
+    {
+      "id": 2548,
+      "name": "Lean UX",
+      "shape": "rect"
+    },
+    {
+      "id": 2549,
+      "name": "UX in Agile",
+      "shape": "rect"
+    }
+  ],
+  "links": [
+    {
+      "source": 2032,
+      "target": 2033
+    },
+    {
+      "source": 2032,
+      "target": 2034
+    },
+    {
+      "source": 2032,
+      "target": 2035
+    },
+    {
+      "source": 2032,
+      "target": 2036
+    },
+    {
+      "source": 2036,
+      "target": 2248
+    },
+    {
+      "source": 2037,
+      "target": 2033
+    },
+    {
+      "source": 2037,
+      "target": 2035
+    },
+    {
+      "source": 2037,
+      "target": 2245
+    },
+    {
+      "source": 2037,
+      "target": 2275
+    },
+    {
+      "source": 2038,
+      "target": 2033
+    },
+    {
+      "source": 2038,
+      "target": 2034
+    },
+    {
+      "source": 2038,
+      "target": 2035
+    },
+    {
+      "source": 2243,
+      "target": 2242
+    },
+    {
+      "source": 2243,
+      "target": 2299
+    },
+    {
+      "source": 2243,
+      "target": 2316
+    },
+    {
+      "source": 2244,
+      "target": 2035
+    },
+    {
+      "source": 2245,
+      "target": 2035
+    },
+    {
+      "source": 2248,
+      "target": 2034
+    },
+    {
+      "source": 2248,
+      "target": 2547
+    },
+    {
+      "source": 2248,
+      "target": 2548
+    },
+    {
+      "source": 2248,
+      "target": 2549
+    },
+    {
+      "source": 2256,
+      "target": 2034
+    },
+    {
+      "source": 2256,
+      "target": 2281
+    },
+    {
+      "source": 2256,
+      "target": 2282
+    },
+    {
+      "source": 2256,
+      "target": 2283
+    },
+    {
+      "source": 2256,
+      "target": 2284
+    },
+    {
+      "source": 2278,
+      "target": 2033
+    },
+    {
+      "source": 2279,
+      "target": 2033
+    },
+    {
+      "source": 2280,
+      "target": 2278
+    },
+    {
+      "source": 2280,
+      "target": 2279
+    },
+    {
+      "source": 2300,
+      "target": 2033
+    },
+    {
+      "source": 2300,
+      "target": 2034
+    },
+    {
+      "source": 2300,
+      "target": 2035
+    },
+    {
+      "source": 2308,
+      "target": 2037
+    },
+    {
+      "source": 2317,
+      "target": 2242
+    },
+    {
+      "source": 2317,
+      "target": 2243
+    }
+  ]
+}
