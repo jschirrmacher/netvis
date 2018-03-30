@@ -179,7 +179,7 @@ var ForceDiagram = function () {
       function wrap(text, width) {
         text.each(function (node) {
           var text = d3.select(this);
-          var words = node.name.split(/[\s-]+/).reverse();
+          var words = (node.name || '').split(/[\s-]+/).reverse();
           var lineHeight = 1.1;
           var line = [];
           var tspan = text.text(null).append('tspan');

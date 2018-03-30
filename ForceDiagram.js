@@ -160,7 +160,7 @@ class ForceDiagram {
     function wrap(text, width) {
       text.each(function (node) {
         const text = d3.select(this)
-        const words = node.name.split(/[\s-]+/).reverse()
+        const words = (node.name || '').split(/[\s-]+/).reverse()
         const lineHeight = 1.1
         let line = []
         let tspan = text.text(null).append('tspan')
