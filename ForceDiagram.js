@@ -4,11 +4,9 @@ class ForceDiagram {
     this.nodes = []
     this.handlers = {}
     const svg = d3.select(domSelector)
-    const center = [svg.node().scrollWidth / 2, svg.node().scrollHeight / 2]
+    this.center = {x: svg.node().scrollWidth / 2, y: svg.node().scrollHeight / 2}
     this.defs = svg.append('defs')
     const svgGroup = svg
-      .append('svg:g')
-      .attr('transform', 'translate(' + center + ')')
       .append('g')
       .attr('id', 'svgGroup')
 
@@ -65,30 +63,30 @@ class ForceDiagram {
   }
 
   update() {
-    let nodeData = this.linkContainer.selectAll('line').data(this.links, d => d.id)
-    let nodeEnter = nodeData.enter().append('line')
-    nodeData.exit().remove()
-    nodeData = nodeEnter.merge(nodeData)
+    let linkData = this.linkContainer.selectAll('line').data(this.links, d => d.id)
+    let linkEnter = linkData.enter().append('line')
+    linkData.exit().remove()
+    linkData = linkEnter.merge(linkData)
     this.simulation.force('link').links(this.links)
 
-    let graphNodesData = this.nodeContainer.selectAll('g').data(this.nodes, d => d.id)
-    let graphNodesEnter = graphNodesData
+    let nodeData = this.nodeContainer.selectAll('g').data(this.nodes, d => d.id)
+    let nodeEnter = nodeData
       .enter()
       .append('g')
       .attr('id', d => d.id)
       .attr('class', d => 'node' + (d.open ? ' open' : ''))
       .call(this.drag)
 
-    Object.keys(this.handlers).forEach(type => graphNodesEnter.on(type, this.handlers[type]))
-    graphNodesData.exit().remove()
+    Object.keys(this.handlers).forEach(type => nodeEnter.on(type, this.handlers[type]))
+    nodeData.exit().remove()
 
-    graphNodesEnter.filter(d => d.shape === 'circle')
+    nodeEnter.filter(d => d.shape === 'circle')
       .append('circle')
       .classed('node', true)
       .attr('r', 50)
       .attr('fill', d => getBackground(d.id, d.logo, this.defs))
 
-    graphNodesEnter.filter(d => d.shape === 'rect')
+    nodeEnter.filter(d => d.shape === 'rect')
       .append('rect')
       .classed('node', true)
       .attr('x', -50)
@@ -97,25 +95,25 @@ class ForceDiagram {
       .attr('height', 70)
       .attr('fill', d => getBackground(d.id, d.logo, this.defs))
 
-    graphNodesEnter
+    nodeEnter
       .append('text')
       .text(d => d.name)
       .call(d => wrap(d, 90))
 
-    graphNodesData = graphNodesEnter.merge(graphNodesData)
-    this.simulation.nodes(this.nodes).on('tick', handleTicks)
+    nodeData = nodeEnter.merge(nodeData)
+    this.simulation.nodes(this.nodes).on('tick', () => handleTicks(this.center))
 
     this.simulation.restart()
     this.simulation.alpha(1)
 
-    function handleTicks() {
-      nodeData
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y)
+    function handleTicks(center) {
+      linkData
+        .attr('x1', d => d.source.x + center.x)
+        .attr('y1', d => d.source.y + center.y)
+        .attr('x2', d => d.target.x + center.x)
+        .attr('y2', d => d.target.y + center.y)
 
-      graphNodesData.attr('transform', d => 'translate(' + [d.x, d.y] + ')')
+      nodeData.attr('transform', d => 'translate(' + [d.x + center.x, d.y + center.y] + ')')
     }
 
     function getBackground(id, logo, defs) {
