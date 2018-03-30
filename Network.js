@@ -34,13 +34,13 @@ class Network {
       .forEach(link => {
         if (node.open) {  // node was opened
           if (this.links.indexOf(link) !== false) {
-            this.links.push(link)
             otherNode(link).visible = true
+            this.diagram.add([otherNode(link)], [link])
           }
         } else {  // node was closed
           if (!link.source.open && !link.target.open) {
-            this.links.splice(this.links.indexOf(link), 1)
             otherNode(link).visible = false
+            this.diagram.remove(otherNode(link))
           }
         }
       })
