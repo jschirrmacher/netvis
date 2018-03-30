@@ -82,10 +82,19 @@ class ForceDiagram {
     Object.keys(this.handlers).forEach(type => graphNodesEnter.on(type, this.handlers[type]))
     graphNodesData.exit().remove()
 
-    graphNodesEnter
+    graphNodesEnter.filter(d => d.shape === 'circle')
       .append('circle')
       .classed('node', true)
       .attr('r', 50)
+      .attr('fill', d => getBackground(d.id, d.logo, this.defs))
+
+    graphNodesEnter.filter(d => d.shape === 'rect')
+      .append('rect')
+      .classed('node', true)
+      .attr('x', -50)
+      .attr('y', -35)
+      .attr('width', 100)
+      .attr('height', 70)
       .attr('fill', d => getBackground(d.id, d.logo, this.defs))
 
     graphNodesEnter
