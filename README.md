@@ -95,8 +95,7 @@ These are the possible events:
 
 - `newNode` - a new node was created. The handler gets the node name as a
   parameter. It should return a data structure for the new node which is then
-  added to the network visualization. This structure should at least contain
-  the name and the new ID, but should normally have `visible=true` as well.
+  added to the network visualization.
 - `newLink` - a new link between two nodes was created. The handler
   gets the data structure `{source, target}` of the link as a parameter.
 
