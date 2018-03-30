@@ -2,7 +2,7 @@
 
 This package visualizes network dependencies.
 
-[![Screenshot - click to see it in action](https://raw.githubusercontent.com/jschirrmacher/netvis/master/netvis.png)](https://jschirrmacher.github.io/netvis/netvis.html)
+[![Screenshot - click to see it in action](https://jschirrmacher.github.io/netvis/example/netvis.png)](https://jschirrmacher.github.io/netvis/example/netvis.html)
 
 It uses the famous https://d3js.org/ library's force diagram and adds a couple of
 functions to make it ease to use it with json formatted data, which might be
@@ -36,8 +36,8 @@ All you need else is an initialization call:
 It reads data from the URL given as the first parameter and displays the network
 in the svg referenced by the selector defined by the second parameter.
 
-You can find a simple example in the file `netvis.html` in this package. It uses a
-stylesheet `netvis.css` which was compiled via https://sass-lang.com/ from `netvis.scss`.
+You can find a simple example in the file `example/netvis.html` in this package. It uses a
+stylesheet `example/netvis.css` which was compiled via https://sass-lang.com/ from `example/netvis.scss`.
 I like Sass very much because it helps using DRY principles, but you are free to use
 another tool for that or to write css by yourself.
 
@@ -80,7 +80,7 @@ There are some optional attributes in a node:
   of the network for example) always visible, the user cannot by
   inadvertenty close all nodes in the network.
 
-You find a more complete example in the file `data.json`.
+You find a more complete example in the file `example/data.json`.
 
 ## Contributing
 
