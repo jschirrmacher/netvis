@@ -17,9 +17,13 @@ var Network = function () {
         return _this.toggle(node);
       });
       var getNode = function getNode(id) {
-        return data.nodes.find(function (node) {
+        var result = data.nodes.find(function (node) {
           return node.id === id;
         });
+        if (!result) {
+          console.error('Node id ' + id + ' not found');
+        }
+        return result;
       };
       _this.links = data.links.map(function (link, id) {
         return {

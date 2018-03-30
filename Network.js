@@ -4,7 +4,13 @@ class Network {
       if (error) throw error
       this.diagram = new ForceDiagram(document.querySelector(domSelector))
       this.diagram.addHandler('click', node => this.toggle(node))
-      const getNode = id => data.nodes.find(node => node.id === id)
+      const getNode = id => {
+        const result = data.nodes.find(node => node.id === id)
+        if (!result) {
+          console.error('Node id ' + id + ' not found')
+        }
+        return result
+      }
       this.links = data.links.map((link, id) => ({
         id: id + 1,
         source: getNode(link.source),
