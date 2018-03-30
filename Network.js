@@ -36,8 +36,10 @@ class Network {
           otherNode(link).visible = true
           this.diagram.add([otherNode(link)], [link])
         } else if (!node.open && !link.source.open && !link.target.open) {
-          otherNode(link).visible = false
-          this.diagram.remove(otherNode(link))
+          otherNode(link).visible = otherNode(link).keepVisible
+          if (!otherNode(link).visible) {
+            this.diagram.remove(otherNode(link))
+          }
         }
       })
 
