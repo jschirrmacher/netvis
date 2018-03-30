@@ -71,6 +71,9 @@ the `shape` defines the shape of the node.
 
 There are some optional attributes in a node:
 
+- `image` - image to use as the background for the node. THis could be a photo
+  of the person represented by the node, a logo or some other picture.
+  It should not be too large, because this influences performance very much.
 - `visible` - makes the node initially visible but can be closed by the
   user.
 - `open` identifies nodes which should be initially visible together with

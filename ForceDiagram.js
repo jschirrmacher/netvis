@@ -142,17 +142,17 @@ class ForceDiagram {
     }
 
     function getBackground(node) {
-      if (node.logo) {
+      if (node.image) {
         this.defs.append('pattern')
           .attr('id', () => 'bg-' + node.id)
           .attr('height', 1).attr('width', 1)
           .append('image')
-          .attr('xlink:href', node.logo.replace(/ /g, '%20'))
+          .attr('xlink:href', node.image.replace(/ /g, '%20'))
           .attr('height', '100px').attr('width', '100px')
           .attr('preserveAspectRatio', 'xMidYMid slice')
       }
 
-      return node.logo ? 'url(#bg-' + node.id + ')' : '#eef'
+      return node.image ? 'url(#bg-' + node.id + ')' : '#eef'
     }
 
     function wrap(text, width) {

@@ -2,7 +2,7 @@
   "nodes": [
     {
       "id": 2032,
-      "name": "X Camp",
+      "name": "XCamp",
       "shape": "circle",
       "open": true,
       "visible": true,
@@ -32,7 +32,7 @@
       "id": 2037,
       "name": "Joachim Schirrmacher",
       "shape": "circle",
-      "logo": "https://xp-net.com\/network\/LCFRM3\/2037\/Joachim.jpg",
+      "image": "https://xp-net.com\/network\/LCFRM3\/2037\/Joachim.jpg",
       "visible": true,
       "connectable": true
     },
@@ -40,7 +40,7 @@
       "id": 2038,
       "name": "Christiane Gerigk",
       "shape": "circle",
-      "logo": "https://xp-net.com\/network\/LCFRM3\/2038\/Christiane.jpg",
+      "image": "https://xp-net.com\/network\/LCFRM3\/2038\/Christiane.jpg",
       "visible": true
     },
     {
@@ -67,24 +67,19 @@
       "id": 2248,
       "name": "Wolf N\u00f6ding",
       "shape": "circle",
-      "logo": "https://xp-net.com\/network\/LCFRM3\/2248\/Profil_2.png",
+      "image": "https://xp-net.com\/network\/LCFRM3\/2248\/Profil_2.png",
       "visible": true
     },
     {
       "id": 2256,
       "name": "Jens Bothmer",
       "shape": "circle",
-      "logo": "https://xp-net.com\/network\/LCFRM3\/2256\/Jens_Bothmer_1024_v1.jpg",
+      "image": "https://xp-net.com\/network\/LCFRM3\/2256\/Jens_Bothmer_1024_v1.jpg",
       "visible": true
     },
     {
       "id": 2275,
       "name": "Product Management",
-      "shape": "rect"
-    },
-   {
-      "id": 2277,
-      "name": "Lean Analytics",
       "shape": "rect"
     },
     {
@@ -95,11 +90,6 @@
     {
       "id": 2279,
       "name": "leanstack",
-      "shape": "rect"
-    },
-    {
-      "id": 2280,
-      "name": "ashmaurya",
       "shape": "rect"
     },
     {
@@ -143,31 +133,6 @@
       "shape": "rect"
     },
     {
-      "id": 2300,
-      "name": "Oliver Krekel",
-      "shape": "circle"
-    },
-    {
-      "id": 2302,
-      "name": "Growth Hacking",
-      "shape": "rect"
-    },
-    {
-      "id": 2303,
-      "name": "Agile Marketing",
-      "shape": "rect"
-    },
-    {
-      "id": 2304,
-      "name": "Angelo Buoro",
-      "shape": "circle"
-    },
-    {
-      "id": 2307,
-      "name": "Lean Management",
-      "shape": "rect"
-    },
-    {
       "id": 2308,
       "name": "Kanban",
       "shape": "rect"
@@ -175,11 +140,6 @@
     {
       "id": 2309,
       "name": "Enterprise Services Planning",
-      "shape": "rect"
-    },
-    {
-      "id": 2310,
-      "name": "Flow Based Product Development",
       "shape": "rect"
     },
     {
@@ -196,56 +156,6 @@
     {
       "id": 2317,
       "name": "futureofwork",
-      "shape": "rect"
-    },
-    {
-      "id": 2450,
-      "name": "Social Entrepreneuship",
-      "shape": "rect"
-    },
-    {
-      "id": 2451,
-      "name": "Social Innovation",
-      "shape": "rect"
-    },
-    {
-      "id": 2453,
-      "name": "Crowdfunding",
-      "shape": "rect"
-    },
-    {
-      "id": 2454,
-      "name": "Crowdinvesting",
-      "shape": "rect"
-    },
-    {
-      "id": 2455,
-      "name": "Business Plan",
-      "shape": "rect"
-    },
-    {
-      "id": 2456,
-      "name": "Kommunikation",
-      "shape": "rect"
-    },
-    {
-      "id": 2457,
-      "name": "Finanzierung",
-      "shape": "rect"
-    },
-    {
-      "id": 2491,
-      "name": "E-Learning",
-      "shape": "rect"
-    },
-    {
-      "id": 2500,
-      "name": "corporatestartup",
-      "shape": "rect"
-    },
-    {
-      "id": 2515,
-      "name": "Agile Organisation",
       "shape": "rect"
     },
     {
@@ -376,26 +286,6 @@
     {
       "source": 2279,
       "target": 2033
-    },
-    {
-      "source": 2280,
-      "target": 2278
-    },
-    {
-      "source": 2280,
-      "target": 2279
-    },
-    {
-      "source": 2300,
-      "target": 2033
-    },
-    {
-      "source": 2300,
-      "target": 2034
-    },
-    {
-      "source": 2300,
-      "target": 2035
     },
     {
       "source": 2308,
