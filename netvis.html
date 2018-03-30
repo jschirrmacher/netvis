@@ -8,25 +8,10 @@
 <body>
     <svg id="root"></svg>
     <script src="//d3js.org/d3.v4.min.js"></script>
-    <script src="dist/netvis.js"></script>
+    <script src="dist/Network.js"></script>
+    <script src="dist/ForceDiagram.js"></script>
     <script>
-      d3.json('/NetVis/data.json', function (error, data) {
-        if (error) throw error
-        const net = new netvis(document.querySelector('#root'))
-        const getNode = id => data.nodes.find(n => n.id === id)
-        data.links = data.links.map(d => ({source: getNode(d.source), target: getNode(d.target)}))
-
-        setTimeout(() => {
-          const links = data.links.filter(d => {
-            if (d.source.open || d.target.open) {
-              d.source.visible = d.target.visible = true
-            }
-            return d.source.visible && d.target.visible
-          })
-          const nodes = data.nodes.filter(d => d.visible)
-          net.add(nodes, links)
-        }, 10)
-      })
+      new Network('/NetVis/data.json', '#root')
     </script>
 </body>
 </html>

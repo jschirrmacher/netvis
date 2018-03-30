@@ -1,10 +1,12 @@
-class netvis {
+class ForceDiagram {
   constructor(domSelector) {
-    this.network = {'nodes': [], 'links': []}
+    this.links = []
+    this.nodes = []
+    this.handlers = {}
     const svg = d3.select(domSelector)
     const center = [svg.node().scrollWidth / 2, svg.node().scrollHeight / 2]
     this.defs = svg.append('defs')
-    this.svgGroup = svg
+    const svgGroup = svg
       .append('svg:g')
       .attr('transform', 'translate(' + center + ')')
       .append('g')
@@ -17,16 +19,16 @@ class netvis {
       .force('collide', d3.forceCollide().radius(100).iterations(2))
 
     this.drag = d3.drag()
-      .on('start', d => this.handleDragStarted(d))
-      .on('drag', d => this.handleDragged(d))
-      .on('end', d => this.handleDragEnded(d))
+      .on('start', d => handleDragStarted(d, this.simulation))
+      .on('drag', d => handleDragged(d))
+      .on('end', d => handleDragEnded(d, this.simulation))
 
     svg
-      .call(d3.zoom().on('zoom', () => this.handleZoom()))
+      .call(d3.zoom().on('zoom', handleZoom))
       .call(this.drag)
 
-    this.linkContainer = this.svgGroup.append('g').attr('class', 'links')
-    this.nodeContainer = this.svgGroup.append('g').attr('class', 'nodes')
+    this.linkContainer = svgGroup.append('g').attr('class', 'links')
+    this.nodeContainer = svgGroup.append('g').attr('class', 'nodes')
 
     this.update()
 
@@ -34,46 +36,76 @@ class netvis {
       svg.attr('class', 'initialized')
       timer.stop()
     }, 50)
+
+    function handleZoom() {
+      svgGroup.attr('transform',
+        `translate(${d3.event.transform.x}, ${d3.event.transform.y})` + ' ' +
+        `scale(${d3.event.transform.k})`)
+    }
+
+    function handleDragStarted(d, simulation) {
+      if (!d3.event.active) {
+        simulation.alphaTarget(0.3).restart()
+      }
+      d.fx = d.x
+      d.fy = d.y
+    }
+
+    function handleDragged(d) {
+      d.fx = d3.event.x
+      d.fy = d3.event.y
+    }
+
+    function handleDragEnded(d, simulation) {
+      if (!d3.event.active) {
+        simulation.alphaTarget(0)
+      }
+      d.fx = undefined
+      d.fy = undefined
+    }
+  }
+
+  addHandler(type, handler) {
+    this.handlers[type] = handler
   }
 
   update() {
-    let graphLinksData = this.linkContainer.selectAll('line').data(this.network.links)
-    let graphLinksEnter = graphLinksData.enter().append('line')
-    graphLinksData.exit().remove()
-    graphLinksData = graphLinksEnter.merge(graphLinksData)
-    this.simulation.force('link').links(this.network.links)
+    let nodeData = this.linkContainer.selectAll('line').data(this.links, d => d.id)
+    let nodeEnter = nodeData.enter().append('line')
+    nodeData.exit().remove()
+    nodeData = nodeEnter.merge(nodeData)
+    this.simulation.force('link').links(this.links)
 
-    let graphNodesData = this.nodeContainer.selectAll('g').data(this.network.nodes, d => d.id)
+    let graphNodesData = this.nodeContainer.selectAll('g').data(this.nodes, d => d.id)
     let graphNodesEnter = graphNodesData
       .enter()
       .append('g')
-      .attr('id', d => d.id || null)
+      .attr('id', d => d.id)
       .attr('class', d => 'node' + (d.open ? ' open' : ''))
-      .on('click', d => this.toggleNode(d))
       .call(this.drag)
 
+    Object.keys(this.handlers).forEach(type => graphNodesEnter.on(type, this.handlers[type]))
     graphNodesData.exit().remove()
 
     graphNodesEnter
       .append('circle')
       .classed('node', true)
-      .attr('r', d => 50)
+      .attr('r', 50)
       .attr('fill', d => this.getBackground(d.id, d.logo))
 
     graphNodesEnter
       .append('text')
-      .attr('id', d => 'label_' + d.id)
       .text(d => d.name)
       .call(d => this.wrap(d, 90))
 
     graphNodesData = graphNodesEnter.merge(graphNodesData)
-    this.simulation.nodes(this.network.nodes).on('tick', handleTicks)
+    this.simulation.nodes(this.nodes).on('tick', handleTicks)
 
     this.simulation.restart()
     this.simulation.alpha(1)
 
     function handleTicks() {
-      graphLinksData
+      nodeData
         .attr('x1', d => d.source.x)
         .attr('y1', d => d.source.y)
         .attr('x2', d => d.target.x)
@@ -81,26 +113,6 @@ class netvis {
 
       graphNodesData.attr('transform', d => 'translate(' + [d.x, d.y] + ')')
     }
-  }
-
-  toggleNode(d) {
-    const otherNode = (l, d) => l.source.id === d.id ? l.target : l.source
-    d.open = !d.open
-    this.network.links.filter(l => l.source.id === d.id || l.target.id === d.id).forEach(l => {
-      if (!d.open) {
-        if (!l.source.open && !l.target.open) {
-          this.network.links.splice(this.network.links.indexOf(l), 1)
-          otherNode(l, d).visible = false
-        }
-      } else {
-        if (this.network.links.indexOf(l) !== false) {
-          this.network.links.push(l)
-          otherNode(l, d).visible = true
-        }
-      }
-    })
-
-    this.update()
   }
 
   getBackground(id, logo) {
@@ -141,58 +153,22 @@ class netvis {
     })
   }
 
-  handleDragStarted(d) {
-    if (!d3.event.active) {
-      this.simulation.alphaTarget(0.3).restart()
-    }
-    d.fx = d.x
-    d.fy = d.y
-  }
-
-  handleDragged(d) {
-    d.fx = d3.event.x
-    d.fy = d3.event.y
-  }
-
-  handleDragEnded(d) {
-    if (!d3.event.active) {
-      this.simulation.alphaTarget(0)
-    }
-    d.fx = undefined
-    d.fy = undefined
-  }
-
-  handleZoom() {
-    this.svgGroup
-      .attr('transform',
-        `translate(${d3.event.transform.x}, ${d3.event.transform.y})` + ' ' +
-        `scale(${d3.event.transform.k})`)
-  }
-
-  isNode(id) {
-    return n => n.id === id
-  }
-
   add(nodesToAdd, linksToAdd) {
     if (nodesToAdd) {
-      nodesToAdd.forEach(n => this.network.nodes.push(n))
+      nodesToAdd.forEach(n => this.nodes.push(n))
     }
     if (linksToAdd) {
-      linksToAdd.forEach(l => this.network.links.push(l))
+      linksToAdd.forEach(l => this.links.push(l))
     }
-
-    this.update()
   }
 
   remove(dToRemove) {
-    const nIndex = this.network.nodes.indexOf(dToRemove)
+    const nIndex = this.nodes.indexOf(dToRemove)
     if (nIndex > -1) {
-      this.network.nodes.splice(nIndex, 1)
+      this.nodes.splice(nIndex, 1)
     }
 
     const isidConnected = (link, id) => link.source.id === id || link.target.id === id
-    this.network.links.forEach((l, index) => isidConnected(l, dToRemove.id) && this.network.links.splice(index, 1))
-
-    this.update()
+    this.links.forEach((l, index) => isidConnected(l, dToRemove.id) && this.links.splice(index, 1))
   }
 }
