@@ -1,9 +1,13 @@
+function maxId(list) {
+  return list.reduce((id, entry) => Math.max(id, entry.id), 0) + 1
+}
+
 class Network {
   constructor(dataUrl, domSelector, handlers = {}) {
     this.handlers = handlers
     d3.json(dataUrl, (error, data) => {
       if (error) throw error
-      this.diagram = new ForceDiagram(document.querySelector(domSelector), data.auth)
+      this.diagram = new ForceDiagram(document.querySelector(domSelector))
       this.diagram.addHandler('click', this.toggle.bind(this))
       if (this.handlers.nameRequired) {
         this.diagram.addHandler('newConnection', this.newConnection.bind(this))
@@ -75,7 +79,8 @@ class Network {
           link = this.links.find(link => link.source.id === existing.id || link.target.id === existing.id)
         }
         if (!link) {
-          const newLink = {source: node, target: existing}
+          const id = maxId(this.links) + 1
+          const newLink = {id, source: node, target: existing}
           if (this.handlers.newLink) {
             this.handlers.newLink(newLink)
           }

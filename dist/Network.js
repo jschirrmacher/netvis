@@ -4,6 +4,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function maxId(list) {
+  return list.reduce(function (id, entry) {
+    return Math.max(id, entry.id);
+  }, 0) + 1;
+}
+
 var Network = function () {
   function Network(dataUrl, domSelector) {
     var _this = this;
@@ -15,7 +21,7 @@ var Network = function () {
     this.handlers = handlers;
     d3.json(dataUrl, function (error, data) {
       if (error) throw error;
-      _this.diagram = new ForceDiagram(document.querySelector(domSelector), data.auth);
+      _this.diagram = new ForceDiagram(document.querySelector(domSelector));
       _this.diagram.addHandler('click', _this.toggle.bind(_this));
       if (_this.handlers.nameRequired) {
         _this.diagram.addHandler('newConnection', _this.newConnection.bind(_this));
@@ -109,7 +115,8 @@ var Network = function () {
           });
         }
         if (!link) {
-          var newLink = { source: node, target: existing };
+          var id = maxId(_this3.links) + 1;
+          var newLink = { id: id, source: node, target: existing };
           if (_this3.handlers.newLink) {
             _this3.handlers.newLink(newLink);
           }
