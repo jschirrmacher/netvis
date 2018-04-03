@@ -3,10 +3,10 @@ class ForceDiagram {
     this.links = []
     this.nodes = []
     this.handlers = {}
-    const svg = d3.select(domSelector)
-    this.center = {x: svg.node().scrollWidth / 2, y: svg.node().scrollHeight / 2}
-    this.defs = svg.append('defs')
-    const svgGroup = svg
+    this.svg = d3.select(domSelector)
+    this.center = {x: this.svg.node().scrollWidth / 2, y: this.svg.node().scrollHeight / 2}
+    this.defs = this.svg.append('defs')
+    const svgGroup = this.svg
       .append('g')
       .attr('id', 'svgGroup')
 
@@ -15,14 +15,17 @@ class ForceDiagram {
       .force('link', d3.forceLink().distance(100).id(d => d.id))
       .force('charge', d3.forceManyBody().strength(-100).distanceMin(1000))
       .force('collide', d3.forceCollide().radius(100).iterations(2))
+      .force('center', d3.forceCenter(this.center.x, this.center.y))
 
     this.drag = d3.drag()
       .on('start', d => handleDragStarted(d, this.simulation))
       .on('drag', d => handleDragged(d))
       .on('end', d => handleDragEnded(d, this.simulation))
 
-    svg
-      .call(d3.zoom().on('zoom', handleZoom))
+    this.zoom = d3.zoom().on('zoom', handleZoom)
+
+    this.svg
+      .call(this.zoom)
       .call(this.drag)
 
     this.linkContainer = svgGroup.append('g').attr('class', 'links')
@@ -73,7 +76,7 @@ class ForceDiagram {
     let nodeEnter = nodeData
       .enter()
       .append('g')
-      .attr('id', d => d.id)
+      .attr('id', d => 'node-' + d.id)
       .attr('class', d => 'node' + (d.open ? ' open' : ''))
       .call(this.drag)
 
@@ -96,8 +99,8 @@ class ForceDiagram {
     nodeData = nodeEnter.merge(nodeData)
     this.simulation.nodes(this.nodes).on('tick', () => handleTicks.bind(this)(this.center))
 
+    this.simulation.alpha(0.3)
     this.simulation.restart()
-    this.simulation.alpha(1)
 
     function bindHandlers(node) {
       Object.keys(this.handlers).forEach(type => node.on(type, this.handlers[type]))
@@ -133,12 +136,12 @@ class ForceDiagram {
 
     function handleTicks(center) {
       linkData
-        .attr('x1', d => d.source.x + center.x)
-        .attr('y1', d => d.source.y + center.y)
-        .attr('x2', d => d.target.x + center.x)
-        .attr('y2', d => d.target.y + center.y)
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y)
 
-      nodeData.attr('transform', d => 'translate(' + [d.x + center.x, d.y + center.y] + ')')
+      nodeData.attr('transform', d => 'translate(' + [d.x, d.y] + ')')
     }
 
     function getBackground(node) {
@@ -197,5 +200,26 @@ class ForceDiagram {
 
     const isidConnected = (link, id) => link.source.id === id || link.target.id === id
     this.links.forEach((l, index) => isidConnected(l, dToRemove.id) && this.links.splice(index, 1))
+  }
+
+  fixNode(node) {
+    node.fx = node.x
+    node.fy = node.y
+  }
+
+  releaseNode(node) {
+    node.fx = undefined
+    node.fy = undefined
+  }
+
+  scaleToNode(node, scale) {
+    this.fixNode(node)
+    this.svg.transition().duration(1000)
+      .call(this.zoom.transform, d3.zoomIdentity
+        .translate(this.center.x, this.center.y)
+        .scale(scale)
+        .translate(-node.x, -node.y)
+      )
+      .on('end', () => this.releaseNode(node))
   }
 }

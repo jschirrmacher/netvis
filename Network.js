@@ -41,22 +41,25 @@ class Network {
   }
 
   toggle(node) {
-    const otherNode = link => link.source.id === node.id ? link.target : link.source
     node.open = !node.open
     this.links
       .filter(link => link.source.id === node.id || link.target.id === node.id)
       .forEach(link => {
+        const otherNode = link.source.id === node.id ? link.target : link.source
         if (node.open && this.links.indexOf(link) !== false) {
-          otherNode(link).visible = true
-          this.diagram.add([otherNode(link)], [link])
+          otherNode.visible = true
+          otherNode.x = node.x
+          otherNode.y = node.y
+          this.diagram.add([otherNode], [link])
         } else if (!node.open && !link.source.open && !link.target.open) {
-          otherNode(link).visible = otherNode(link).keepVisible
-          if (!otherNode(link).visible) {
-            this.diagram.remove(otherNode(link))
+          otherNode.visible = otherNode.keepVisible
+          if (!otherNode.visible) {
+            this.diagram.remove(otherNode)
           }
         }
       })
 
+    this.diagram.scaleToNode(node, 1)
     this.diagram.update()
   }
 

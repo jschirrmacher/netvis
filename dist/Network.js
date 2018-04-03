@@ -67,24 +67,25 @@ var Network = function () {
     value: function toggle(node) {
       var _this2 = this;
 
-      var otherNode = function otherNode(link) {
-        return link.source.id === node.id ? link.target : link.source;
-      };
       node.open = !node.open;
       this.links.filter(function (link) {
         return link.source.id === node.id || link.target.id === node.id;
       }).forEach(function (link) {
+        var otherNode = link.source.id === node.id ? link.target : link.source;
         if (node.open && _this2.links.indexOf(link) !== false) {
-          otherNode(link).visible = true;
-          _this2.diagram.add([otherNode(link)], [link]);
+          otherNode.visible = true;
+          otherNode.x = node.x;
+          otherNode.y = node.y;
+          _this2.diagram.add([otherNode], [link]);
         } else if (!node.open && !link.source.open && !link.target.open) {
-          otherNode(link).visible = otherNode(link).keepVisible;
-          if (!otherNode(link).visible) {
-            _this2.diagram.remove(otherNode(link));
+          otherNode.visible = otherNode.keepVisible;
+          if (!otherNode.visible) {
+            _this2.diagram.remove(otherNode);
           }
         }
       });
 
+      this.diagram.scaleToNode(node, 1);
       this.diagram.update();
     }
   }, {

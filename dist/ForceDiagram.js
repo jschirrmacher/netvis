@@ -13,14 +13,14 @@ var ForceDiagram = function () {
     this.links = [];
     this.nodes = [];
     this.handlers = {};
-    var svg = d3.select(domSelector);
-    this.center = { x: svg.node().scrollWidth / 2, y: svg.node().scrollHeight / 2 };
-    this.defs = svg.append('defs');
-    var svgGroup = svg.append('g').attr('id', 'svgGroup');
+    this.svg = d3.select(domSelector);
+    this.center = { x: this.svg.node().scrollWidth / 2, y: this.svg.node().scrollHeight / 2 };
+    this.defs = this.svg.append('defs');
+    var svgGroup = this.svg.append('g').attr('id', 'svgGroup');
 
     this.simulation = d3.forceSimulation().velocityDecay(0.55).force('link', d3.forceLink().distance(100).id(function (d) {
       return d.id;
-    })).force('charge', d3.forceManyBody().strength(-100).distanceMin(1000)).force('collide', d3.forceCollide().radius(100).iterations(2));
+    })).force('charge', d3.forceManyBody().strength(-100).distanceMin(1000)).force('collide', d3.forceCollide().radius(100).iterations(2)).force('center', d3.forceCenter(this.center.x, this.center.y));
 
     this.drag = d3.drag().on('start', function (d) {
       return handleDragStarted(d, _this.simulation);
@@ -30,7 +30,9 @@ var ForceDiagram = function () {
       return handleDragEnded(d, _this.simulation);
     });
 
-    svg.call(d3.zoom().on('zoom', handleZoom)).call(this.drag);
+    this.zoom = d3.zoom().on('zoom', handleZoom);
+
+    this.svg.call(this.zoom).call(this.drag);
 
     this.linkContainer = svgGroup.append('g').attr('class', 'links');
     this.nodeContainer = svgGroup.append('g').attr('class', 'nodes');
@@ -85,7 +87,7 @@ var ForceDiagram = function () {
         return d.id;
       });
       var nodeEnter = nodeData.enter().append('g').attr('id', function (d) {
-        return d.id;
+        return 'node-' + d.id;
       }).attr('class', function (d) {
         return 'node' + (d.open ? ' open' : '');
       }).call(this.drag);
@@ -118,8 +120,8 @@ var ForceDiagram = function () {
         return handleTicks.bind(_this2)(_this2.center);
       });
 
+      this.simulation.alpha(0.3);
       this.simulation.restart();
-      this.simulation.alpha(1);
 
       function bindHandlers(node) {
         var _this3 = this;
@@ -150,17 +152,17 @@ var ForceDiagram = function () {
 
       function handleTicks(center) {
         linkData.attr('x1', function (d) {
-          return d.source.x + center.x;
+          return d.source.x;
         }).attr('y1', function (d) {
-          return d.source.y + center.y;
+          return d.source.y;
         }).attr('x2', function (d) {
-          return d.target.x + center.x;
+          return d.target.x;
         }).attr('y2', function (d) {
-          return d.target.y + center.y;
+          return d.target.y;
         });
 
         nodeData.attr('transform', function (d) {
-          return 'translate(' + [d.x + center.x, d.y + center.y] + ')';
+          return 'translate(' + [d.x, d.y] + ')';
         });
       }
 
@@ -229,6 +231,28 @@ var ForceDiagram = function () {
       };
       this.links.forEach(function (l, index) {
         return isidConnected(l, dToRemove.id) && _this5.links.splice(index, 1);
+      });
+    }
+  }, {
+    key: 'fixNode',
+    value: function fixNode(node) {
+      node.fx = node.x;
+      node.fy = node.y;
+    }
+  }, {
+    key: 'releaseNode',
+    value: function releaseNode(node) {
+      node.fx = undefined;
+      node.fy = undefined;
+    }
+  }, {
+    key: 'scaleToNode',
+    value: function scaleToNode(node, scale) {
+      var _this6 = this;
+
+      this.fixNode(node);
+      this.svg.transition().duration(1000).call(this.zoom.transform, d3.zoomIdentity.translate(this.center.x, this.center.y).scale(scale).translate(-node.x, -node.y)).on('end', function () {
+        return _this6.releaseNode(node);
       });
     }
   }]);
