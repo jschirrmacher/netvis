@@ -72,16 +72,18 @@ var Network = function () {
         return link.source.id === node.id || link.target.id === node.id;
       }).forEach(function (link) {
         var otherNode = link.source.id === node.id ? link.target : link.source;
-        if (node.open && _this2.links.indexOf(link) !== false) {
+        if (node.open) {
           otherNode.visible = true;
           otherNode.x = node.x;
           otherNode.y = node.y;
           _this2.diagram.add([otherNode], [link]);
-        } else if (!node.open && !link.source.open && !link.target.open) {
+        } else if (_this2.diagram.getLinkedNodes(otherNode).length === 1) {
           otherNode.visible = otherNode.keepVisible;
           if (!otherNode.visible) {
-            _this2.diagram.remove(otherNode);
+            _this2.diagram.remove([otherNode], []);
           }
+        } else {
+          _this2.diagram.remove([], [link]);
         }
       });
 

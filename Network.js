@@ -46,16 +46,18 @@ class Network {
       .filter(link => link.source.id === node.id || link.target.id === node.id)
       .forEach(link => {
         const otherNode = link.source.id === node.id ? link.target : link.source
-        if (node.open && this.links.indexOf(link) !== false) {
+        if (node.open) {
           otherNode.visible = true
           otherNode.x = node.x
           otherNode.y = node.y
           this.diagram.add([otherNode], [link])
-        } else if (!node.open && !link.source.open && !link.target.open) {
+        } else if (this.diagram.getLinkedNodes(otherNode).length === 1) {
           otherNode.visible = otherNode.keepVisible
           if (!otherNode.visible) {
-            this.diagram.remove(otherNode)
+            this.diagram.remove([otherNode], [])
           }
+        } else {
+          this.diagram.remove([], [link])
         }
       })
 

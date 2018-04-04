@@ -183,43 +183,56 @@ class ForceDiagram {
     }
   }
 
+  getLinkedNodes(node) {
+    return this.links.filter(l => l.source.id === node.id).map(l => l.target)
+      .concat(this.links.filter(l => l.target.id === node.id).map(l => l.source))
+  }
+
+  nodesConnected(node1, node2) {
+    return this.getLinkedNodes(node1).some(n => n.id === node2.id)
+  }
+
+  static isConnected(link, node) {
+    return link.source.id === node.id || link.target.id === node.id
+  }
+
   add(nodesToAdd, linksToAdd) {
     if (nodesToAdd) {
-      nodesToAdd.forEach(n => this.nodes.push(n))
+      nodesToAdd.forEach(n => !this.nodes.some(d => d.id === n.id) && this.nodes.push(n))
     }
     if (linksToAdd) {
-      linksToAdd.forEach(l => this.links.push(l))
+      linksToAdd.forEach(l => !this.nodesConnected(l.source, l.target) && this.links.push(l))
     }
   }
 
-  remove(dToRemove) {
-    const nIndex = this.nodes.indexOf(dToRemove)
-    if (nIndex > -1) {
-      this.nodes.splice(nIndex, 1)
-    }
-
-    const isidConnected = (link, id) => link.source.id === id || link.target.id === id
-    this.links.forEach((l, index) => isidConnected(l, dToRemove.id) && this.links.splice(index, 1))
+  remove(nodesToRemove, linksToRemove) {
+    nodesToRemove.forEach(n => {
+      if (n.index > -1) {
+        this.nodes.splice(n.index, 1)
+      }
+      this.links.forEach((l, index) => ForceDiagram.isConnected(l, n) && this.links.splice(index, 1))
+    })
+    linksToRemove.forEach(l => l.index > -1 && this.links.splice(l.index, 1))
   }
 
-  fixNode(node) {
+  static fixNode(node) {
     node.fx = node.x
     node.fy = node.y
   }
 
-  releaseNode(node) {
+  static releaseNode(node) {
     node.fx = undefined
     node.fy = undefined
   }
 
   scaleToNode(node, scale) {
-    this.fixNode(node)
+    ForceDiagram.fixNode(node)
     this.svg.transition().duration(1000)
       .call(this.zoom.transform, d3.zoomIdentity
         .translate(this.center.x, this.center.y)
         .scale(scale)
         .translate(-node.x, -node.y)
       )
-      .on('end', () => this.releaseNode(node))
+      .on('end', () => ForceDiagram.releaseNode(node))
   }
 }

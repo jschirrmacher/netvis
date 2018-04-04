@@ -201,37 +201,72 @@ var ForceDiagram = function () {
       }
     }
   }, {
+    key: 'getLinkedNodes',
+    value: function getLinkedNodes(node) {
+      return this.links.filter(function (l) {
+        return l.source.id === node.id;
+      }).map(function (l) {
+        return l.target;
+      }).concat(this.links.filter(function (l) {
+        return l.target.id === node.id;
+      }).map(function (l) {
+        return l.source;
+      }));
+    }
+  }, {
+    key: 'nodesConnected',
+    value: function nodesConnected(node1, node2) {
+      return this.getLinkedNodes(node1).some(function (n) {
+        return n.id === node2.id;
+      });
+    }
+  }, {
     key: 'add',
     value: function add(nodesToAdd, linksToAdd) {
       var _this4 = this;
 
       if (nodesToAdd) {
         nodesToAdd.forEach(function (n) {
-          return _this4.nodes.push(n);
+          return !_this4.nodes.some(function (d) {
+            return d.id === n.id;
+          }) && _this4.nodes.push(n);
         });
       }
       if (linksToAdd) {
         linksToAdd.forEach(function (l) {
-          return _this4.links.push(l);
+          return !_this4.nodesConnected(l.source, l.target) && _this4.links.push(l);
         });
       }
     }
   }, {
     key: 'remove',
-    value: function remove(dToRemove) {
+    value: function remove(nodesToRemove, linksToRemove) {
       var _this5 = this;
 
-      var nIndex = this.nodes.indexOf(dToRemove);
-      if (nIndex > -1) {
-        this.nodes.splice(nIndex, 1);
-      }
-
-      var isidConnected = function isidConnected(link, id) {
-        return link.source.id === id || link.target.id === id;
-      };
-      this.links.forEach(function (l, index) {
-        return isidConnected(l, dToRemove.id) && _this5.links.splice(index, 1);
+      nodesToRemove.forEach(function (n) {
+        if (n.index > -1) {
+          _this5.nodes.splice(n.index, 1);
+        }
+        _this5.links.forEach(function (l, index) {
+          return ForceDiagram.isConnected(l, n) && _this5.links.splice(index, 1);
+        });
       });
+      linksToRemove.forEach(function (l) {
+        return l.index > -1 && _this5.links.splice(l.index, 1);
+      });
+    }
+  }, {
+    key: 'scaleToNode',
+    value: function scaleToNode(node, scale) {
+      ForceDiagram.fixNode(node);
+      this.svg.transition().duration(1000).call(this.zoom.transform, d3.zoomIdentity.translate(this.center.x, this.center.y).scale(scale).translate(-node.x, -node.y)).on('end', function () {
+        return ForceDiagram.releaseNode(node);
+      });
+    }
+  }], [{
+    key: 'isConnected',
+    value: function isConnected(link, node) {
+      return link.source.id === node.id || link.target.id === node.id;
     }
   }, {
     key: 'fixNode',
@@ -244,16 +279,6 @@ var ForceDiagram = function () {
     value: function releaseNode(node) {
       node.fx = undefined;
       node.fy = undefined;
-    }
-  }, {
-    key: 'scaleToNode',
-    value: function scaleToNode(node, scale) {
-      var _this6 = this;
-
-      this.fixNode(node);
-      this.svg.transition().duration(1000).call(this.zoom.transform, d3.zoomIdentity.translate(this.center.x, this.center.y).scale(scale).translate(-node.x, -node.y)).on('end', function () {
-        return _this6.releaseNode(node);
-      });
     }
   }]);
 
