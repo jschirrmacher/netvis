@@ -6,7 +6,16 @@
     <link rel="stylesheet" type="text/css" href="netvis.css" />
 </head>
 <body>
-    <svg id="root"></svg>
+    <svg id="root">
+        <g class="commandOverlay">
+            <rect x="0" y="0" width="100%" height="100%" fill="rgba(0, 0, 0, 0.2)"></rect>
+            <foreignObject class="commands">
+                <button id="openNode" data-click="openNode" data-visible="!node.open">Verbindungen einblenden</button>
+                <button id="closeNode" data-click="closeNode" data-visible="node.open">Verbindungen ausblenden</button>
+                <button id="newConnection" data-click="newConnection" data-visible="node.connectable">Neue Verbindung anlegen</button>
+            </foreignObject>
+        </g>
+    </svg>
     <script src="//d3js.org/d3.v4.min.js"></script>
     <script src="../dist/Network.js"></script>
     <script src="../dist/ForceDiagram.js"></script>

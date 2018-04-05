@@ -22,10 +22,21 @@ var Network = function () {
     d3.json(dataUrl, function (error, data) {
       if (error) throw error;
       _this.diagram = new ForceDiagram(document.querySelector(domSelector));
-      _this.diagram.addHandler('click', _this.toggle.bind(_this));
-      if (_this.handlers.nameRequired) {
-        _this.diagram.addHandler('newConnection', _this.newConnection.bind(_this));
+      _this.commandsOverlay = document.querySelector(domSelector + ' .commandOverlay');
+      if (_this.commandsOverlay) {
+        _this.commands = _this.commandsOverlay.querySelector('.commands');
+        Array.from(_this.commands.children).forEach(function (command) {
+          command.onClick = function () {
+            return _this[command.dataset.click](_this.activeNode);
+          };
+          command.visibleIf = function (node) {
+            return command.dataset.visible ? eval(command.dataset.visible) : true;
+          };
+        });
+        _this.diagram.addHandler('click', _this.showCommandsView.bind(_this));
+        _this.diagram.addHandler('zoom', _this.applyTransform.bind(_this));
       }
+
       var getNode = function getNode(id) {
         var result = data.nodes.find(function (node) {
           return node.id === id;
@@ -63,21 +74,59 @@ var Network = function () {
   }
 
   _createClass(Network, [{
+    key: 'showCommandsView',
+    value: function showCommandsView(node) {
+      var px = function px(n) {
+        return n ? n + 'px' : n;
+      };
+      ForceDiagram.fixNode(node);
+      this.activeNode = node;
+      Array.from(this.commands.children).forEach(function (cmd) {
+        return cmd.classList.toggle('active', !!cmd.visibleIf(node));
+      });
+      var overlay = this.commandsOverlay;
+      overlay.parentNode.appendChild(overlay); // move to end of svg elements to have the menu on top
+      overlay.classList.add('active');
+      var view = this.commands;
+      view.setAttribute('x', px(node.x));
+      view.setAttribute('y', px(node.y));
+      view.classList.add('active');
+      overlay.addEventListener('click', clickHandler);
+
+      function clickHandler(event) {
+        overlay.removeEventListener('click', clickHandler);
+        ForceDiagram.releaseNode(node);
+        view.classList.remove('active');
+        overlay.classList.remove('active');
+        // move to start of svg elements to make nodes accessible
+        overlay.parentNode.insertBefore(overlay, overlay.parentNode.children[0]);
+      }
+    }
+  }, {
+    key: 'applyTransform',
+    value: function applyTransform(transform) {
+      this.commandsOverlay.querySelector('.commands').setAttribute('transform', transform);
+    }
+  }, {
     key: 'toggle',
     value: function toggle(node) {
+      if (node.open) {
+        this.closeNode(node);
+      } else {
+        this.openNode(node);
+      }
+    }
+  }, {
+    key: 'closeNode',
+    value: function closeNode(node) {
       var _this2 = this;
 
-      node.open = !node.open;
+      node.open = false;
       this.links.filter(function (link) {
         return link.source.id === node.id || link.target.id === node.id;
       }).forEach(function (link) {
         var otherNode = link.source.id === node.id ? link.target : link.source;
-        if (node.open) {
-          otherNode.visible = true;
-          otherNode.x = node.x;
-          otherNode.y = node.y;
-          _this2.diagram.add([otherNode], [link]);
-        } else if (_this2.diagram.getLinkedNodes(otherNode).length === 1) {
+        if (_this2.diagram.getLinkedNodes(otherNode).length === 1) {
           otherNode.visible = otherNode.keepVisible;
           if (!otherNode.visible) {
             _this2.diagram.remove([otherNode], []);
@@ -91,42 +140,65 @@ var Network = function () {
       this.diagram.update();
     }
   }, {
-    key: 'newConnection',
-    value: function newConnection(node) {
+    key: 'openNode',
+    value: function openNode(node) {
       var _this3 = this;
 
+      node.open = true;
+      this.links.filter(function (link) {
+        return link.source.id === node.id || link.target.id === node.id;
+      }).forEach(function (link) {
+        var otherNode = link.source.id === node.id ? link.target : link.source;
+        otherNode.visible = true;
+        otherNode.x = node.x;
+        otherNode.y = node.y;
+        _this3.diagram.add([otherNode], [link]);
+      });
+
+      this.diagram.scaleToNode(node, 1);
+      this.diagram.update();
+    }
+  }, {
+    key: 'newConnection',
+    value: function newConnection(node) {
+      var _this4 = this;
+
       this.handlers.nameRequired().then(function (name) {
+        return name ? name : Promise.reject('no name given');
+      }).then(function (name) {
         var link = void 0;
-        var existing = _this3.nodes.find(function (node) {
+        var existing = _this4.nodes.find(function (node) {
           return node.name === name;
         });
         if (!existing) {
-          if (_this3.handlers.newNode) {
-            existing = _this3.handlers.newNode(name);
+          if (_this4.handlers.newNode) {
+            existing = _this4.handlers.newNode(name);
           } else {
             existing = { name: name };
           }
           if (!existing.id) {
-            existing.id = _this3.nodes.reduce(function (id, node) {
+            existing.id = _this4.nodes.reduce(function (id, node) {
               return Math.max(id, node.id);
             }, 0) + 1;
           }
-          _this3.diagram.add([existing], []);
+          _this4.diagram.add([existing], []);
         } else {
-          link = _this3.links.find(function (link) {
+          link = _this4.links.find(function (link) {
             return link.source.id === existing.id || link.target.id === existing.id;
           });
         }
         if (!link) {
-          var id = maxId(_this3.links) + 1;
+          var id = maxId(_this4.links) + 1;
           var newLink = { id: id, source: node, target: existing };
-          if (_this3.handlers.newLink) {
-            _this3.handlers.newLink(newLink);
+          if (_this4.handlers.newLink) {
+            _this4.handlers.newLink(newLink);
           }
-          _this3.diagram.add([], [newLink]);
+          _this4.diagram.add([], [newLink]);
         }
 
-        _this3.diagram.update();
+        _this4.diagram.update();
+      }).catch(function (error) {
+        return console.error;
       });
     }
   }]);

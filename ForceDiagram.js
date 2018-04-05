@@ -22,7 +22,7 @@ class ForceDiagram {
       .on('drag', d => handleDragged(d))
       .on('end', d => handleDragEnded(d, this.simulation))
 
-    this.zoom = d3.zoom().on('zoom', handleZoom)
+    this.zoom = d3.zoom().on('zoom', handleZoom.bind(this))
 
     this.svg
       .call(this.zoom)
@@ -34,9 +34,11 @@ class ForceDiagram {
     this.update()
 
     function handleZoom() {
-      svgGroup.attr('transform',
-        `translate(${d3.event.transform.x}, ${d3.event.transform.y})` + ' ' +
-        `scale(${d3.event.transform.k})`)
+      const transform = `translate(${d3.event.transform.x}, ${d3.event.transform.y}) scale(${d3.event.transform.k})`
+      svgGroup.attr('transform', transform)
+      if (this.handlers.zoom) {
+        this.handlers.zoom(transform)
+      }
     }
 
     function handleDragStarted(d, simulation) {
@@ -90,12 +92,6 @@ class ForceDiagram {
       .text(d => d.name)
       .call(d => wrap(d, 90))
 
-    if (this.handlers.newConnection) {
-      nodeEnter
-        .filter(d => d.connectable)
-        .call(d => addButton(d, 'newConnection', '↗', 'New Connection', this.handlers.newConnection.bind(this)))
-    }
-
     nodeData = nodeEnter.merge(nodeData)
     this.simulation.nodes(this.nodes).on('tick', () => handleTicks.bind(this)(this.center))
 
@@ -125,13 +121,6 @@ class ForceDiagram {
         .attr('height', 70)
         .attr('fill', getBackground.bind(this))
         .call(bindHandlers.bind(this))
-    }
-
-    function addButton(enter, className, text, altText, action) {
-      const group = enter.append('g').classed(className, true)
-      group.append('circle').attr('r', 12.5).on('click', action)
-      group.append('text').text(text)
-      group.append('text').classed('alt-text', true).text(altText)
     }
 
     function handleTicks(center) {

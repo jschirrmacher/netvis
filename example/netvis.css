@@ -29,27 +29,24 @@ svg .node {
       stroke-width: 0;
       text-anchor: middle;
       text-shadow: 0 0 5px white; }
-  svg .node .newConnection {
-    opacity: 0;
-    transition: 0.5s 0.5s; }
-    svg .node .newConnection circle {
-      fill: none; }
-    svg .node .newConnection text {
-      transform: translate(-8px, 6px); }
-    svg .node .newConnection .alt-text {
-      font: 10px Helvetica, Arial, sans-serif;
-      transform: translate(15px, 3px);
-      stroke-width: 0; }
   svg .node:hover .title {
     transition: 0.5s;
     transform: translateY(5em) scale(1.5); }
-  svg .node:hover .newConnection {
+
+.commandOverlay,
+.commands {
+  opacity: 0;
+  transition: opacity 0.5s; }
+  .commandOverlay button,
+  .commands button {
+    display: none; }
+  .commandOverlay.active,
+  .commands.active {
     opacity: 1;
-    transition: 0.5s;
-    transform: translate(45px, -45px); }
-    svg .node:hover .newConnection:hover circle {
-      fill: #dddddd; }
-    svg .node:hover .newConnection:active circle {
-      fill: #cccccc; }
+    background: rgba(0, 0, 0, 0.2); }
+    .commandOverlay.active button.active,
+    .commands.active button.active {
+      display: block;
+      white-space: nowrap; }
 
 /*# sourceMappingURL=netvis.css.map */

@@ -43,42 +43,31 @@ svg {
       }
     }
 
-    .newConnection {
-      opacity: 0;
-      transition: 0.5s 0.5s;
-
-      circle {
-        fill: none;
-      }
-
-      text {
-        transform: translate(-8px, 6px);
-      }
-
-      .alt-text {
-        font: 10px Helvetica, Arial, sans-serif;
-        transform: translate(15px,3px);
-        stroke-width: 0;      }
-    }
-
     &:hover {
       .title {
         transition: 0.5s;
         transform: translateY(5em) scale(1.5);
       }
+    }
+  }
+}
 
-      .newConnection {
-        opacity: 1;
-        transition: 0.5s;
-        transform: translate(45px, -45px);
+.commandOverlay,
+.commands {
+  opacity: 0;
+  transition: opacity 0.5s;
 
-        &:hover circle {
-          fill: #dddddd;
-        }
-        &:active circle {
-          fill: #cccccc;
-        }
-      }
+  button {
+    display: none;
+  }
+
+  &.active {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.2);
+
+    button.active {
+      display: block;
+      white-space: nowrap;
     }
   }
 }

@@ -11,7 +11,8 @@ static (from a simple file) or could be created dynamically by a server program.
 Features:
 
 - Can show different types of nodes: circle or rectangle
-- can show large networks by letting the user click on the nodes to hide or show the connections of the node
+- Can show large networks by letting the user click on the nodes to hide or show the connections of the node
+- Can create new connections and nodes
 - Draggable and zoomable canvas, draggable nodes
 - Written completely in ES6
 
@@ -79,10 +80,10 @@ There are some optional attributes in a node:
 - `open` identifies nodes which should be initially visible together with
   the nodes linked to it, regardless of their initial visibility.
 - `keepVisible` - this attribute, when set `true`, keeps the node visible
-  even if the user clicks on it. By making important nodes (the root
+  and it can't be closed by the user. By making important nodes (the root
   of the network for example) always visible, the user cannot by
   inadvertenty close all nodes in the network.
-- `connectable` - when set `true`, an icon is shown when the user hovers over
+- `connectable` - when set `true`, a button is shown when the user clicks
   a node, allowing to create a new node connected to the current one. See the
   chapter "Handlers" to learn what you should do to make that persistent.
 
@@ -110,6 +111,48 @@ system, when newNode or newLink events arrive.
 
 If the handlers aren't defined, simply nothing happens.
 
+## Command buttons
+
+Beginning with version 1.1 the buttons to show or hide the node's connections
+and to create a new connection, are shown when the user clicks a node. Which
+of these buttons are visible or how they are displayed is controlled by you.
+
+To make these buttons available at all, you need to add them to the svg you
+provide in a container with the class name 'commandOverlay'. This container
+should contain another container which encapsulates the buttons. It should
+have the class name 'commands'.
+
+This allows to have another element in 'commandsOverlay' which overlays all
+nodes and connections. A typical use case is to have a semi-transparent
+rectangle to fade out the nodes and connections to have the commands in focus.
+
+Example:
+
+    <g class="commandOverlay">
+        <rect x="0" y="0" width="100%" height="100%" fill="rgba(0, 0, 0, 0.2)"></rect>
+        <foreignObject class="commands">
+            <button id="openNode" data-click="openNode" data-visible="!node.open">Show connections</button>
+            <button id="closeNode" data-click="closeNode" data-visible="node.open">Hide connections</button>
+            <button id="newConnection" data-click="newConnection" data-visible="node.connectable">Create connection</button>
+        </foreignObject>
+    </g>
+
+Each command button should have a `data-click` attribute which contains a
+function name in class `Network` which is called when the user clicks this
+button.
+
+Available functions are currently:
+
+- openNode - shows the node's connections.
+- closeNode - hides the connections of the node, leaving these, which are
+  explicitly shown by other opened nodes.
+- newConnection - create a new connection after asking the user about the name
+  for the connected node.
+
+Another attribute, `data-visible` is an optional one, which identifies
+if the button should be displayed or not. Set this to `node.open` for example
+or `node.connectable` to access attributes of the current node.
+
 ## Contributing
 
 You are invited to fork this repository and contribute own enhancements,
@@ -122,6 +165,16 @@ I use https://babeljs.io/ for that, you get it automatically, if you run
 `npm install`. WebStorm, my favourite IDE, has a file watcher, which
 calls babel every time I make changes to one of the .js files, so it is
 very convenient and I recommend that very much.
+
+## Change log
+
+### V1.1
+- Moved command buttons out of the classes to make them more easily stylable,
+  thus requiring you to define them explicitly in your svg (see chapter
+  'Command buttons'.
+- Click on nodes doesn't open and close them any more, instead, a menu is
+  shown with buttons to show or hide the connections.
+- New functions `Network.openNode()` and `Network.closeNode`.
 
 ## History
 

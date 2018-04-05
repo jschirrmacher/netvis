@@ -8,10 +8,17 @@ class Network {
     d3.json(dataUrl, (error, data) => {
       if (error) throw error
       this.diagram = new ForceDiagram(document.querySelector(domSelector))
-      this.diagram.addHandler('click', this.toggle.bind(this))
-      if (this.handlers.nameRequired) {
-        this.diagram.addHandler('newConnection', this.newConnection.bind(this))
+      this.commandsOverlay = document.querySelector(domSelector + ' .commandOverlay')
+      if (this.commandsOverlay) {
+        this.commands = this.commandsOverlay.querySelector('.commands')
+        Array.from(this.commands.children).forEach(command => {
+          command.onClick = () => this[command.dataset.click](this.activeNode)
+          command.visibleIf = node => command.dataset.visible ? eval(command.dataset.visible) : true
+        })
+        this.diagram.addHandler('click', this.showCommandsView.bind(this))
+        this.diagram.addHandler('zoom', this.applyTransform.bind(this))
       }
+
       const getNode = id => {
         const result = data.nodes.find(node => node.id === id)
         if (!result) {
@@ -40,18 +47,49 @@ class Network {
     })
   }
 
+  showCommandsView(node) {
+    const px = n => n ? (n + 'px') : n
+    ForceDiagram.fixNode(node)
+    this.activeNode = node
+    Array.from(this.commands.children).forEach(cmd => cmd.classList.toggle('active', !!cmd.visibleIf(node)))
+    const overlay = this.commandsOverlay
+    overlay.parentNode.appendChild(overlay) // move to end of svg elements to have the menu on top
+    overlay.classList.add('active')
+    const view = this.commands
+    view.setAttribute('x', px(node.x))
+    view.setAttribute('y', px(node.y))
+    view.classList.add('active')
+    overlay.addEventListener('click', clickHandler)
+
+    function clickHandler(event) {
+      overlay.removeEventListener('click', clickHandler)
+      ForceDiagram.releaseNode(node)
+      view.classList.remove('active')
+      overlay.classList.remove('active')
+      // move to start of svg elements to make nodes accessible
+      overlay.parentNode.insertBefore(overlay, overlay.parentNode.children[0])
+    }
+  }
+
+  applyTransform(transform) {
+    this.commandsOverlay.querySelector('.commands').setAttribute('transform', transform)
+  }
+
   toggle(node) {
-    node.open = !node.open
+    if (node.open) {
+      this.closeNode(node)
+    } else {
+      this.openNode(node)
+    }
+  }
+
+  closeNode(node) {
+    node.open = false
     this.links
       .filter(link => link.source.id === node.id || link.target.id === node.id)
       .forEach(link => {
         const otherNode = link.source.id === node.id ? link.target : link.source
-        if (node.open) {
-          otherNode.visible = true
-          otherNode.x = node.x
-          otherNode.y = node.y
-          this.diagram.add([otherNode], [link])
-        } else if (this.diagram.getLinkedNodes(otherNode).length === 1) {
+        if (this.diagram.getLinkedNodes(otherNode).length === 1) {
           otherNode.visible = otherNode.keepVisible
           if (!otherNode.visible) {
             this.diagram.remove([otherNode], [])
@@ -65,8 +103,25 @@ class Network {
     this.diagram.update()
   }
 
+  openNode(node) {
+    node.open = true
+    this.links
+      .filter(link => link.source.id === node.id || link.target.id === node.id)
+      .forEach(link => {
+        const otherNode = link.source.id === node.id ? link.target : link.source
+        otherNode.visible = true
+        otherNode.x = node.x
+        otherNode.y = node.y
+        this.diagram.add([otherNode], [link])
+      })
+
+    this.diagram.scaleToNode(node, 1)
+    this.diagram.update()
+  }
+
   newConnection(node) {
     this.handlers.nameRequired()
+      .then(name => name ? name : Promise.reject('no name given'))
       .then(name => {
         let link
         let existing = this.nodes.find(node => node.name === name)
@@ -94,5 +149,6 @@ class Network {
 
         this.diagram.update()
       })
+      .catch(error => console.error)
   }
 }

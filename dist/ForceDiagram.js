@@ -30,7 +30,7 @@ var ForceDiagram = function () {
       return handleDragEnded(d, _this.simulation);
     });
 
-    this.zoom = d3.zoom().on('zoom', handleZoom);
+    this.zoom = d3.zoom().on('zoom', handleZoom.bind(this));
 
     this.svg.call(this.zoom).call(this.drag);
 
@@ -40,7 +40,11 @@ var ForceDiagram = function () {
     this.update();
 
     function handleZoom() {
-      svgGroup.attr('transform', 'translate(' + d3.event.transform.x + ', ' + d3.event.transform.y + ')' + ' ' + ('scale(' + d3.event.transform.k + ')'));
+      var transform = 'translate(' + d3.event.transform.x + ', ' + d3.event.transform.y + ') scale(' + d3.event.transform.k + ')';
+      svgGroup.attr('transform', transform);
+      if (this.handlers.zoom) {
+        this.handlers.zoom(transform);
+      }
     }
 
     function handleDragStarted(d, simulation) {
@@ -107,14 +111,6 @@ var ForceDiagram = function () {
         return wrap(d, 90);
       });
 
-      if (this.handlers.newConnection) {
-        nodeEnter.filter(function (d) {
-          return d.connectable;
-        }).call(function (d) {
-          return addButton(d, 'newConnection', '↗', 'New Connection', _this2.handlers.newConnection.bind(_this2));
-        });
-      }
-
       nodeData = nodeEnter.merge(nodeData);
       this.simulation.nodes(this.nodes).on('tick', function () {
         return handleTicks.bind(_this2)(_this2.center);
@@ -141,13 +137,6 @@ var ForceDiagram = function () {
         enter.append('rect').classed('node', true).classed('open', function (d) {
           return d.open;
         }).attr('x', -50).attr('y', -35).attr('width', 100).attr('height', 70).attr('fill', getBackground.bind(this)).call(bindHandlers.bind(this));
-      }
-
-      function addButton(enter, className, text, altText, action) {
-        var group = enter.append('g').classed(className, true);
-        group.append('circle').attr('r', 12.5).on('click', action);
-        group.append('text').text(text);
-        group.append('text').classed('alt-text', true).text(altText);
       }
 
       function handleTicks(center) {
