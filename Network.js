@@ -12,7 +12,7 @@ class Network {
       if (this.commandsOverlay) {
         this.commands = this.commandsOverlay.querySelector('.commands')
         Array.from(this.commands.children).forEach(command => {
-          command.onClick = () => this[command.dataset.click](this.activeNode)
+          command.addEventListener('click', () => this[command.dataset.click](this.activeNode))
           command.visibleIf = node => command.dataset.visible ? eval(command.dataset.visible) : true
         })
         this.diagram.addHandler('click', this.showCommandsView.bind(this))

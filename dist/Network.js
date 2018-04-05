@@ -26,9 +26,9 @@ var Network = function () {
       if (_this.commandsOverlay) {
         _this.commands = _this.commandsOverlay.querySelector('.commands');
         Array.from(_this.commands.children).forEach(function (command) {
-          command.onClick = function () {
+          command.addEventListener('click', function () {
             return _this[command.dataset.click](_this.activeNode);
-          };
+          });
           command.visibleIf = function (node) {
             return command.dataset.visible ? eval(command.dataset.visible) : true;
           };
