@@ -247,10 +247,25 @@ var ForceDiagram = function () {
   }, {
     key: 'scaleToNode',
     value: function scaleToNode(node, scale) {
-      ForceDiagram.fixNode(node);
-      this.svg.transition().duration(1000).call(this.zoom.transform, d3.zoomIdentity.translate(this.center.x, this.center.y).scale(scale).translate(-node.x, -node.y)).on('end', function () {
-        return ForceDiagram.releaseNode(node);
+      var _this6 = this;
+
+      return new Promise(function (resolve) {
+        ForceDiagram.fixNode(node);
+        _this6.svg.transition().duration(1000).call(_this6.zoom.transform, d3.zoomIdentity.translate(_this6.center.x, _this6.center.y).scale(scale).translate(-node.x, -node.y)).on('end', function () {
+          ForceDiagram.releaseNode(node);
+          resolve(true);
+        });
       });
+    }
+  }, {
+    key: 'hide',
+    value: function hide() {
+      this.svg.attr('style', 'opacity: 0; position: absolute; transition: opacity 0.5s');
+    }
+  }, {
+    key: 'show',
+    value: function show() {
+      this.svg.attr('style', 'opacity: 1; transition: opacity 0.5s');
     }
   }], [{
     key: 'isConnected',

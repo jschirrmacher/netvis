@@ -151,4 +151,20 @@ class Network {
       })
       .catch(error => console.error)
   }
+
+  showDetails(node) {
+    if (this.handlers.showDetails) {
+      this.diagram.scaleToNode(node, 1000)
+        .then(() => new Promise((resolve, reject) => d3.json(node.details, (error, data) => resolve([error, data]))))
+        .then(([error, data]) => error ? Promise.reject(error) : data)
+        .then(data => {
+          this.diagram.hide()
+          return this.handlers.showDetails(data)
+        })
+        .then(() => {
+          this.diagram.show()
+          this.diagram.scaleToNode(node, 1)
+        })
+    }
+  }
 }

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Network Visualizer</title>
     <link rel="stylesheet" type="text/css" href="netvis.css" />
 </head>
@@ -13,13 +14,43 @@
                 <button id="openNode" data-click="openNode" data-visible="!node.open">Verbindungen einblenden</button>
                 <button id="closeNode" data-click="closeNode" data-visible="node.open">Verbindungen ausblenden</button>
                 <button id="newConnection" data-click="newConnection" data-visible="node.connectable">Neue Verbindung anlegen</button>
+                <button id="showDetails" data-click="showDetails" data-visible="node.details">Details anzeigen</button>
             </foreignObject>
         </g>
     </svg>
+
+    <script id="detailForm" type="text/x-handlebars-template">
+        <h2>
+            <button class="close">×</button>
+            {{name}}
+        </h2>
+
+        <img src="{{image}}" class="profile-picture">
+
+        <p>{{description}}</p>
+
+        <a href="{{url}}" target="_blank">{{url}}</a>
+
+        <p class="tag-view">
+            <span class="tag">Lean Startup</span>
+            <span class="tag">Agile Development</span>
+            <span class="tag">XP-net</span>
+            <span class="tag">Scrum</span>
+            <span class="tag">Product Management</span>
+            <span class="tag">Kanban</span>
+        </p>
+    </script>
+
     <script src="//d3js.org/d3.v4.min.js"></script>
     <script src="../dist/Network.js"></script>
     <script src="../dist/ForceDiagram.js"></script>
+
+    <!-- Only needed for the example -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+
     <script>
+      const source = document.getElementById('detailForm').innerHTML
+      const detailFormTemplate = Handlebars.compile(source)
       new Network('data.json', '#root', {
         nameRequired: function() {
           return Promise.resolve(window.prompt('Name'))
@@ -30,8 +61,23 @@
         },
         newLink: function(link) {
           console.log('New link', link)
+        },
+        showDetails: function(data) {
+          return new Promise(resolve => {
+            const form = document.createElement('div')
+            form.setAttribute('class', 'detailForm')
+            form.setAttribute('id', 'detailForm-' + data.id)
+            form.innerHTML = detailFormTemplate(data)
+            form.getElementsByClassName('close')[0].addEventListener('click', event => {
+              event.preventDefault()
+              form.parentNode.removeChild(form)
+              resolve()
+            })
+            document.body.appendChild(form)
+          })
         }
       })
     </script>
+
 </body>
 </html>

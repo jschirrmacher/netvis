@@ -34,7 +34,8 @@
       "shape": "circle",
       "image": "https://xp-net.com\/network\/LCFRM3\/2037\/Joachim.jpg",
       "visible": true,
-      "connectable": true
+      "connectable": true,
+      "details": "node/2037.json"
     },
     {
       "id": 2038,

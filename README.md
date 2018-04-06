@@ -87,6 +87,7 @@ There are some optional attributes in a node:
 - `connectable` - when set `true`, a button is shown when the user clicks
   a node, allowing to create a new node connected to the current one. See the
   chapter "Handlers" to learn what you should do to make that persistent.
+- `details` - an URL which returns detail data for the node in JSON format.
 
 You find a more complete example in the file `example/data.json`.
 
@@ -106,6 +107,10 @@ These are the possible events:
   added to the network visualization.
 - `newLink` - a new link between two nodes was created. The handler
   gets the data structure `{source, target}` of the link as a parameter.
+- `showDetails` - the button to show details on a node has been clicked.
+  The handler function gets a parameter with the detail data of the node
+  and should return a promise which resolves, when the details dialog is
+  closed by the user and should be hidden.
 
 Normally, an application should store the new data in a database or a file
 system, when newNode or newLink events arrive.
@@ -135,6 +140,7 @@ Example:
             <button id="openNode" data-click="openNode" data-visible="!node.open">Show connections</button>
             <button id="closeNode" data-click="closeNode" data-visible="node.open">Hide connections</button>
             <button id="newConnection" data-click="newConnection" data-visible="node.connectable">Create connection</button>
+            <button id="showDetails" data-click="showDetails" data-visible="node.details">Show details</button>
         </foreignObject>
     </g>
 
@@ -149,6 +155,8 @@ Available functions are currently:
   explicitly shown by other opened nodes.
 - newConnection - create a new connection after asking the user about the name
   for the connected node.
+- showDetails - hides the SVG with the network representation and calls the
+  `showDetails` handler with the loaded detail data.
 
 Another attribute, `data-visible` is an optional one, which identifies
 if the button should be displayed or not. Set this to `node.open` for example
@@ -168,6 +176,11 @@ calls babel every time I make changes to one of the .js files, so it is
 very convenient and I recommend that very much.
 
 ## Change log
+
+### V1.2
+- Show details of a node, if it has an attribute `details`
+- New function `hide` and `show` in `ForceDiagram`
+- New function `showDetails` in `Network`
 
 ### V1.1
 - Moved command buttons out of the classes to make them more easily stylable,

@@ -2,7 +2,15 @@ html, body, #root {
   margin: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(#ffffff, #eeffff); }
+  background: radial-gradient(#ffffff, #eeffff);
+  font: 1rem -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  color: #222222; }
+
+button {
+  -webkit-appearance: button;
+  text-transform: none;
+  cursor: pointer;
+  font-size: 1.3rem; }
 
 svg {
   opacity: 0.001;
@@ -24,7 +32,7 @@ svg .node {
   svg .node > text {
     transition: 0.5s 0.5s; }
     svg .node > text tspan {
-      font: 14px Helvetica, Arial, sans-serif;
+      font-size: 14px;
       fill: #000;
       stroke-width: 0;
       text-anchor: middle;
@@ -48,5 +56,25 @@ svg .node {
     .commands.active button.active {
       display: block;
       white-space: nowrap; }
+
+.detailForm {
+  position: absolute;
+  padding: 15px;
+  line-height: 1.3em; }
+  .detailForm img.profile-picture {
+    float: left;
+    margin-right: 1em; }
+  .detailForm h2 button.close {
+    float: right;
+    border: none;
+    background: transparent; }
+  .detailForm .tag {
+    border: 1px solid #222222;
+    padding: 3px;
+    line-height: 2em;
+    border-radius: 4px;
+    background: deepskyblue;
+    font-size: 0.9rem;
+    white-space: nowrap; }
 
 /*# sourceMappingURL=netvis.css.map */

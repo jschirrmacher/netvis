@@ -1,0 +1,39 @@
+{
+  "id": 2037,
+  "name": "Joachim Schirrmacher",
+  "shape": "circle",
+  "image": "https://xp-net.com\/network\/LCFRM3\/2037\/Joachim.jpg",
+  "visible": true,
+  "connectable": true,
+  "details": "node/Joachim%20Schirrmacher",
+  "links": [
+    {
+      "id": 2033,
+      "name": "Lean Startup",
+      "type": "tag"
+    },
+    {
+      "id": 2035,
+      "name": "Agile Development",
+      "type": "tag"
+    },
+    {
+      "id": 2245,
+      "name": "Scrum",
+      "type": "tag"
+    },
+    {
+      "id": 2275,
+      "name": "Product Management",
+      "type": "tag"
+    },
+    {
+      "id": 2308,
+      "name": "Kanban",
+      "type": "tag"
+    }
+  ],
+  "description": "Software-Developer, Agile, REST, APIs, Lean Camp Organizer, XCamp Organizer, Lean Startup Circle",
+  "url": "https://www.linkedin.com/in/joachimschirrmacher/",
+  "twitterName": "jschirrmacher"
+}

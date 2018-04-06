@@ -1,6 +1,6 @@
 {
   "name": "js-netvis",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Visualize a network of interlinked nodes",
   "main": "netvis.js",
   "scripts": {
@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
+    "babel-preset-env": "^1.6.1",
+    "handlebars": "^4.0.11"
   }
 }

@@ -215,13 +215,26 @@ class ForceDiagram {
   }
 
   scaleToNode(node, scale) {
-    ForceDiagram.fixNode(node)
-    this.svg.transition().duration(1000)
-      .call(this.zoom.transform, d3.zoomIdentity
-        .translate(this.center.x, this.center.y)
-        .scale(scale)
-        .translate(-node.x, -node.y)
-      )
-      .on('end', () => ForceDiagram.releaseNode(node))
+    return new Promise(resolve => {
+      ForceDiagram.fixNode(node)
+      this.svg.transition().duration(1000)
+        .call(this.zoom.transform, d3.zoomIdentity
+          .translate(this.center.x, this.center.y)
+          .scale(scale)
+          .translate(-node.x, -node.y)
+        )
+        .on('end', () => {
+          ForceDiagram.releaseNode(node)
+          resolve(true)
+        })
+    })
+  }
+
+  hide() {
+    this.svg.attr('style', 'opacity: 0; position: absolute; transition: opacity 0.5s')
+  }
+
+  show() {
+    this.svg.attr('style', 'opacity: 1; transition: opacity 0.5s')
   }
 }
