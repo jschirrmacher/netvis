@@ -21,19 +21,25 @@ Features:
 
 To use the package, all you need to do is include some JavaScripts into your html
 
-    <script src="//d3js.org/d3.v4.min.js"></script>
-    <script src="https://jschirrmacher.github.io/netvis/dist/Network.js"></script>
-    <script src="https://jschirrmacher.github.io/netvis/dist/ForceDiagram.js"></script>
+```html
+<script src="//d3js.org/d3.v4.min.js"></script>
+<script src="https://jschirrmacher.github.io/netvis/dist/Network.js"></script>
+<script src="https://jschirrmacher.github.io/netvis/dist/ForceDiagram.js"></script>
+```
 
 and define a SVG image like that:
 
-    <svg id="root"></svg>
+```html
+<svg id="root"></svg>
+```
 
 All you need else is an initialization call:
 
-    <script>
-      new Network('data.json', '#root')
-    </script>
+```html
+<script>
+  new Network('data.json', '#root')
+</script>
+```
 
 It reads data from the URL given as the first parameter and displays the network
 in the svg referenced by the selector defined by the second parameter.
@@ -48,25 +54,29 @@ another tool for that or to write css by yourself.
 The data which is displayed, needs to be JSON encoded and must contain two parts,
 `nodes` and `links` on the top level:
 
-    {
-        "nodes": [],
-        "links": []
-    }
+```json
+{
+    "nodes": [],
+    "links": []
+}
+```
 
 Nodes is a list of nodes to display, and links - you guessed it - the list of links
 between these nodes.
 
 Each node therefore has an ID, which can be referenced in `links`:
 
-    {
-        "nodes": [
-            {"id": 1, "name": "First", "shape": "circle", "open": true},
-            {"id": 2, "name": "Second", "shape": "rect", "open": true}
-        ],
-        "links": [
-            {"source": 1, "target": 2}
-        ]
-    }
+```json
+{
+    "nodes": [
+        {"id": 1, "name": "First", "shape": "circle", "open": true},
+        {"id": 2, "name": "Second", "shape": "rect", "open": true}
+    ],
+    "links": [
+        {"source": 1, "target": 2}
+    ]
+}
+```
 
 The `name` contains the name of the node and is displayed inside the node,
 the `shape` defines the shape of the node.
@@ -135,15 +145,17 @@ Both, `commandOverlay` and `commandContainer` need to have an additional class `
 
 Example:
 
-    <rect class="commands commandsOverlay" x="0" y="0" width="100%" height="100%" fill="rgba(0, 0, 0, 0.2)"></rect>
-    <g class="commands commandContainer">
-        <foreignObject>
-            <button class="command" id="openNode" data-click="openNode" data-visible="!node.open">Show connections</button>
-            <button class="command" id="closeNode" data-click="closeNode" data-visible="node.open">Hide connections</button>
-            <button class="command" id="newConnection" data-click="newConnection" data-visible="node.connectable">Create connection</button>
-            <button class="command" id="showDetails" data-click="showDetails" data-visible="node.details">Show details</button>
-        </foreignObject>
-    </g>
+```html
+<rect class="commands commandsOverlay" x="0" y="0" width="100%" height="100%" fill="rgba(0, 0, 0, 0.2)"></rect>
+<g class="commands commandContainer">
+    <foreignObject>
+        <button class="command" id="openNode" data-click="openNode" data-visible="!node.open">Show connections</button>
+        <button class="command" id="closeNode" data-click="closeNode" data-visible="node.open">Hide connections</button>
+        <button class="command" id="newConnection" data-click="newConnection" data-visible="node.connectable">Create connection</button>
+        <button class="command" id="showDetails" data-click="showDetails" data-visible="node.details">Show details</button>
+    </foreignObject>
+</g>
+```
 
 Each command button should have a `data-click` attribute which contains a
 function name in class `Network` which is called when the user clicks this
