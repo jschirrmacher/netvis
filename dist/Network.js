@@ -121,7 +121,9 @@ var Network = function () {
         }
       }
 
-      ForceDiagram.releaseNode(node);
+      if (node) {
+        ForceDiagram.releaseNode(node);
+      }
       deactivate(overlay);
       deactivate(commandView);
     }
@@ -235,6 +237,11 @@ var Network = function () {
           _this5.diagram.scaleToNode(node, 1);
         });
       }
+    }
+  }, {
+    key: 'scale',
+    value: function scale(factor) {
+      this.diagram.scale(factor);
     }
   }]);
 

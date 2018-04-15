@@ -82,7 +82,9 @@ class Network {
       }
     }
 
-    ForceDiagram.releaseNode(node)
+    if (node) {
+      ForceDiagram.releaseNode(node)
+    }
     deactivate(overlay)
     deactivate(commandView)
   }
@@ -172,5 +174,9 @@ class Network {
           this.diagram.scaleToNode(node, 1)
         })
     }
+  }
+
+  scale(factor) {
+    this.diagram.scale(factor)
   }
 }

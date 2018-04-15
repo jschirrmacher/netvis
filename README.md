@@ -163,7 +163,25 @@ Another attribute, `data-visible` is an optional one, which identifies
 if the button should be displayed or not. Set this to `node.open` for example
 or `node.connectable` to access attributes of the current node.
 
+## Zoom buttons
+
+You can add zoom buttons like in the following example:
+
+```html
+<div class="zoom">
+    <div>
+        <div id="zoomOut" onclick="network.scale(0.66)">&#xe016</div>
+        <div id="zoomIn" onclick="network.scale(1.5)">&#xe015</div>
+    </div>
+</div>
+```
+The intermediate `<div>` is needed to position the buttons in the vertical center.
+
 ## Change log
+
+### V2.1
+- New feature: zoom buttons
+- Fixed: Javascript error when clicked on background
 
 ### V2.0
 - Re-organized expected command button DOM structure, so you might need to

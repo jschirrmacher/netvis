@@ -105,4 +105,14 @@ svg .node {
   font-family: Courier, monospace;
   font-weight: bold; }
 
+.zoom {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  font: 28px 'Glyphicons Halflings'; }
+  .zoom > div {
+    margin-top: -100%; }
+    .zoom > div > * {
+      cursor: pointer; }
+
 /*# sourceMappingURL=netvis.css.map */

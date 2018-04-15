@@ -148,3 +148,18 @@ svg {
   font-family: Courier, monospace;
   font-weight: bold;
 }
+
+.zoom {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  font: 28px 'Glyphicons Halflings';
+
+  > div {
+    margin-top: -100%;
+
+    > * {
+      cursor: pointer;
+    }
+  }
+}

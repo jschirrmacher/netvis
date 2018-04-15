@@ -1,3 +1,5 @@
+let currentZoom = 1
+
 class ForceDiagram {
   constructor(domSelector) {
     this.links = []
@@ -36,6 +38,7 @@ class ForceDiagram {
     function handleZoom() {
       const transform = `translate(${d3.event.transform.x}, ${d3.event.transform.y}) scale(${d3.event.transform.k})`
       svgGroup.attr('transform', transform)
+      currentZoom = d3.event.transform.k
       if (this.handlers.zoom) {
         this.handlers.zoom(transform)
       }
@@ -229,6 +232,16 @@ class ForceDiagram {
           ForceDiagram.releaseNode(node)
           resolve(true)
         })
+    })
+  }
+
+  scale(factor) {
+    return new Promise(resolve => {
+      this.svg.transition().duration(1000)
+        .call(this.zoom.transform, d3.zoomIdentity
+          .scale(factor * currentZoom)
+        )
+        .on('end', () => resolve(true))
     })
   }
 

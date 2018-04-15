@@ -4,6 +4,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var currentZoom = 1;
+
 var ForceDiagram = function () {
   function ForceDiagram(domSelector) {
     var _this = this;
@@ -42,6 +44,7 @@ var ForceDiagram = function () {
     function handleZoom() {
       var transform = 'translate(' + d3.event.transform.x + ', ' + d3.event.transform.y + ') scale(' + d3.event.transform.k + ')';
       svgGroup.attr('transform', transform);
+      currentZoom = d3.event.transform.k;
       if (this.handlers.zoom) {
         this.handlers.zoom(transform);
       }
@@ -256,6 +259,17 @@ var ForceDiagram = function () {
         _this6.svg.transition().duration(1000).call(_this6.zoom.transform, d3.zoomIdentity.translate(_this6.center.x, _this6.center.y).scale(scale).translate(-node.x, -node.y)).on('end', function () {
           ForceDiagram.releaseNode(node);
           resolve(true);
+        });
+      });
+    }
+  }, {
+    key: 'scale',
+    value: function scale(factor) {
+      var _this7 = this;
+
+      return new Promise(function (resolve) {
+        _this7.svg.transition().duration(1000).call(_this7.zoom.transform, d3.zoomIdentity.scale(factor * currentZoom)).on('end', function () {
+          return resolve(true);
         });
       });
     }

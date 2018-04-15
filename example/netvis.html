@@ -25,6 +25,13 @@
         </g>
     </svg>
 
+    <div class="zoom">
+        <div>
+            <div id="zoomOut" onclick="network.scale(0.66)">&#xe016</div>
+            <div id="zoomIn" onclick="network.scale(1.5)">&#xe015</div>
+        </div>
+    </div>
+
     <script id="detailForm" type="text/x-handlebars-template">
         <h2>
             <button class="close">×</button>
@@ -57,7 +64,7 @@
     <script>
       const source = document.getElementById('detailForm').innerHTML
       const detailFormTemplate = Handlebars.compile(source)
-      new Network('data.json', '#root', {
+      const network = new Network('data.json', '#root', {
         nameRequired: function() {
           return Promise.resolve(window.prompt('Name'))
         },
