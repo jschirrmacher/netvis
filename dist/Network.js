@@ -6,7 +6,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function maxId(list) {
+function nextId(list) {
   return list.reduce(function (id, entry) {
     return Math.max(id, entry.id);
   }, 0) + 1;
@@ -187,30 +187,16 @@ var Network = function () {
       this.handlers.nameRequired().then(function (name) {
         return name ? name : Promise.reject('no name given');
       }).then(function (name) {
-        var link = void 0;
         var existing = _this4.nodes.find(function (node) {
           return node.name === name;
         });
         if (!existing) {
-          if (_this4.handlers.newNode) {
-            existing = _this4.handlers.newNode(name);
-          } else {
-            existing = { name: name };
-          }
-          if (!existing.id) {
-            existing.id = _this4.nodes.reduce(function (id, node) {
-              return Math.max(id, node.id);
-            }, 0) + 1;
-          }
+          existing = _this4.handlers.newNode ? _this4.handlers.newNode(name) : { name: name };
+          existing.id = existing.id || nextId(_this4.nodes);
           _this4.diagram.add([existing], []);
-        } else {
-          link = _this4.links.find(function (link) {
-            return link.source.id === existing.id || link.target.id === existing.id;
-          });
         }
-        if (!link) {
-          var id = maxId(_this4.links) + 1;
-          var newLink = { id: id, source: node, target: existing };
+        if (!_this4.diagram.nodesConnected(node, existing)) {
+          var newLink = { id: nextId(_this4.links), source: node, target: existing };
           if (_this4.handlers.newLink) {
             _this4.handlers.newLink(newLink);
           }

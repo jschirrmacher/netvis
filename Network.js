@@ -1,4 +1,4 @@
-function maxId(list) {
+function nextId(list) {
   return list.reduce((id, entry) => Math.max(id, entry.id), 0) + 1
 }
 
@@ -138,24 +138,14 @@ class Network {
     this.handlers.nameRequired()
       .then(name => name ? name : Promise.reject('no name given'))
       .then(name => {
-        let link
         let existing = this.nodes.find(node => node.name === name)
         if (!existing) {
-          if (this.handlers.newNode) {
-            existing = this.handlers.newNode(name)
-          } else {
-            existing = {name}
-          }
-          if (!existing.id) {
-            existing.id = this.nodes.reduce((id, node) => Math.max(id, node.id), 0) + 1
-          }
+          existing = this.handlers.newNode ? this.handlers.newNode(name) : {name}
+          existing.id = existing.id || nextId(this.nodes)
           this.diagram.add([existing], [])
-        } else {
-          link = this.links.find(link => link.source.id === existing.id || link.target.id === existing.id)
         }
-        if (!link) {
-          const id = maxId(this.links) + 1
-          const newLink = {id, source: node, target: existing}
+        if (!this.diagram.nodesConnected(node, existing)) {
+          const newLink = {id: nextId(this.links), source: node, target: existing}
           if (this.handlers.newLink) {
             this.handlers.newLink(newLink)
           }
