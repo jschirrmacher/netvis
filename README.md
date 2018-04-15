@@ -12,9 +12,11 @@ static (from a simple file) or could be created dynamically by a server program.
 Features:
 
 - Can show different types of nodes: circle or rectangle
-- Can show large networks by letting the user click on the nodes to hide or show the connections of the node
-- Can create new connections and nodes
+- Optimized for large networks by letting the user click on the nodes to hide or show the connections of the node
+- Can create new connections and nodes with event handlers for easy backend attachment
+- Can show node details on demand
 - Draggable and zoomable canvas, draggable nodes
+- Programmable zoom (e.g. for screen buttons)
 - Written completely in ES6
 
 ## Usage
