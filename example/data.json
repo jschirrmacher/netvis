@@ -32,7 +32,7 @@
       "id": 2037,
       "name": "Joachim Schirrmacher",
       "shape": "circle",
-      "image": "https://xp-net.com\/network\/LCFRM3\/2037\/Joachim.jpg",
+      "image": "https://www.xing.com/image/0_4_3_72e679b3d_3230655_6/joachim-schirrmacher-foto.256x256.jpg",
       "visible": true,
       "connectable": true,
       "details": "node/2037.json"
@@ -41,7 +41,7 @@
       "id": 2038,
       "name": "Christiane Gerigk",
       "shape": "circle",
-      "image": "https://xp-net.com\/network\/LCFRM3\/2038\/Christiane.jpg",
+      "image": "https://www.xing.com/image/1_9_3_3542476e8_3288678_3/christiane-gerigk-foto.256x256.jpg",
       "visible": true
     },
     {
@@ -130,7 +130,7 @@
     },
     {
       "id": 2299,
-      "name": "Teamentwickl",
+      "name": "Teamentwicklung",
       "shape": "rect"
     },
     {
@@ -147,6 +147,7 @@
       "id": 2313,
       "name": "Bianca  K\u00f6llner",
       "shape": "circle",
+      "image": "https://www.xing.com/img/users/f/1/6/71bdbf591.23456580,3.256x256.jpg",
       "visible": true
     },
     {
@@ -173,6 +174,13 @@
       "id": 2549,
       "name": "UX in Agile",
       "shape": "rect"
+    },
+    {
+      "id": 2550,
+      "name": "Stefan Trost",
+      "shape": "circle",
+      "image": "https://www.xing.com/img/users/1/2/e/2be35a4d7.8857578,3.256x256.jpg",
+      "visible": true
     }
   ],
   "links": [
@@ -299,6 +307,18 @@
     {
       "source": 2317,
       "target": 2243
+    },
+    {
+      "source": 2313,
+      "target": 2299
+    },
+    {
+      "source": 2313,
+      "target": 2035
+    },
+    {
+      "source": 2550,
+      "target": 2036
     }
   ]
 }
