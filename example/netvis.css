@@ -3,7 +3,7 @@ html, body, #root {
   width: 100%;
   height: 100%;
   background: radial-gradient(#ffffff, #eeffff);
-  font: 1rem -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font: 1rem -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   color: #222222; }
 
 button {
@@ -41,26 +41,41 @@ svg .node {
     transition: 0.5s;
     transform: translateY(5em) scale(1.5); }
 
-.commandOverlay,
 .commands {
   opacity: 0;
   transition: opacity 0.5s; }
-  .commandOverlay button,
+  .commands > * {
+    width: 20px;
+    height: 100px;
+    x: 30px;
+    y: -40px; }
   .commands button {
-    display: none; }
-  .commandOverlay.active,
+    display: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    white-space: nowrap;
+    font-family: 'Glyphicons Halflings'; }
   .commands.active {
-    opacity: 1;
-    background: rgba(0, 0, 0, 0.2); }
-    .commandOverlay.active button.active,
+    opacity: 1; }
     .commands.active button.active {
-      display: block;
-      white-space: nowrap; }
+      display: block; }
 
 .detailForm {
   position: absolute;
-  padding: 15px;
-  line-height: 1.3em; }
+  right: 0;
+  left: 0;
+  padding: 0 15px 15px;
+  line-height: 1.3em;
+  max-width: 640px;
+  margin: 2em auto 0 auto;
+  border: 1px solid #ccc;
+  background: white;
+  box-shadow: 1px 1px 5px #ddd; }
+  .detailForm:after {
+    content: '';
+    display: table;
+    clear: both; }
   .detailForm img.profile-picture {
     float: left;
     margin-right: 1em; }
@@ -76,5 +91,13 @@ svg .node {
     background: deepskyblue;
     font-size: 0.9rem;
     white-space: nowrap; }
+
+#newConnection {
+  margin-left: 10px; }
+
+#showDetails {
+  font-size: 16px;
+  font-family: Courier, monospace;
+  font-weight: bold; }
 
 /*# sourceMappingURL=netvis.css.map */

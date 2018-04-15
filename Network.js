@@ -2,21 +2,28 @@ function maxId(list) {
   return list.reduce((id, entry) => Math.max(id, entry.id), 0) + 1
 }
 
+let overlay
+let commandView
+let activeNode
+
 class Network {
   constructor(dataUrl, domSelector, handlers = {}) {
+    overlay = document.querySelector(domSelector + ' .commandOverlay')
+    commandView = document.querySelector(domSelector + ' .commandContainer')
     this.handlers = handlers
     d3.json(dataUrl, (error, data) => {
       if (error) throw error
       this.diagram = new ForceDiagram(document.querySelector(domSelector))
-      this.commandsOverlay = document.querySelector(domSelector + ' .commandOverlay')
-      if (this.commandsOverlay) {
-        this.commands = this.commandsOverlay.querySelector('.commands')
-        Array.from(this.commands.children).forEach(command => {
+      if (overlay) {
+        overlay.addEventListener('click', () => this.hideCommandsView(activeNode))
+      }
+      if (commandView) {
+        Array.from(commandView.querySelectorAll('.command')).forEach(command => {
           command.addEventListener('click', () => this[command.dataset.click](this.activeNode))
           command.visibleIf = node => command.dataset.visible ? eval(command.dataset.visible) : true
         })
         this.diagram.addHandler('click', this.showCommandsView.bind(this))
-        this.diagram.addHandler('zoom', this.applyTransform.bind(this))
+        this.diagram.addHandler('zoom', transform => commandView.setAttribute('transform', transform))
       }
 
       const getNode = id => {
@@ -48,31 +55,36 @@ class Network {
   }
 
   showCommandsView(node) {
+    function activate(el) {
+      if (el) {
+        el.parentNode.appendChild(el)
+        el.classList.add('active')
+      }
+    }
+
     const px = n => n ? (n + 'px') : n
+    activeNode = node
     ForceDiagram.fixNode(node)
     this.activeNode = node
-    Array.from(this.commands.children).forEach(cmd => cmd.classList.toggle('active', !!cmd.visibleIf(node)))
-    const overlay = this.commandsOverlay
-    overlay.parentNode.appendChild(overlay) // move to end of svg elements to have the menu on top
-    overlay.classList.add('active')
-    const view = this.commands
-    view.setAttribute('x', px(node.x))
-    view.setAttribute('y', px(node.y))
-    view.classList.add('active')
-    overlay.addEventListener('click', clickHandler)
-
-    function clickHandler(event) {
-      overlay.removeEventListener('click', clickHandler)
-      ForceDiagram.releaseNode(node)
-      view.classList.remove('active')
-      overlay.classList.remove('active')
-      // move to start of svg elements to make nodes accessible
-      overlay.parentNode.insertBefore(overlay, overlay.parentNode.children[0])
+    Array.from(commandView.querySelectorAll('.command')).forEach(cmd => cmd.classList.toggle('active', !!cmd.visibleIf(node)))
+    activate(overlay)
+    activate(commandView)
+    if (commandView) {
+      commandView.children[0].setAttribute('style', 'transform: translate(' + px(node.x) + ',' + px(node.y) + ')')
     }
   }
 
-  applyTransform(transform) {
-    this.commandsOverlay.querySelector('.commands').setAttribute('transform', transform)
+  hideCommandsView(node) {
+    function deactivate(el) {
+      if (el) {
+        el.parentNode.insertBefore(el, el.parentNode.children[0])
+        el.classList.remove('active')
+      }
+    }
+
+    ForceDiagram.releaseNode(node)
+    deactivate(overlay)
+    deactivate(commandView)
   }
 
   toggle(node) {
@@ -101,6 +113,7 @@ class Network {
 
     this.diagram.scaleToNode(node, 1)
     this.diagram.update()
+    this.hideCommandsView(node)
   }
 
   openNode(node) {
@@ -117,9 +130,11 @@ class Network {
 
     this.diagram.scaleToNode(node, 1)
     this.diagram.update()
+    this.hideCommandsView(node)
   }
 
   newConnection(node) {
+    this.hideCommandsView(node)
     this.handlers.nameRequired()
       .then(name => name ? name : Promise.reject('no name given'))
       .then(name => {
@@ -154,6 +169,7 @@ class Network {
 
   showDetails(node) {
     if (this.handlers.showDetails) {
+      this.hideCommandsView(node)
       this.diagram.scaleToNode(node, 1000)
         .then(() => new Promise((resolve, reject) => d3.json(node.details, (error, data) => resolve([error, data]))))
         .then(([error, data]) => error ? Promise.reject(error) : data)

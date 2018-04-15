@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Network Visualizer</title>
     <link rel="stylesheet" type="text/css" href="netvis.css" />
+    <!-- only for example reasons -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
 </head>
 <body>
     <svg id="root">
-        <g class="commandOverlay">
-            <rect x="0" y="0" width="100%" height="100%" fill="rgba(0, 0, 0, 0.2)"></rect>
-            <foreignObject class="commands">
-                <button id="openNode" data-click="openNode" data-visible="!node.open">Verbindungen einblenden</button>
-                <button id="closeNode" data-click="closeNode" data-visible="node.open">Verbindungen ausblenden</button>
-                <button id="newConnection" data-click="newConnection" data-visible="node.connectable">Neue Verbindung anlegen</button>
-                <button id="showDetails" data-click="showDetails" data-visible="node.details">Details anzeigen</button>
+        <rect class="commands commandOverlay" x="0" y="0" width="100%" height="100%" fill="rgba(0, 0, 0, 0.2)"></rect>
+        <g class="commands commandContainer">
+            <foreignObject>
+                <button id="openNode" class="command" data-click="openNode" data-visible="!node.open"
+                        title="Verbindungen einblenden">&#xe096;</button>
+                <button id="closeNode" class="command" data-click="closeNode" data-visible="node.open"
+                        title="Verbindungen ausblenden">&#xe097;</button>
+                <button id="newConnection" class="command" data-click="newConnection" data-visible="node.connectable"
+                        title="Neue Verbindung anlegen">+</button>
+                <button id="showDetails" class="command" data-click="showDetails" data-visible="node.details"
+                        title="Details anzeigen">i</button>
             </foreignObject>
         </g>
     </svg>
@@ -66,7 +72,6 @@
           return new Promise(resolve => {
             const form = document.createElement('div')
             form.setAttribute('class', 'detailForm')
-            form.setAttribute('id', 'detailForm-' + data.id)
             form.innerHTML = detailFormTemplate(data)
             form.getElementsByClassName('close')[0].addEventListener('click', event => {
               event.preventDefault()

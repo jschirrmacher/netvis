@@ -1,9 +1,10 @@
 {
   "name": "js-netvis",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Visualize a network of interlinked nodes",
   "main": "netvis.js",
   "scripts": {
+    "start": "echo \"Error: cannot start, npm is only used to load dependencies\" && exit 1",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

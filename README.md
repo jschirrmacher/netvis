@@ -123,24 +123,25 @@ Beginning with version 1.1 the buttons to show or hide the node's connections
 and to create a new connection, are shown when the user clicks a node. Which
 of these buttons are visible or how they are displayed is controlled by you.
 
-To make these buttons available at all, you need to add them to the svg you
-provide in a container with the class name 'commandOverlay'. This container
-should contain another container which encapsulates the buttons. It should
-have the class name 'commands'.
+To make these buttons available, you need to add them to the svg you
+provide in a container with the class name `commandContainer`. This container
+encapsulates the buttons. Each button needs to have a class of `command`.
 
-This allows to have another element in 'commandsOverlay' which overlays all
+This allows to have another element, `commandOverlay` which overlays all
 nodes and connections. A typical use case is to have a semi-transparent
 rectangle to fade out the nodes and connections to have the commands in focus.
 
+Both, `commandOverlay` and `commandContainer` need to have an additional class `commands`.
+
 Example:
 
-    <g class="commandOverlay">
-        <rect x="0" y="0" width="100%" height="100%" fill="rgba(0, 0, 0, 0.2)"></rect>
-        <foreignObject class="commands">
-            <button id="openNode" data-click="openNode" data-visible="!node.open">Show connections</button>
-            <button id="closeNode" data-click="closeNode" data-visible="node.open">Hide connections</button>
-            <button id="newConnection" data-click="newConnection" data-visible="node.connectable">Create connection</button>
-            <button id="showDetails" data-click="showDetails" data-visible="node.details">Show details</button>
+    <rect class="commands commandsOverlay" x="0" y="0" width="100%" height="100%" fill="rgba(0, 0, 0, 0.2)"></rect>
+    <g class="commands commandContainer">
+        <foreignObject>
+            <button class="command" id="openNode" data-click="openNode" data-visible="!node.open">Show connections</button>
+            <button class="command" id="closeNode" data-click="closeNode" data-visible="node.open">Hide connections</button>
+            <button class="command" id="newConnection" data-click="newConnection" data-visible="node.connectable">Create connection</button>
+            <button class="command" id="showDetails" data-click="showDetails" data-visible="node.details">Show details</button>
         </foreignObject>
     </g>
 
@@ -162,20 +163,11 @@ Another attribute, `data-visible` is an optional one, which identifies
 if the button should be displayed or not. Set this to `node.open` for example
 or `node.connectable` to access attributes of the current node.
 
-## Contributing
-
-You are invited to fork this repository and contribute own enhancements,
-and I gladly accept pull requests.
-
-However, to get coding, you need to utilize a ES6 compiler to make the
-code runnable in a browser. The ES6 compiler transforms the files into
-"old" Javascript code and should place it in the `dist` folder.
-I use https://babeljs.io/ for that, you get it automatically, if you run
-`npm install`. WebStorm, my favourite IDE, has a file watcher, which
-calls babel every time I make changes to one of the .js files, so it is
-very convenient and I recommend that very much.
-
 ## Change log
+
+### V2.0
+- Re-organized expected command button DOM structure, so you might need to
+  adapt them. See chapter "command buttons" for details.
 
 ### V1.2
 - Show details of a node, if it has an attribute `details`
@@ -189,6 +181,19 @@ very convenient and I recommend that very much.
 - Click on nodes doesn't open and close them any more, instead, a menu is
   shown with buttons to show or hide the connections.
 - New functions `Network.openNode()` and `Network.closeNode`.
+
+## Contributing
+
+You are invited to fork this repository and contribute own enhancements,
+and I gladly accept pull requests.
+
+However, to get coding, you need to utilize a ES6 compiler to make the
+code runnable in a browser. The ES6 compiler transforms the files into
+"old" Javascript code and should place it in the `dist` folder.
+I use https://babeljs.io/ for that, you get it automatically, if you run
+`npm install`. WebStorm, my favourite IDE, has a file watcher, which
+calls babel every time I make changes to one of the .js files, so it is
+very convenient and I recommend that very much.
 
 ## History
 

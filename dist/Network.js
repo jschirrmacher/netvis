@@ -12,6 +12,10 @@ function maxId(list) {
   }, 0) + 1;
 }
 
+var overlay = void 0;
+var commandView = void 0;
+var activeNode = void 0;
+
 var Network = function () {
   function Network(dataUrl, domSelector) {
     var _this = this;
@@ -20,14 +24,19 @@ var Network = function () {
 
     _classCallCheck(this, Network);
 
+    overlay = document.querySelector(domSelector + ' .commandOverlay');
+    commandView = document.querySelector(domSelector + ' .commandContainer');
     this.handlers = handlers;
     d3.json(dataUrl, function (error, data) {
       if (error) throw error;
       _this.diagram = new ForceDiagram(document.querySelector(domSelector));
-      _this.commandsOverlay = document.querySelector(domSelector + ' .commandOverlay');
-      if (_this.commandsOverlay) {
-        _this.commands = _this.commandsOverlay.querySelector('.commands');
-        Array.from(_this.commands.children).forEach(function (command) {
+      if (overlay) {
+        overlay.addEventListener('click', function () {
+          return _this.hideCommandsView(activeNode);
+        });
+      }
+      if (commandView) {
+        Array.from(commandView.querySelectorAll('.command')).forEach(function (command) {
           command.addEventListener('click', function () {
             return _this[command.dataset.click](_this.activeNode);
           });
@@ -36,7 +45,9 @@ var Network = function () {
           };
         });
         _this.diagram.addHandler('click', _this.showCommandsView.bind(_this));
-        _this.diagram.addHandler('zoom', _this.applyTransform.bind(_this));
+        _this.diagram.addHandler('zoom', function (transform) {
+          return commandView.setAttribute('transform', transform);
+        });
       }
 
       var getNode = function getNode(id) {
@@ -78,36 +89,41 @@ var Network = function () {
   _createClass(Network, [{
     key: 'showCommandsView',
     value: function showCommandsView(node) {
+      function activate(el) {
+        if (el) {
+          el.parentNode.appendChild(el);
+          el.classList.add('active');
+        }
+      }
+
       var px = function px(n) {
         return n ? n + 'px' : n;
       };
+      activeNode = node;
       ForceDiagram.fixNode(node);
       this.activeNode = node;
-      Array.from(this.commands.children).forEach(function (cmd) {
+      Array.from(commandView.querySelectorAll('.command')).forEach(function (cmd) {
         return cmd.classList.toggle('active', !!cmd.visibleIf(node));
       });
-      var overlay = this.commandsOverlay;
-      overlay.parentNode.appendChild(overlay); // move to end of svg elements to have the menu on top
-      overlay.classList.add('active');
-      var view = this.commands;
-      view.setAttribute('x', px(node.x));
-      view.setAttribute('y', px(node.y));
-      view.classList.add('active');
-      overlay.addEventListener('click', clickHandler);
-
-      function clickHandler(event) {
-        overlay.removeEventListener('click', clickHandler);
-        ForceDiagram.releaseNode(node);
-        view.classList.remove('active');
-        overlay.classList.remove('active');
-        // move to start of svg elements to make nodes accessible
-        overlay.parentNode.insertBefore(overlay, overlay.parentNode.children[0]);
+      activate(overlay);
+      activate(commandView);
+      if (commandView) {
+        commandView.children[0].setAttribute('style', 'transform: translate(' + px(node.x) + ',' + px(node.y) + ')');
       }
     }
   }, {
-    key: 'applyTransform',
-    value: function applyTransform(transform) {
-      this.commandsOverlay.querySelector('.commands').setAttribute('transform', transform);
+    key: 'hideCommandsView',
+    value: function hideCommandsView(node) {
+      function deactivate(el) {
+        if (el) {
+          el.parentNode.insertBefore(el, el.parentNode.children[0]);
+          el.classList.remove('active');
+        }
+      }
+
+      ForceDiagram.releaseNode(node);
+      deactivate(overlay);
+      deactivate(commandView);
     }
   }, {
     key: 'toggle',
@@ -140,6 +156,7 @@ var Network = function () {
 
       this.diagram.scaleToNode(node, 1);
       this.diagram.update();
+      this.hideCommandsView(node);
     }
   }, {
     key: 'openNode',
@@ -159,12 +176,14 @@ var Network = function () {
 
       this.diagram.scaleToNode(node, 1);
       this.diagram.update();
+      this.hideCommandsView(node);
     }
   }, {
     key: 'newConnection',
     value: function newConnection(node) {
       var _this4 = this;
 
+      this.hideCommandsView(node);
       this.handlers.nameRequired().then(function (name) {
         return name ? name : Promise.reject('no name given');
       }).then(function (name) {
@@ -209,6 +228,7 @@ var Network = function () {
       var _this5 = this;
 
       if (this.handlers.showDetails) {
+        this.hideCommandsView(node);
         this.diagram.scaleToNode(node, 1000).then(function () {
           return new Promise(function (resolve, reject) {
             return d3.json(node.details, function (error, data) {
