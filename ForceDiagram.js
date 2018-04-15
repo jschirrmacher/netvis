@@ -79,7 +79,9 @@ class ForceDiagram {
       .enter()
       .append('g')
       .attr('id', d => 'node-' + d.id)
-      .attr('class', d => 'node' + (d.open ? ' open' : ''))
+      .classed('node', true)
+      .classed('open', d => d.open)
+      .classed('withBg', d => d.image)
       .call(this.drag)
 
     nodeData.exit().remove()

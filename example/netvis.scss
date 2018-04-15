@@ -48,7 +48,16 @@ svg {
         fill: #000;
         stroke-width: 0;
         text-anchor: middle;
-        text-shadow: 0 0 5px white;
+        text-shadow: 0 0 5px #fff, 0 0 5px #fff;
+      }
+    }
+
+    &.withBg > text {
+      transform: translate(0, 20px);
+
+      tspan {
+        fill: #fff;
+        text-shadow: 0 0 5px #000, 0 0 5px #000;
       }
     }
 

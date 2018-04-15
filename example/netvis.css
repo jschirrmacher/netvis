@@ -36,7 +36,12 @@ svg .node {
       fill: #000;
       stroke-width: 0;
       text-anchor: middle;
-      text-shadow: 0 0 5px white; }
+      text-shadow: 0 0 5px #fff, 0 0 5px #fff; }
+  svg .node.withBg > text {
+    transform: translate(0, 20px); }
+    svg .node.withBg > text tspan {
+      fill: #fff;
+      text-shadow: 0 0 5px #000, 0 0 5px #000; }
   svg .node:hover .title {
     transition: 0.5s;
     transform: translateY(5em) scale(1.5); }

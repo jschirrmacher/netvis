@@ -92,8 +92,10 @@ var ForceDiagram = function () {
       });
       var nodeEnter = nodeData.enter().append('g').attr('id', function (d) {
         return 'node-' + d.id;
-      }).attr('class', function (d) {
-        return 'node' + (d.open ? ' open' : '');
+      }).classed('node', true).classed('open', function (d) {
+        return d.open;
+      }).classed('withBg', function (d) {
+        return d.image;
       }).call(this.drag);
 
       nodeData.exit().remove();
