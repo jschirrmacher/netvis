@@ -252,4 +252,8 @@ class ForceDiagram {
   show() {
     this.svg.attr('style', 'opacity: 1; transition: opacity 0.5s')
   }
+
+  getDomElement(node) {
+    return document.getElementById('node-' + node.id)
+  }
 }

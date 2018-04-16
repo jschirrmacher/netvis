@@ -283,6 +283,11 @@ var ForceDiagram = function () {
     value: function show() {
       this.svg.attr('style', 'opacity: 1; transition: opacity 0.5s');
     }
+  }, {
+    key: 'getDomElement',
+    value: function getDomElement(node) {
+      return document.getElementById('node-' + node.id);
+    }
   }], [{
     key: 'isConnected',
     value: function isConnected(link, node) {

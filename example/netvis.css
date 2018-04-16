@@ -42,29 +42,30 @@ svg .node {
     svg .node.withBg > text tspan {
       fill: #fff;
       text-shadow: 0 0 5px #000, 0 0 5px #000; }
-  svg .node:hover .title {
+  svg .node:hover .title, svg .node.menuActive .title {
     transition: 0.5s;
     transform: translateY(5em) scale(1.5); }
 
 .commands {
   opacity: 0;
   transition: opacity 0.5s; }
-  .commands > * {
-    width: 20px;
-    height: 100px;
-    x: 30px;
-    y: -40px; }
-  .commands button {
-    display: none;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    white-space: nowrap;
-    font-family: 'Glyphicons Halflings'; }
+  .commands.commandContainer > * {
+    width: 100px;
+    height: 50px;
+    x: -50px;
+    y: -10px;
+    text-align: center; }
+    .commands.commandContainer > * button {
+      display: none;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      white-space: nowrap;
+      font-family: 'Glyphicons Halflings'; }
   .commands.active {
     opacity: 1; }
     .commands.active button.active {
-      display: block; }
+      display: inline-block; }
 
 .detailForm {
   position: absolute;
@@ -97,9 +98,6 @@ svg .node {
     font-size: 0.9rem;
     white-space: nowrap; }
 
-#newConnection {
-  margin-left: 10px; }
-
 #showDetails {
   font-size: 16px;
   font-family: Courier, monospace;
@@ -114,5 +112,8 @@ svg .node {
     margin-top: -100%; }
     .zoom > div > * {
       cursor: pointer; }
+
+.dialogOpen .zoom {
+  display: none; }
 
 /*# sourceMappingURL=netvis.css.map */

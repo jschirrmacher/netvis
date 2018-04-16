@@ -6,15 +6,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function nextId(list) {
+var nextId = function nextId(list) {
   return list.reduce(function (id, entry) {
     return Math.max(id, entry.id);
   }, 0) + 1;
-}
+};
 
 var overlay = void 0;
 var commandView = void 0;
-var activeNode = void 0;
 
 var Network = function () {
   function Network(dataUrl, domSelector) {
@@ -24,18 +23,16 @@ var Network = function () {
 
     _classCallCheck(this, Network);
 
-    overlay = document.querySelector(domSelector + ' .commandOverlay');
-    commandView = document.querySelector(domSelector + ' .commandContainer');
     this.handlers = handlers;
     d3.json(dataUrl, function (error, data) {
       if (error) throw error;
       _this.diagram = new ForceDiagram(document.querySelector(domSelector));
-      if (overlay) {
+      if (overlay = document.querySelector(domSelector + ' .commandOverlay')) {
         overlay.addEventListener('click', function () {
-          return _this.hideCommandsView(activeNode);
+          return _this.hideCommandsView(_this.activeNode);
         });
       }
-      if (commandView) {
+      if (commandView = document.querySelector(domSelector + ' .commandContainer')) {
         Array.from(commandView.querySelectorAll('.command')).forEach(function (command) {
           command.addEventListener('click', function () {
             return _this[command.dataset.click](_this.activeNode);
@@ -50,28 +47,23 @@ var Network = function () {
         });
       }
 
-      var getNode = function getNode(id) {
-        var result = data.nodes.find(function (node) {
+      var node = function node(id) {
+        return data.nodes.find(function (node) {
           return node.id === id;
-        });
-        if (!result) {
-          console.error('Node id ' + id + ' not found');
-        }
-        return result;
+        }) || console.error('Node id ' + id + ' not found');
       };
       _this.links = data.links.map(function (link, id) {
-        return {
-          id: id + 1,
-          source: getNode(link.source),
-          target: getNode(link.target)
-        };
+        return { id: id + 1, source: node(link.source), target: node(link.target) };
       });
       _this.nodes = data.nodes;
 
+      var setBothSidesVisible = function setBothSidesVisible(d) {
+        return d.source.visible = d.target.visible = true;
+      };
+      _this.links.filter(function (d) {
+        return d.source.open || d.target.open;
+      }).map(setBothSidesVisible);
       var links = _this.links.filter(function (d) {
-        if (d.source.open || d.target.open) {
-          d.source.visible = d.target.visible = true;
-        }
         return d.source.visible && d.target.visible;
       });
       var nodes = _this.nodes.filter(function (d) {
@@ -82,26 +74,26 @@ var Network = function () {
 
       setTimeout(function () {
         return document.body.className = 'initialized';
-      }, 1);
+      }, 0);
     });
   }
 
   _createClass(Network, [{
     key: 'showCommandsView',
     value: function showCommandsView(node) {
-      function activate(el) {
-        if (el) {
-          el.parentNode.appendChild(el);
-          el.classList.add('active');
-        }
-      }
-
+      var setActive = function setActive(el) {
+        el.parentNode.appendChild(el);
+        el.classList.add('active');
+      };
+      var activate = function activate(el) {
+        return el && setActive(el);
+      };
       var px = function px(n) {
         return n ? n + 'px' : n;
       };
-      activeNode = node;
       ForceDiagram.fixNode(node);
       this.activeNode = node;
+      this.diagram.getDomElement(node).classList.add('menuActive');
       Array.from(commandView.querySelectorAll('.command')).forEach(function (cmd) {
         return cmd.classList.toggle('active', !!cmd.visibleIf(node));
       });
@@ -114,15 +106,17 @@ var Network = function () {
   }, {
     key: 'hideCommandsView',
     value: function hideCommandsView(node) {
-      function deactivate(el) {
-        if (el) {
-          el.parentNode.insertBefore(el, el.parentNode.children[0]);
-          el.classList.remove('active');
-        }
-      }
+      var setInactive = function setInactive(el) {
+        el.parentNode.insertBefore(el, el.parentNode.children[0]);
+        el.classList.remove('active');
+      };
+      var deactivate = function deactivate(el) {
+        return el && setInactive(el);
+      };
 
       if (node) {
         ForceDiagram.releaseNode(node);
+        this.diagram.getDomElement(node).classList.remove('menuActive');
       }
       deactivate(overlay);
       deactivate(commandView);
@@ -130,11 +124,7 @@ var Network = function () {
   }, {
     key: 'toggle',
     value: function toggle(node) {
-      if (node.open) {
-        this.closeNode(node);
-      } else {
-        this.openNode(node);
-      }
+      return node.open ? this.closeNode(node) : this.openNode(node);
     }
   }, {
     key: 'closeNode',
@@ -216,6 +206,7 @@ var Network = function () {
       var _this5 = this;
 
       if (this.handlers.showDetails) {
+        document.body.classList.add('dialogOpen');
         this.hideCommandsView(node);
         this.diagram.scaleToNode(node, 1000).then(function () {
           return new Promise(function (resolve, reject) {
@@ -233,6 +224,7 @@ var Network = function () {
           _this5.diagram.hide();
           return _this5.handlers.showDetails(data);
         }).then(function () {
+          document.body.classList.remove('dialogOpen');
           _this5.diagram.show();
           _this5.diagram.scaleToNode(node, 1);
         });

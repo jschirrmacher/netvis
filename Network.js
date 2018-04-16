@@ -1,23 +1,18 @@
-function nextId(list) {
-  return list.reduce((id, entry) => Math.max(id, entry.id), 0) + 1
-}
+const nextId = list => list.reduce((id, entry) => Math.max(id, entry.id), 0) + 1
 
 let overlay
 let commandView
-let activeNode
 
 class Network {
   constructor(dataUrl, domSelector, handlers = {}) {
-    overlay = document.querySelector(domSelector + ' .commandOverlay')
-    commandView = document.querySelector(domSelector + ' .commandContainer')
     this.handlers = handlers
     d3.json(dataUrl, (error, data) => {
       if (error) throw error
       this.diagram = new ForceDiagram(document.querySelector(domSelector))
-      if (overlay) {
-        overlay.addEventListener('click', () => this.hideCommandsView(activeNode))
+      if ((overlay = document.querySelector(domSelector + ' .commandOverlay'))) {
+        overlay.addEventListener('click', () => this.hideCommandsView(this.activeNode))
       }
-      if (commandView) {
+      if ((commandView = document.querySelector(domSelector + ' .commandContainer'))) {
         Array.from(commandView.querySelectorAll('.command')).forEach(command => {
           command.addEventListener('click', () => this[command.dataset.click](this.activeNode))
           command.visibleIf = node => command.dataset.visible ? eval(command.dataset.visible) : true
@@ -26,46 +21,31 @@ class Network {
         this.diagram.addHandler('zoom', transform => commandView.setAttribute('transform', transform))
       }
 
-      const getNode = id => {
-        const result = data.nodes.find(node => node.id === id)
-        if (!result) {
-          console.error('Node id ' + id + ' not found')
-        }
-        return result
-      }
-      this.links = data.links.map((link, id) => ({
-        id: id + 1,
-        source: getNode(link.source),
-        target: getNode(link.target)
-      }))
+      const node = id => data.nodes.find(node => node.id === id) || console.error('Node id ' + id + ' not found')
+      this.links = data.links.map((link, id) => ({id: id + 1, source: node(link.source), target: node(link.target)}))
       this.nodes = data.nodes
 
-      const links = this.links.filter(d => {
-        if (d.source.open || d.target.open) {
-          d.source.visible = d.target.visible = true
-        }
-        return d.source.visible && d.target.visible
-      })
+      const setBothSidesVisible = d => d.source.visible = d.target.visible = true
+      this.links.filter(d => d.source.open || d.target.open).map(setBothSidesVisible)
+      const links = this.links.filter(d => d.source.visible && d.target.visible)
       const nodes = this.nodes.filter(d => d.visible)
       this.diagram.add(nodes, links)
       this.diagram.update()
 
-      setTimeout(() => document.body.className = 'initialized', 1)
+      setTimeout(() => document.body.className = 'initialized', 0)
     })
   }
 
   showCommandsView(node) {
-    function activate(el) {
-      if (el) {
-        el.parentNode.appendChild(el)
-        el.classList.add('active')
-      }
+    const setActive = el => {
+      el.parentNode.appendChild(el)
+      el.classList.add('active')
     }
-
+    const activate = el => el && setActive(el)
     const px = n => n ? (n + 'px') : n
-    activeNode = node
     ForceDiagram.fixNode(node)
     this.activeNode = node
+    this.diagram.getDomElement(node).classList.add('menuActive')
     Array.from(commandView.querySelectorAll('.command')).forEach(cmd => cmd.classList.toggle('active', !!cmd.visibleIf(node)))
     activate(overlay)
     activate(commandView)
@@ -75,26 +55,22 @@ class Network {
   }
 
   hideCommandsView(node) {
-    function deactivate(el) {
-      if (el) {
-        el.parentNode.insertBefore(el, el.parentNode.children[0])
-        el.classList.remove('active')
-      }
+    const setInactive = el => {
+      el.parentNode.insertBefore(el, el.parentNode.children[0])
+      el.classList.remove('active')
     }
+    const deactivate = el => el && setInactive(el)
 
     if (node) {
       ForceDiagram.releaseNode(node)
+      this.diagram.getDomElement(node).classList.remove('menuActive')
     }
     deactivate(overlay)
     deactivate(commandView)
   }
 
   toggle(node) {
-    if (node.open) {
-      this.closeNode(node)
-    } else {
-      this.openNode(node)
-    }
+    return node.open ? this.closeNode(node) : this.openNode(node)
   }
 
   closeNode(node) {
@@ -161,6 +137,7 @@ class Network {
 
   showDetails(node) {
     if (this.handlers.showDetails) {
+      document.body.classList.add('dialogOpen')
       this.hideCommandsView(node)
       this.diagram.scaleToNode(node, 1000)
         .then(() => new Promise((resolve, reject) => d3.json(node.details, (error, data) => resolve([error, data]))))
@@ -170,6 +147,7 @@ class Network {
           return this.handlers.showDetails(data)
         })
         .then(() => {
+          document.body.classList.remove('dialogOpen')
           this.diagram.show()
           this.diagram.scaleToNode(node, 1)
         })
