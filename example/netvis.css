@@ -107,11 +107,16 @@ svg .node {
   position: absolute;
   right: 5px;
   top: 50%;
-  font: 28px 'Glyphicons Halflings'; }
+  font: 20px 'Glyphicons Halflings'; }
   .zoom > div {
     margin-top: -100%; }
     .zoom > div > * {
-      cursor: pointer; }
+      cursor: pointer;
+      background: white;
+      padding: 5px 6.5px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      margin: 10px 0; }
 
 .dialogOpen .zoom {
   display: none; }
