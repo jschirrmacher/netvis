@@ -45,12 +45,7 @@
         <a href="{{url}}" target="_blank">{{url}}</a>
 
         <p class="tag-view">
-            <span class="tag">Lean Startup</span>
-            <span class="tag">Agile Development</span>
-            <span class="tag">XP-net</span>
-            <span class="tag">Scrum</span>
-            <span class="tag">Product Management</span>
-            <span class="tag">Kanban</span>
+            {{#each links}}<span class="tag">{{this.name}}</span>{{/each}}
         </p>
     </script>
 
