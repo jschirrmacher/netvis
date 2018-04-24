@@ -204,9 +204,9 @@ class ForceDiagram {
       if (n.index > -1) {
         this.nodes.splice(n.index, 1)
       }
-      this.links.forEach((l, index) => ForceDiagram.isConnected(l, n) && this.links.splice(index, 1))
+      this.links = this.links.filter(l => !ForceDiagram.isConnected(l, n))
     })
-    linksToRemove.forEach(l => l.index > -1 && this.links.splice(l.index, 1))
+    this.links = this.links.filter(l => !linksToRemove.find(r => r.id === l.id))
   }
 
   static fixNode(node) {

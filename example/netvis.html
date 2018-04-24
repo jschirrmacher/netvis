@@ -14,21 +14,23 @@
         <g class="commands commandContainer">
             <foreignObject>
                 <button id="openNode" class="command" data-click="openNode" data-visible="!node.open"
-                        title="Verbindungen einblenden">&#xe096;</button>
+                        title="Show connections">&#xe096;</button>
                 <button id="closeNode" class="command" data-click="closeNode" data-visible="node.open"
-                        title="Verbindungen ausblenden">&#xe097;</button>
+                        title="Hide connections">&#xe097;</button>
                 <button id="newConnection" class="command" data-click="newConnection" data-visible="node.connectable"
-                        title="Neue Verbindung anlegen">+</button>
+                        title="Create new connection">+</button>
+                <button id="removeNode" class="command" data-click="removeNode" data-visible="node.deletable"
+                        title="Delete node">&#xe014</button>
                 <button id="showDetails" class="command" data-click="showDetails" data-visible="node.details"
-                        title="Details anzeigen">i</button>
+                        title="Show details">i</button>
             </foreignObject>
         </g>
     </svg>
 
     <div class="zoom">
         <div>
-            <div id="zoomOut" onclick="network.scale(0.66)">&#xe016</div>
-            <div id="zoomIn" onclick="network.scale(1.5)">&#xe015</div>
+            <div id="zoomOut" onclick="network.scale(0.66)" title="Zoom out">&#xe016</div>
+            <div id="zoomIn" onclick="network.scale(1.5)" title="Zoom in">&#xe015</div>
         </div>
     </div>
 
@@ -66,6 +68,9 @@
         newNode: function(name) {
           console.log('New node', name)
           return {name, shape: 'circle'}
+        },
+        nodeRemoved: function(node) {
+          console.log('Node removed', node)
         },
         newLink: function(link) {
           console.log('New link', link)

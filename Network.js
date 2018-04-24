@@ -116,10 +116,11 @@ class Network {
     this.handlers.nameRequired()
       .then(name => name ? name : Promise.reject('no name given'))
       .then(name => {
-        let existing = this.nodes.find(node => node.name === name)
+        let existing = this.nodes.find(node => node.name.toLowerCase() === name.toLowerCase())
         if (!existing) {
           existing = this.handlers.newNode ? this.handlers.newNode(name) : {name}
           existing.id = existing.id || nextId(this.nodes)
+          this.nodes.push(existing)
           this.diagram.add([existing], [])
         }
         if (!this.diagram.nodesConnected(node, existing)) {
@@ -127,12 +128,24 @@ class Network {
           if (this.handlers.newLink) {
             this.handlers.newLink(newLink)
           }
+          this.links.push(newLink)
           this.diagram.add([], [newLink])
         }
 
         this.diagram.update()
       })
       .catch(error => console.error)
+  }
+
+  removeNode(node) {
+    this.hideCommandsView(node)
+    this.nodes = this.nodes.filter(n => n.id !== node.id)
+    this.links = this.links.filter(l => l.source.id !== node.id && l.target.id !== node.id)
+    this.diagram.remove([node], [])
+    this.diagram.update()
+    if (this.handlers.nodeRemoved) {
+      this.handlers.nodeRemoved(node)
+    }
   }
 
   showDetails(node) {

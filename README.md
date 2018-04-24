@@ -13,7 +13,7 @@ Features:
 
 - Can show different types of nodes: circle or rectangle
 - Optimized for large networks by letting the user click on the nodes to hide or show the connections of the node
-- Can create new connections and nodes with event handlers for easy backend attachment
+- Can create new or delete existing nodes and connections with event handlers for easy backend attachment
 - Can show node details on demand
 - Draggable and zoomable canvas, draggable nodes
 - Programmable zoom (e.g. for screen buttons)
@@ -99,6 +99,7 @@ There are some optional attributes in a node:
 - `connectable` - when set `true`, a button is shown when the user clicks
   a node, allowing to create a new node connected to the current one. See the
   chapter "Handlers" to learn what you should do to make that persistent.
+- `deletable` - a flag indicating that the node may be deleted.
 - `details` - an URL which returns detail data for the node in JSON format.
 
 You find a more complete example in the file `example/data.json`.
@@ -117,6 +118,8 @@ These are the possible events:
 - `newNode` - a new node was created. The handler gets the node name as a
   parameter. It should return a data structure for the new node which is then
   added to the network visualization.
+- `nodeRemoved` - a node was deleted. The handler gets the data structure
+  defining the node. All connections of the node are deleted as well.
 - `newLink` - a new link between two nodes was created. The handler
   gets the data structure `{source, target}` of the link as a parameter.
 - `showDetails` - the button to show details on a node has been clicked.
@@ -124,8 +127,8 @@ These are the possible events:
   and should return a promise which resolves, when the details dialog is
   closed by the user and should be hidden.
 
-Normally, an application should store the new data in a database or a file
-system, when newNode or newLink events arrive.
+Normally, an application should store data in a database or a file
+system, when `newNode`, `nodeRemoved` or `newLink` events arrive.
 
 If the handlers aren't defined, simply nothing happens.
 
@@ -154,6 +157,7 @@ Example:
         <button class="command" id="openNode" data-click="openNode" data-visible="!node.open">Show connections</button>
         <button class="command" id="closeNode" data-click="closeNode" data-visible="node.open">Hide connections</button>
         <button class="command" id="newConnection" data-click="newConnection" data-visible="node.connectable">Create connection</button>
+        <button class="command" id="removeNode" data-click="removeNode" data-visible="node.deletable">Remove node</button>
         <button class="command" id="showDetails" data-click="showDetails" data-visible="node.details">Show details</button>
     </foreignObject>
 </g>
@@ -169,7 +173,8 @@ Available functions are currently:
 - closeNode - hides the connections of the node, leaving these, which are
   explicitly shown by other opened nodes.
 - newConnection - create a new connection after asking the user about the name
-  for the connected node.
+  for the connected node. If the new node doesn't yet exist, it is created.
+- removeNode - Delete the node with all its connections.
 - showDetails - hides the SVG with the network representation and calls the
   `showDetails` handler with the loaded detail data.
 
@@ -192,6 +197,12 @@ You can add zoom buttons like in the following example:
 The intermediate `<div>` is needed to position the buttons in the vertical center.
 
 ## Change log
+
+### V2.2
+- New feature: Nodes can be deleted if they have the attribute `deleteable`
+- Fixed: Fixed problems with hiding and showing nodes
+- Fixed: when creating new nodes, identify existing nodes case-insensitivly
+- Updated example: command button titles in english, white background for zoom buttons
 
 ### V2.1
 - New feature: zoom buttons

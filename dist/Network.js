@@ -180,11 +180,12 @@ var Network = function () {
         return name ? name : Promise.reject('no name given');
       }).then(function (name) {
         var existing = _this4.nodes.find(function (node) {
-          return node.name === name;
+          return node.name.toLowerCase() === name.toLowerCase();
         });
         if (!existing) {
           existing = _this4.handlers.newNode ? _this4.handlers.newNode(name) : { name: name };
           existing.id = existing.id || nextId(_this4.nodes);
+          _this4.nodes.push(existing);
           _this4.diagram.add([existing], []);
         }
         if (!_this4.diagram.nodesConnected(node, existing)) {
@@ -192,6 +193,7 @@ var Network = function () {
           if (_this4.handlers.newLink) {
             _this4.handlers.newLink(newLink);
           }
+          _this4.links.push(newLink);
           _this4.diagram.add([], [newLink]);
         }
 
@@ -199,6 +201,22 @@ var Network = function () {
       }).catch(function (error) {
         return console.error;
       });
+    }
+  }, {
+    key: 'removeNode',
+    value: function removeNode(node) {
+      this.hideCommandsView(node);
+      this.nodes = this.nodes.filter(function (n) {
+        return n.id !== node.id;
+      });
+      this.links = this.links.filter(function (l) {
+        return l.source.id !== node.id && l.target.id !== node.id;
+      });
+      this.diagram.remove([node], []);
+      this.diagram.update();
+      if (this.handlers.nodeRemoved) {
+        this.handlers.nodeRemoved(node);
+      }
     }
   }, {
     key: 'showDetails',

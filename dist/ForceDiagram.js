@@ -241,12 +241,14 @@ var ForceDiagram = function () {
         if (n.index > -1) {
           _this5.nodes.splice(n.index, 1);
         }
-        _this5.links.forEach(function (l, index) {
-          return ForceDiagram.isConnected(l, n) && _this5.links.splice(index, 1);
+        _this5.links = _this5.links.filter(function (l) {
+          return !ForceDiagram.isConnected(l, n);
         });
       });
-      linksToRemove.forEach(function (l) {
-        return l.index > -1 && _this5.links.splice(l.index, 1);
+      this.links = this.links.filter(function (l) {
+        return !linksToRemove.find(function (r) {
+          return r.id === l.id;
+        });
       });
     }
   }, {
