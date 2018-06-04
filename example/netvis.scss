@@ -74,30 +74,56 @@ svg {
   opacity: 0;
   transition: opacity 0.5s;
 
-  &.commandContainer > * {
+  &.commandContainer g {
     width: 100px;
     height: 50px;
     x: -50px;
     y: -10px;
     text-align: center;
 
-    button {
+    .command {
       display: none;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      white-space: nowrap;
-      font-family: 'Glyphicons Halflings';
+
+      &.active {
+        display: inline;
+      }
+
+      circle {
+        fill: white;
+        stroke: #555555;
+        cursor: pointer;
+      }
+
+      text {
+        font-family: 'Glyphicons Halflings';
+        cursor: pointer;
+      }
     }
   }
 
   &.active {
     opacity: 1;
-
-    button.active {
-      display: inline-block;
-    }
   }
+}
+
+#openNode {
+  transform: translate(-45px, -20px);
+}
+
+#closeNode {
+  transform: translate(-27px, -41px);
+}
+
+#newConnection {
+  transform: translate(0px, -50px);
+}
+
+#removeNode {
+  transform: translate(27px, -41px);
+}
+
+#showDetails {
+  transform: translate(45px, -20px);
 }
 
 .detailForm {

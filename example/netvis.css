@@ -49,23 +49,40 @@ svg .node {
 .commands {
   opacity: 0;
   transition: opacity 0.5s; }
-  .commands.commandContainer > * {
+  .commands.commandContainer g {
     width: 100px;
     height: 50px;
     x: -50px;
     y: -10px;
     text-align: center; }
-    .commands.commandContainer > * button {
-      display: none;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      white-space: nowrap;
-      font-family: 'Glyphicons Halflings'; }
+    .commands.commandContainer g .command {
+      display: none; }
+      .commands.commandContainer g .command.active {
+        display: inline; }
+      .commands.commandContainer g .command circle {
+        fill: white;
+        stroke: #555555;
+        cursor: pointer; }
+      .commands.commandContainer g .command text {
+        font-family: 'Glyphicons Halflings';
+        cursor: pointer; }
   .commands.active {
     opacity: 1; }
-    .commands.active button.active {
-      display: inline-block; }
+
+#openNode {
+  transform: translate(-45px, -20px); }
+
+#closeNode {
+  transform: translate(-27px, -41px); }
+
+#newConnection {
+  transform: translate(0px, -50px); }
+
+#removeNode {
+  transform: translate(27px, -41px); }
+
+#showDetails {
+  transform: translate(45px, -20px); }
 
 .detailForm {
   position: absolute;
