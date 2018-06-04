@@ -245,6 +245,7 @@ var Network = function () {
           document.body.classList.remove('dialogOpen');
           _this5.diagram.show();
           _this5.diagram.scaleToNode(node, 1);
+          _this5.diagram.update();
         });
       }
     }

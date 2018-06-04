@@ -163,6 +163,7 @@ class Network {
           document.body.classList.remove('dialogOpen')
           this.diagram.show()
           this.diagram.scaleToNode(node, 1)
+          this.diagram.update()
         })
     }
   }
