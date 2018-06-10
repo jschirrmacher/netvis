@@ -112,6 +112,7 @@ does an action which requires the network to be changed permanently.
 
 These are the possible events:
 
+- 'initialized' - Is called when the diagram is initialized
 - `nameRequired` - The user is required to enter or select a node name. This
   event is sent, if a new connection is to be created. The handler should
   open a dialog and return a Promise which receives the entered node name.
@@ -197,6 +198,9 @@ You can add zoom buttons like in the following example:
 The intermediate `<div>` is needed to position the buttons in the vertical center.
 
 ## Change log
+
+### V2.3
+- New feature: 'initialized' event
 
 ### V2.2
 - New feature: Nodes can be deleted if they have the attribute `deleteable`

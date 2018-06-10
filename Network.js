@@ -32,7 +32,10 @@ class Network {
       this.diagram.add(nodes, links)
       this.diagram.update()
 
-      setTimeout(() => document.body.className = 'initialized', 0)
+      setTimeout(() => {
+        document.body.className = 'initialized'
+        this.handlers.initialized && this.handlers.initialized()
+      }, 0)
     })
   }
 

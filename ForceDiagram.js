@@ -36,7 +36,7 @@ class ForceDiagram {
     this.update()
 
     function handleZoom() {
-      const transform = `translate(${d3.event.transform.x}, ${d3.event.transform.y}) scale(${d3.event.transform.k})`
+      const transform = `translate(${d3.event.transform.x || 0}, ${d3.event.transform.y || 0}) scale(${d3.event.transform.k || 1})`
       svgGroup.attr('transform', transform)
       currentZoom = d3.event.transform.k
       if (this.handlers.zoom) {

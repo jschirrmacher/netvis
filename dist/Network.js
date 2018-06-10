@@ -73,7 +73,8 @@ var Network = function () {
       _this.diagram.update();
 
       setTimeout(function () {
-        return document.body.className = 'initialized';
+        document.body.className = 'initialized';
+        _this.handlers.initialized && _this.handlers.initialized();
       }, 0);
     });
   }
