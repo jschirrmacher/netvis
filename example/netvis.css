@@ -24,8 +24,8 @@ svg .links line {
 svg .node {
   pointer-events: all;
   cursor: pointer;
-  stroke: #000;
-  stroke-width: 1px; }
+  stroke: #666;
+  stroke-width: 0.5px; }
   svg .node.open > circle, svg .node.open > rect {
     stroke: #f00;
     stroke-width: 2px; }
@@ -42,9 +42,16 @@ svg .node {
     svg .node.withBg > text tspan {
       fill: #fff;
       text-shadow: 0 0 5px #000, 0 0 5px #000; }
-  svg .node:hover .title, svg .node.menuActive .title {
+  svg .node:hover circle + .title, svg .node.menuActive circle + .title {
     transition: 0.5s;
     transform: translateY(5em) scale(1.5); }
+  svg .node rect {
+    fill: #fcffff;
+    stroke: none; }
+  svg .node rect + text tspan {
+    font-size: 20px;
+    font-weight: bold;
+    fill: #666; }
 
 .commands {
   opacity: 0;
