@@ -18,6 +18,8 @@ class ForceDiagram {
       .force('charge', d3.forceManyBody().strength(-100).distanceMin(1000))
       .force('collide', d3.forceCollide().radius(100).iterations(2))
       .force('center', d3.forceCenter(this.center.x, this.center.y))
+      .force('x', d3.forceX(this.center.x).strength(0.1))
+      .force('y', d3.forceY(this.center.y).strength(0.1))
 
     this.drag = d3.drag()
       .on('start', d => handleDragStarted(d, this.simulation))

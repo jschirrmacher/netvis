@@ -22,7 +22,7 @@ var ForceDiagram = function () {
 
     this.simulation = d3.forceSimulation().velocityDecay(0.55).force('link', d3.forceLink().distance(100).id(function (d) {
       return d.id;
-    })).force('charge', d3.forceManyBody().strength(-100).distanceMin(1000)).force('collide', d3.forceCollide().radius(100).iterations(2)).force('center', d3.forceCenter(this.center.x, this.center.y));
+    })).force('charge', d3.forceManyBody().strength(-100).distanceMin(1000)).force('collide', d3.forceCollide().radius(100).iterations(2)).force('center', d3.forceCenter(this.center.x, this.center.y)).force('x', d3.forceX(this.center.x).strength(0.1)).force('y', d3.forceY(this.center.y).strength(0.1));
 
     this.drag = d3.drag().on('start', function (d) {
       return handleDragStarted(d, _this.simulation);
