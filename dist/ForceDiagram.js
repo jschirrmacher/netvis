@@ -237,12 +237,12 @@ var ForceDiagram = function () {
     value: function remove(nodesToRemove, linksToRemove) {
       var _this5 = this;
 
-      nodesToRemove.forEach(function (n) {
-        if (n.index > -1) {
-          _this5.nodes.splice(n.index, 1);
-        }
+      nodesToRemove.forEach(function (node) {
         _this5.links = _this5.links.filter(function (l) {
-          return !ForceDiagram.isConnected(l, n);
+          return !ForceDiagram.isConnected(l, node);
+        });
+        _this5.nodes = _this5.nodes.filter(function (n) {
+          return n.id !== node.id;
         });
       });
       this.links = this.links.filter(function (l) {

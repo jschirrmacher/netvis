@@ -202,11 +202,9 @@ class ForceDiagram {
   }
 
   remove(nodesToRemove, linksToRemove) {
-    nodesToRemove.forEach(n => {
-      if (n.index > -1) {
-        this.nodes.splice(n.index, 1)
-      }
-      this.links = this.links.filter(l => !ForceDiagram.isConnected(l, n))
+    nodesToRemove.forEach(node => {
+      this.links = this.links.filter(l => !ForceDiagram.isConnected(l, node))
+      this.nodes = this.nodes.filter(n => n.id !== node.id)
     })
     this.links = this.links.filter(l => !linksToRemove.find(r => r.id === l.id))
   }
