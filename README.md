@@ -154,13 +154,23 @@ Example:
 ```html
 <rect class="commands commandsOverlay" x="0" y="0" width="100%" height="100%" fill="rgba(0, 0, 0, 0.2)"></rect>
 <g class="commands commandContainer">
-    <foreignObject>
-        <button class="command" id="openNode" data-click="openNode" data-visible="!node.open">Show connections</button>
-        <button class="command" id="closeNode" data-click="closeNode" data-visible="node.open">Hide connections</button>
-        <button class="command" id="newConnection" data-click="newConnection" data-visible="node.connectable">Create connection</button>
-        <button class="command" id="removeNode" data-click="removeNode" data-visible="node.deletable">Remove node</button>
-        <button class="command" id="showDetails" data-click="showDetails" data-visible="node.details">Show details</button>
-    </foreignObject>
+  <g>
+    <g class="command" id="openNode" data-click="openNode" data-visible="!node.open" title="Show connections">
+        <circle r="10"></circle><text x="-5px" y="5px">&#xe096;</text>
+    </g>
+    <g class="command" id="closeNode" data-click="closeNode" data-visible="node.open" title="Hide connections">
+        <circle r="10"></circle><text x="-5px" y="5px">&#xe097;</text>
+    </g>
+    <g class="command" id="newConnection" data-click="newConnection" data-visible="node.connectable" title="Create connection">
+        <circle r="10"></circle><text x="-5px" y="5px">+</text>
+    </g>
+    <g class="command" id="removeNode" data-click="removeNode" data-visible="node.deletable" title="Delete node">
+        <circle r="10"></circle><text x="-3px" y="3px">X</text>
+    </g>
+    <g class="command" id="showDetails" data-click="showDetails" data-visible="node.details" title="Show details">
+        <circle r="10"></circle><text x="-2.5px" y="6px">i</text>
+    </g>
+  </g>
 </g>
 ```
 
