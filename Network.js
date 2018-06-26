@@ -162,9 +162,11 @@ class Network {
           this.diagram.hide()
           return this.handlers.showDetails(data)
         })
-        .then(() => {
+        .then(newData => {
+          node = newData || node
           document.body.classList.remove('dialogOpen')
           this.diagram.show()
+          this.diagram.updateNode(node)
           this.diagram.scaleToNode(node, 1)
           this.diagram.update()
         })

@@ -252,6 +252,15 @@ var ForceDiagram = function () {
       });
     }
   }, {
+    key: 'updateNode',
+    value: function updateNode(node) {
+      node = Object.assign(this.nodes.splice(this.nodes.findIndex(function (n) {
+        return n.id === node.id;
+      }), 1)[0], node);
+      this.update();
+      this.nodes.push(node);
+    }
+  }, {
     key: 'scaleToNode',
     value: function scaleToNode(node, scale) {
       var _this6 = this;

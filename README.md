@@ -193,6 +193,32 @@ Another attribute, `data-visible` is an optional one, which identifies
 if the button should be displayed or not. Set this to `node.open` for example
 or `node.connectable` to access attributes of the current node.
 
+## Changing nodes
+
+When executing the `showDetails` command, an event handler with the same name is called which is normally used to
+display detail information about the selected node. If you use a dialog form to let the user change this information,
+you can change the node's representation by resolving to this changed information.
+
+A typical implemention could be like this:
+
+```javascript
+function showDetails(data) {
+  return new Promise(resolve => {
+    const form = document.createElement('div')
+    form.innerHTML = detailFormTemplate(data)
+    form.addEventListener('submit', event => {
+      event.preventDefault()
+      Object.keys(data).forEach(function (key) {
+        data[key] = form.elements[key].value
+      })
+      form.parentNode.removeChild(form)
+      resolve(data)
+    })
+    document.body.appendChild(form)
+  })
+}
+```
+
 ## Zoom buttons
 
 You can add zoom buttons like in the following example:
@@ -208,6 +234,13 @@ You can add zoom buttons like in the following example:
 The intermediate `<div>` is needed to position the buttons in the vertical center.
 
 ## Change log
+
+### V2.5
+- Added a feature to update nodes via the `showDetails` handler
+
+### V2.4
+- Fixed an error when removing nodes from the diagram which kept some links and nodes visible
+- Moved dependency to Babel to dev-dependencies
 
 ### V2.3
 - New feature: 'initialized' event

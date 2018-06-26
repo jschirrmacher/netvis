@@ -242,9 +242,11 @@ var Network = function () {
         }).then(function (data) {
           _this5.diagram.hide();
           return _this5.handlers.showDetails(data);
-        }).then(function () {
+        }).then(function (newData) {
+          node = newData || node;
           document.body.classList.remove('dialogOpen');
           _this5.diagram.show();
+          _this5.diagram.updateNode(node);
           _this5.diagram.scaleToNode(node, 1);
           _this5.diagram.update();
         });

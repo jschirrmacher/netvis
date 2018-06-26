@@ -209,6 +209,12 @@ class ForceDiagram {
     this.links = this.links.filter(l => !linksToRemove.find(r => r.id === l.id))
   }
 
+  updateNode(node) {
+    node = Object.assign(this.nodes.splice(this.nodes.findIndex(n => n.id === node.id), 1)[0], node)
+    this.update()
+    this.nodes.push(node)
+  }
+
   static fixNode(node) {
     node.fx = node.x
     node.fy = node.y
