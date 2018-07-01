@@ -99,7 +99,7 @@ var ForceDiagram = function () {
         return d.open;
       }).classed('withBg', function (d) {
         return d.image;
-      }).call(this.drag);
+      }).call(this.drag).call(bindHandlers.bind(this));
 
       nodeData.exit().remove();
 
@@ -107,7 +107,7 @@ var ForceDiagram = function () {
         return d.shape === 'circle';
       }).call(addCircleNode.bind(this));
       nodeEnter.filter(function (d) {
-        return d.shape !== 'circle';
+        return d.shape === 'rect';
       }).call(addRectNode.bind(this));
 
       nodeEnter.append('text').classed('title', true).text(function (d) {
@@ -133,15 +133,11 @@ var ForceDiagram = function () {
       }
 
       function addCircleNode(enter) {
-        enter.append('circle').classed('node', true).classed('open', function (d) {
-          return d.open;
-        }).attr('r', 50).attr('fill', getBackground.bind(this)).call(bindHandlers.bind(this));
+        enter.append('circle').attr('r', 50).attr('fill', getBackground.bind(this));
       }
 
       function addRectNode(enter) {
-        enter.append('rect').classed('node', true).classed('open', function (d) {
-          return d.open;
-        }).attr('x', -50).attr('y', -35).attr('width', 100).attr('height', 70).attr('fill', getBackground.bind(this)).call(bindHandlers.bind(this));
+        enter.append('rect').attr('x', -50).attr('y', -35).attr('width', 100).attr('height', 70).attr('fill', getBackground.bind(this));
       }
 
       function handleTicks(center) {
@@ -172,11 +168,12 @@ var ForceDiagram = function () {
 
       function wrap(text, width) {
         text.each(function (node) {
+          node.fontSize = node.fontSize || 1;
           var text = d3.select(this);
           var words = (node.name || '').split(/[\s-]+/).reverse();
           var lineHeight = 1.1;
           var line = [];
-          var tspan = text.text(null).append('tspan');
+          var tspan = text.text(null).append('tspan').attr('style', 'font-size: ' + node.fontSize * 14 + 'px');
           var word = void 0;
           var lineCount = 0;
           while (word = words.pop()) {
@@ -187,10 +184,19 @@ var ForceDiagram = function () {
               tspan.text(line.join(' '));
               lineCount++;
               line = [word];
-              tspan = text.append('tspan').attr('x', 0).attr('dy', lineHeight + 'em').text(word);
+              tspan = text.append('tspan').attr('x', 0).attr('dy', lineHeight + 'em').text(word).attr('style', 'font-size: ' + node.fontSize * 14 + 'px');
             }
           }
           text.attr('y', -lineCount * 0.3 + 'em');
+
+          var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          var bbox = this.getBBox();
+          rect.setAttribute('class', 'text-bg');
+          rect.setAttribute('x', bbox.x - 5);
+          rect.setAttribute('y', bbox.y - 3);
+          rect.setAttribute('width', bbox.width + 10);
+          rect.setAttribute('height', bbox.height + 6);
+          text.node().parentNode.insertBefore(rect, this);
         });
       }
     }

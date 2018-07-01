@@ -88,11 +88,12 @@ class ForceDiagram {
       .classed('open', d => d.open)
       .classed('withBg', d => d.image)
       .call(this.drag)
+      .call(bindHandlers.bind(this))
 
     nodeData.exit().remove()
 
     nodeEnter.filter(d => d.shape === 'circle').call(addCircleNode.bind(this))
-    nodeEnter.filter(d => d.shape !== 'circle').call(addRectNode.bind(this))
+    nodeEnter.filter(d => d.shape === 'rect').call(addRectNode.bind(this))
 
     nodeEnter.append('text')
       .classed('title', true)
@@ -111,23 +112,17 @@ class ForceDiagram {
 
     function addCircleNode(enter) {
       enter.append('circle')
-        .classed('node', true)
-        .classed('open', d => d.open)
         .attr('r', 50)
         .attr('fill', getBackground.bind(this))
-        .call(bindHandlers.bind(this))
     }
 
     function addRectNode(enter) {
       enter.append('rect')
-        .classed('node', true)
-        .classed('open', d => d.open)
         .attr('x', -50)
         .attr('y', -35)
         .attr('width', 100)
         .attr('height', 70)
         .attr('fill', getBackground.bind(this))
-        .call(bindHandlers.bind(this))
     }
 
     function handleTicks(center) {
@@ -156,11 +151,12 @@ class ForceDiagram {
 
     function wrap(text, width) {
       text.each(function (node) {
+        node.fontSize = node.fontSize || 1
         const text = d3.select(this)
         const words = (node.name || '').split(/[\s-]+/).reverse()
         const lineHeight = 1.1
         let line = []
-        let tspan = text.text(null).append('tspan')
+        let tspan = text.text(null).append('tspan').attr('style', 'font-size: ' + (node.fontSize * 14) + 'px')
         let word
         let lineCount = 0
         while (word = words.pop()) {
@@ -172,9 +168,19 @@ class ForceDiagram {
             lineCount++
             line = [word]
             tspan = text.append('tspan').attr('x', 0).attr('dy', lineHeight + 'em').text(word)
+              .attr('style', 'font-size: ' + (node.fontSize * 14) + 'px')
           }
         }
         text.attr('y', (-lineCount * 0.3) + 'em')
+
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+        const bbox = this.getBBox()
+        rect.setAttribute('class', 'text-bg')
+        rect.setAttribute('x', bbox.x - 5)
+        rect.setAttribute('y', bbox.y - 3)
+        rect.setAttribute('width', bbox.width + 10)
+        rect.setAttribute('height', bbox.height + 6)
+        text.node().parentNode.insertBefore(rect, this)
       })
     }
   }

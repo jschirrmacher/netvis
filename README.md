@@ -101,6 +101,7 @@ There are some optional attributes in a node:
   chapter "Handlers" to learn what you should do to make that persistent.
 - `deletable` - a flag indicating that the node may be deleted.
 - `details` - an URL which returns detail data for the node in JSON format.
+- `fontSize` - a relative size for the text (1 as the default)
 
 You find a more complete example in the file `example/data.json`.
 
@@ -234,6 +235,11 @@ You can add zoom buttons like in the following example:
 The intermediate `<div>` is needed to position the buttons in the vertical center.
 
 ## Change log
+
+### V2.6
+- Nodes can have an optional 'fontSize' attribute
+- Text background is now generated automatically, so there is no need to define text-only
+  rectangles any more
 
 ### V2.5
 - Added a feature to update nodes via the `showDetails` handler

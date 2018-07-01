@@ -11,26 +11,26 @@
     {
       "id": 2033,
       "name": "Lean Startup",
-      "shape": "rect",
-      "deletable": true
+      "deletable": true,
+      "fontSize": 1.2
     },
     {
       "id": 2034,
       "name": "Design Thinking",
-      "shape": "rect",
-      "deletable": true
+      "deletable": true,
+      "fontSize": 1.6
     },
     {
       "id": 2035,
       "name": "Agile Development",
-      "shape": "rect",
-      "deletable": true
+      "deletable": true,
+      "fontSize": 1.4
     },
     {
       "id": 2036,
       "name": "User Experience",
-      "shape": "rect",
-      "deletable": true
+      "deletable": true,
+      "fontSize": 1.8
     },
     {
       "id": 2037,
@@ -51,25 +51,21 @@
     {
       "id": 2242,
       "name": "Management3.0",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2243,
       "name": "Organisations-Entwicklung",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2244,
       "name": "LeSS",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2245,
       "name": "Scrum",
-      "shape": "rect",
       "deletable": true
     },
      {
@@ -89,79 +85,66 @@
     {
       "id": 2275,
       "name": "Product Management",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2278,
       "name": "Scaling Lean",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2279,
       "name": "leanstack",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2281,
       "name": "Transformation",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2282,
       "name": "Ideenentwicklung",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2283,
       "name": "Confluence",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2284,
       "name": "Business Modelling",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2290,
       "name": "Holacracy",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2297,
       "name": "Innovation management",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2298,
       "name": "Improvisation",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2299,
       "name": "Team development",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2308,
       "name": "Kanban",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2309,
       "name": "Enterprise Services Planning",
-      "shape": "rect",
       "deletable": true
     },
     {
@@ -174,31 +157,26 @@
     {
       "id": 2316,
       "name": "remote",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2317,
       "name": "futureofwork",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2547,
       "name": "Customer Experience",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2548,
       "name": "Lean UX",
-      "shape": "rect",
       "deletable": true
     },
     {
       "id": 2549,
       "name": "UX in Agile",
-      "shape": "rect",
       "deletable": true
     },
     {
