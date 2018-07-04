@@ -102,6 +102,7 @@ There are some optional attributes in a node:
 - `deletable` - a flag indicating that the node may be deleted.
 - `details` - an URL which returns detail data for the node in JSON format.
 - `fontSize` - a relative size for the text (1 as the default)
+- `className` - a css class to style nodes
 
 You find a more complete example in the file `example/data.json`.
 
@@ -235,6 +236,9 @@ You can add zoom buttons like in the following example:
 The intermediate `<div>` is needed to position the buttons in the vertical center.
 
 ## Change log
+
+### V2.7
+- Nodes can have an optional 'className' attribute which is used to css class them
 
 ### V2.6
 - Nodes can have an optional 'fontSize' attribute
