@@ -137,7 +137,7 @@ class Network {
 
         this.diagram.update()
       })
-      .catch(error => console.error)
+      .catch(console.error)
   }
 
   removeNode(node) {
@@ -156,7 +156,7 @@ class Network {
       document.body.classList.add('dialogOpen')
       this.hideCommandsView(node)
       this.diagram.scaleToNode(node, 1000)
-        .then(() => new Promise((resolve, reject) => d3.json(node.details, (error, data) => resolve([error, data]))))
+        .then(() => new Promise(resolve => d3.json(node.details, (error, data) => resolve([error, data]))))
         .then(([error, data]) => error ? Promise.reject(error) : data)
         .then(data => {
           this.diagram.hide()
@@ -174,6 +174,6 @@ class Network {
   }
 
   scale(factor) {
-    this.diagram.scale(factor)
+    return this.diagram.scale(factor)
   }
 }

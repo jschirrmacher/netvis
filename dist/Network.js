@@ -199,9 +199,7 @@ var Network = function () {
         }
 
         _this4.diagram.update();
-      }).catch(function (error) {
-        return console.error;
-      });
+      }).catch(console.error);
     }
   }, {
     key: 'removeNode',
@@ -228,7 +226,7 @@ var Network = function () {
         document.body.classList.add('dialogOpen');
         this.hideCommandsView(node);
         this.diagram.scaleToNode(node, 1000).then(function () {
-          return new Promise(function (resolve, reject) {
+          return new Promise(function (resolve) {
             return d3.json(node.details, function (error, data) {
               return resolve([error, data]);
             });
@@ -255,7 +253,7 @@ var Network = function () {
   }, {
     key: 'scale',
     value: function scale(factor) {
-      this.diagram.scale(factor);
+      return this.diagram.scale(factor);
     }
   }]);
 

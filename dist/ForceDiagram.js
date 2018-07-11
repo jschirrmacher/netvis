@@ -18,7 +18,7 @@ var ForceDiagram = function () {
     this.svg = d3.select(domSelector);
     this.center = { x: this.svg.node().scrollWidth / 2, y: this.svg.node().scrollHeight / 2 };
     this.defs = this.svg.append('defs');
-    var svgGroup = this.svg.append('g').attr('id', 'svgGroup');
+    this.svgGroup = this.svg.append('g').attr('id', 'svgGroup');
 
     this.simulation = d3.forceSimulation().velocityDecay(0.55).force('link', d3.forceLink().distance(100).id(function (d) {
       return d.id;
@@ -36,14 +36,14 @@ var ForceDiagram = function () {
 
     this.svg.call(this.zoom).call(this.drag);
 
-    this.linkContainer = svgGroup.append('g').attr('class', 'links');
-    this.nodeContainer = svgGroup.append('g').attr('class', 'nodes');
+    this.linkContainer = this.svgGroup.append('g').attr('class', 'links');
+    this.nodeContainer = this.svgGroup.append('g').attr('class', 'nodes');
 
     this.update();
 
     function handleZoom() {
       var transform = 'translate(' + (d3.event.transform.x || 0) + ', ' + (d3.event.transform.y || 0) + ') scale(' + (d3.event.transform.k || 1) + ')';
-      svgGroup.attr('transform', transform);
+      this.svgGroup.attr('transform', transform);
       currentZoom = d3.event.transform.k;
       if (this.handlers.zoom) {
         this.handlers.zoom(transform);
@@ -80,8 +80,6 @@ var ForceDiagram = function () {
   }, {
     key: 'update',
     value: function update() {
-      var _this2 = this;
-
       var linkData = this.linkContainer.selectAll('line').data(this.links, function (d) {
         return d.id;
       });
@@ -120,17 +118,17 @@ var ForceDiagram = function () {
 
       nodeData = nodeEnter.merge(nodeData);
       this.simulation.nodes(this.nodes).on('tick', function () {
-        return handleTicks.bind(_this2)(_this2.center);
+        return handleTicks();
       });
 
       this.simulation.alpha(0.3);
       this.simulation.restart();
 
       function bindHandlers(node) {
-        var _this3 = this;
+        var _this2 = this;
 
         Object.keys(this.handlers).forEach(function (type) {
-          return node.on(type, _this3.handlers[type]);
+          return node.on(type, _this2.handlers[type]);
         });
       }
 
@@ -142,7 +140,7 @@ var ForceDiagram = function () {
         enter.append('rect').attr('x', -50).attr('y', -35).attr('width', 100).attr('height', 70).attr('fill', getBackground.bind(this));
       }
 
-      function handleTicks(center) {
+      function handleTicks() {
         linkData.attr('x1', function (d) {
           return d.source.x;
         }).attr('y1', function (d) {
@@ -225,31 +223,31 @@ var ForceDiagram = function () {
   }, {
     key: 'add',
     value: function add(nodesToAdd, linksToAdd) {
-      var _this4 = this;
+      var _this3 = this;
 
       if (nodesToAdd) {
         nodesToAdd.forEach(function (n) {
-          return !_this4.nodes.some(function (d) {
+          return !_this3.nodes.some(function (d) {
             return d.id === n.id;
-          }) && _this4.nodes.push(n);
+          }) && _this3.nodes.push(n);
         });
       }
       if (linksToAdd) {
         linksToAdd.forEach(function (l) {
-          return !_this4.nodesConnected(l.source, l.target) && _this4.links.push(l);
+          return !_this3.nodesConnected(l.source, l.target) && _this3.links.push(l);
         });
       }
     }
   }, {
     key: 'remove',
     value: function remove(nodesToRemove, linksToRemove) {
-      var _this5 = this;
+      var _this4 = this;
 
       nodesToRemove.forEach(function (node) {
-        _this5.links = _this5.links.filter(function (l) {
+        _this4.links = _this4.links.filter(function (l) {
           return !ForceDiagram.isConnected(l, node);
         });
-        _this5.nodes = _this5.nodes.filter(function (n) {
+        _this4.nodes = _this4.nodes.filter(function (n) {
           return n.id !== node.id;
         });
       });
@@ -271,11 +269,11 @@ var ForceDiagram = function () {
   }, {
     key: 'scaleToNode',
     value: function scaleToNode(node, scale) {
-      var _this6 = this;
+      var _this5 = this;
 
       return new Promise(function (resolve) {
         ForceDiagram.fixNode(node);
-        _this6.svg.transition().duration(1000).call(_this6.zoom.transform, d3.zoomIdentity.translate(_this6.center.x, _this6.center.y).scale(scale).translate(-node.x, -node.y)).on('end', function () {
+        _this5.svg.transition().duration(1000).call(_this5.zoom.transform, d3.zoomIdentity.translate(_this5.center.x, _this5.center.y).scale(scale).translate(-node.x, -node.y)).on('end', function () {
           ForceDiagram.releaseNode(node);
           resolve(true);
         });
@@ -284,10 +282,14 @@ var ForceDiagram = function () {
   }, {
     key: 'scale',
     value: function scale(factor) {
-      var _this7 = this;
+      var _this6 = this;
 
       return new Promise(function (resolve) {
-        _this7.svg.transition().duration(1000).call(_this7.zoom.transform, d3.zoomIdentity.scale(factor * currentZoom)).on('end', function () {
+        var m = _this6.svgGroup.node().getAttribute('transform');
+        var d = m && m.match(/[\d.]+/g).map(function (a) {
+          return +a;
+        }) || [0, 0, 1];
+        _this6.svg.transition().duration(1000).call(_this6.zoom.transform, d3.zoomIdentity.translate(factor * d[0] - (factor - 1) * _this6.center.x, factor * d[1] - (factor - 1) * _this6.center.y).scale(factor * currentZoom)).on('end', function () {
           return resolve(true);
         });
       });

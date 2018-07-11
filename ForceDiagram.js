@@ -8,7 +8,7 @@ class ForceDiagram {
     this.svg = d3.select(domSelector)
     this.center = {x: this.svg.node().scrollWidth / 2, y: this.svg.node().scrollHeight / 2}
     this.defs = this.svg.append('defs')
-    const svgGroup = this.svg
+    this.svgGroup = this.svg
       .append('g')
       .attr('id', 'svgGroup')
 
@@ -32,14 +32,14 @@ class ForceDiagram {
       .call(this.zoom)
       .call(this.drag)
 
-    this.linkContainer = svgGroup.append('g').attr('class', 'links')
-    this.nodeContainer = svgGroup.append('g').attr('class', 'nodes')
+    this.linkContainer = this.svgGroup.append('g').attr('class', 'links')
+    this.nodeContainer = this.svgGroup.append('g').attr('class', 'nodes')
 
     this.update()
 
     function handleZoom() {
       const transform = `translate(${d3.event.transform.x || 0}, ${d3.event.transform.y || 0}) scale(${d3.event.transform.k || 1})`
-      svgGroup.attr('transform', transform)
+      this.svgGroup.attr('transform', transform)
       currentZoom = d3.event.transform.k
       if (this.handlers.zoom) {
         this.handlers.zoom(transform)
@@ -102,7 +102,7 @@ class ForceDiagram {
       .call(d => wrap(d, 90))
 
     nodeData = nodeEnter.merge(nodeData)
-    this.simulation.nodes(this.nodes).on('tick', () => handleTicks.bind(this)(this.center))
+    this.simulation.nodes(this.nodes).on('tick', () => handleTicks())
 
     this.simulation.alpha(0.3)
     this.simulation.restart()
@@ -126,7 +126,7 @@ class ForceDiagram {
         .attr('fill', getBackground.bind(this))
     }
 
-    function handleTicks(center) {
+    function handleTicks() {
       linkData
         .attr('x1', d => d.source.x)
         .attr('y1', d => d.source.y)
@@ -250,10 +250,12 @@ class ForceDiagram {
 
   scale(factor) {
     return new Promise(resolve => {
+      const m = this.svgGroup.node().getAttribute('transform')
+      const d = (m && m.match(/[\d.]+/g).map(a => +a)) || [0, 0, 1]
       this.svg.transition().duration(1000)
         .call(this.zoom.transform, d3.zoomIdentity
-          .scale(factor * currentZoom)
-        )
+          .translate(factor * d[0] - (factor - 1) * this.center.x, factor * d[1] - (factor - 1) * this.center.y)
+          .scale(factor * currentZoom))
         .on('end', () => resolve(true))
     })
   }
