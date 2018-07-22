@@ -158,6 +158,7 @@ var ForceDiagram = function () {
 
       function getBackground(node) {
         if (node.image) {
+          this.defs.select('#bg-' + node.id).remove();
           this.defs.append('pattern').attr('id', function () {
             return 'bg-' + node.id;
           }).attr('height', 1).attr('width', 1).append('image').attr('xlink:href', node.image.replace(/ /g, '%20')).attr('height', '100px').attr('width', '100px').attr('preserveAspectRatio', 'xMidYMid slice');

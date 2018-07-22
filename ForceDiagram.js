@@ -138,6 +138,7 @@ class ForceDiagram {
 
     function getBackground(node) {
       if (node.image) {
+        this.defs.select('#bg-' + node.id).remove()
         this.defs.append('pattern')
           .attr('id', () => 'bg-' + node.id)
           .attr('height', 1).attr('width', 1)
