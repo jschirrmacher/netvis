@@ -256,6 +256,11 @@ var Network = function () {
       }).catch(console.error);
     }
   }, {
+    key: 'update',
+    value: function update() {
+      this.diagram.update();
+    }
+  }, {
     key: 'showDetails',
     value: function showDetails(node) {
       var _this6 = this;

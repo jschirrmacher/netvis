@@ -175,6 +175,10 @@ class Network {
       .catch(console.error)
   }
 
+  update() {
+    this.diagram.update()
+  }
+
   showDetails(node) {
     if (this.handlers.showDetails) {
       document.body.classList.add('dialogOpen')
