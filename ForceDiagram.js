@@ -213,7 +213,10 @@ class ForceDiagram {
       this.links = this.links.filter(l => !ForceDiagram.isConnected(l, node))
       this.nodes = this.nodes.filter(n => n.id !== node.id)
     })
-    this.links = this.links.filter(l => !linksToRemove.find(r => r.id === l.id))
+    this.links = this.links.filter(l => !linksToRemove.some(r => {
+      return (r.source.id === l.source.id && r.target.id === l.target.id)
+        || (r.source.id === l.target.id && t.source.id === l.source.id)
+    }))
   }
 
   updateNode(node) {

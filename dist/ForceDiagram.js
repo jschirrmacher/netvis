@@ -252,8 +252,8 @@ var ForceDiagram = function () {
         });
       });
       this.links = this.links.filter(function (l) {
-        return !linksToRemove.find(function (r) {
-          return r.id === l.id;
+        return !linksToRemove.some(function (r) {
+          return r.source.id === l.source.id && r.target.id === l.target.id || r.source.id === l.target.id && t.source.id === l.source.id;
         });
       });
     }

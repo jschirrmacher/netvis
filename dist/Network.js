@@ -172,34 +172,10 @@ var Network = function () {
       this.hideCommandsView(node);
     }
   }, {
-    key: 'newConnection',
-    value: function newConnection(node) {
-      var _this4 = this;
-
-      this.hideCommandsView(node);
-      this.handlers.nameRequired().then(function (name) {
-        return name ? name : Promise.reject('no name given');
-      }).then(function (name) {
-        var existing = _this4.nodes.find(function (node) {
-          return node.name.toLowerCase() === name.toLowerCase();
-        });
-        if (!existing) {
-          existing = _this4.handlers.newNode ? _this4.handlers.newNode(name) : { name: name };
-          existing.id = existing.id || nextId(_this4.nodes);
-          _this4.nodes.push(existing);
-          _this4.diagram.add([existing], []);
-        }
-        if (!_this4.diagram.nodesConnected(node, existing)) {
-          var newLink = { id: nextId(_this4.links), source: node, target: existing };
-          if (_this4.handlers.newLink) {
-            _this4.handlers.newLink(newLink);
-          }
-          _this4.links.push(newLink);
-          _this4.diagram.add([], [newLink]);
-        }
-
-        _this4.diagram.update();
-      }).catch(console.error);
+    key: 'addNode',
+    value: function addNode(node) {
+      this.nodes.push(node);
+      this.diagram.add([node], []);
     }
   }, {
     key: 'removeNode',
@@ -218,9 +194,71 @@ var Network = function () {
       }
     }
   }, {
+    key: 'getNode',
+    value: function getNode(id) {
+      return this.nodes.find(function (node) {
+        return node.id === id;
+      });
+    }
+  }, {
+    key: 'addLinks',
+    value: function addLinks(links) {
+      var _this4 = this;
+
+      this.diagram.add([], links.map(function (l) {
+        return { id: nextId(_this4.links), source: _this4.getNode(l.source.id), target: _this4.getNode(l.target.id) };
+      }).map(function (l) {
+        _this4.links.push(l);
+        return l;
+      }));
+    }
+  }, {
+    key: 'removeLinks',
+    value: function removeLinks(links) {
+      var cmpLink = function cmpLink(a, b) {
+        return a.source.id === b.source.id && a.target.id === b.target.id;
+      };
+      this.links = this.links.filter(function (l) {
+        return !links.some(function (r) {
+          return cmpLink(l, r);
+        });
+      });
+      this.diagram.remove([], links);
+    }
+  }, {
+    key: 'newConnection',
+    value: function newConnection(node) {
+      var _this5 = this;
+
+      this.hideCommandsView(node);
+      this.handlers.nameRequired().then(function (name) {
+        return name ? name : Promise.reject('no name given');
+      }).then(function (name) {
+        var existing = _this5.nodes.find(function (node) {
+          return node.name.toLowerCase() === name.toLowerCase();
+        });
+        if (!existing) {
+          existing = _this5.handlers.newNode ? _this5.handlers.newNode(name) : { name: name };
+          existing.id = existing.id || nextId(_this5.nodes);
+          _this5.nodes.push(existing);
+          _this5.diagram.add([existing], []);
+        }
+        if (!_this5.diagram.nodesConnected(node, existing)) {
+          var newLink = { id: nextId(_this5.links), source: node, target: existing };
+          if (_this5.handlers.newLink) {
+            _this5.handlers.newLink(newLink);
+          }
+          _this5.links.push(newLink);
+          _this5.diagram.add([], [newLink]);
+        }
+
+        _this5.diagram.update();
+      }).catch(console.error);
+    }
+  }, {
     key: 'showDetails',
     value: function showDetails(node) {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this.handlers.showDetails) {
         document.body.classList.add('dialogOpen');
@@ -238,15 +276,15 @@ var Network = function () {
 
           return error ? Promise.reject(error) : data;
         }).then(function (data) {
-          _this5.diagram.hide();
-          return _this5.handlers.showDetails(data);
+          _this6.diagram.hide();
+          return _this6.handlers.showDetails(data);
         }).then(function (newData) {
           node = newData || node;
           document.body.classList.remove('dialogOpen');
-          _this5.diagram.show();
-          _this5.diagram.updateNode(node);
-          _this5.diagram.scaleToNode(node, 1);
-          _this5.diagram.update();
+          _this6.diagram.show();
+          _this6.diagram.updateNode(node);
+          _this6.diagram.scaleToNode(node, 1);
+          _this6.diagram.update();
         });
       }
     }

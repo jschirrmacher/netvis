@@ -237,6 +237,9 @@ The intermediate `<div>` is needed to position the buttons in the vertical cente
 
 ## Change log
 
+### V2.8
+- New functions to add nodes and to add and remove links
+
 ### V2.7
 - Nodes can have an optional 'className' attribute which is used to css class them
 

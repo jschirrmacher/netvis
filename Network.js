@@ -114,6 +114,41 @@ class Network {
     this.hideCommandsView(node)
   }
 
+  addNode(node) {
+    this.nodes.push(node)
+    this.diagram.add([node], [])
+  }
+
+  removeNode(node) {
+    this.hideCommandsView(node)
+    this.nodes = this.nodes.filter(n => n.id !== node.id)
+    this.links = this.links.filter(l => l.source.id !== node.id && l.target.id !== node.id)
+    this.diagram.remove([node], [])
+    this.diagram.update()
+    if (this.handlers.nodeRemoved) {
+      this.handlers.nodeRemoved(node)
+    }
+  }
+
+  getNode(id) {
+    return this.nodes.find(node => node.id === id)
+  }
+
+  addLinks(links) {
+    this.diagram.add([], links
+      .map(l => ({id: nextId(this.links), source: this.getNode(l.source.id), target: this.getNode(l.target.id)}))
+      .map(l => {
+        this.links.push(l)
+        return l
+      }))
+  }
+
+  removeLinks(links) {
+    const cmpLink = (a, b) => (a.source.id === b.source.id && a.target.id === b.target.id)
+    this.links = this.links.filter(l => !links.some(r => cmpLink(l, r)))
+    this.diagram.remove([], links)
+  }
+
   newConnection(node) {
     this.hideCommandsView(node)
     this.handlers.nameRequired()
@@ -138,17 +173,6 @@ class Network {
         this.diagram.update()
       })
       .catch(console.error)
-  }
-
-  removeNode(node) {
-    this.hideCommandsView(node)
-    this.nodes = this.nodes.filter(n => n.id !== node.id)
-    this.links = this.links.filter(l => l.source.id !== node.id && l.target.id !== node.id)
-    this.diagram.remove([node], [])
-    this.diagram.update()
-    if (this.handlers.nodeRemoved) {
-      this.handlers.nodeRemoved(node)
-    }
   }
 
   showDetails(node) {
