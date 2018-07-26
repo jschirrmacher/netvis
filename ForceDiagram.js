@@ -6,7 +6,7 @@ class ForceDiagram {
     this.nodes = []
     this.handlers = {}
     this.svg = d3.select(domSelector)
-    this.center = {x: this.svg.node().scrollWidth / 2, y: this.svg.node().scrollHeight / 2}
+    this.center = {x: this.svg.node().width.baseVal.value / 2, y: this.svg.node().height.baseVal.value / 2}
     this.defs = this.svg.append('defs')
     this.svgGroup = this.svg
       .append('g')
