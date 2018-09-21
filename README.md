@@ -237,6 +237,9 @@ The intermediate `<div>` is needed to position the buttons in the vertical cente
 
 ## Change log
 
+### V2.9
+- Can start a dev session via `npm start` using `forever --watch` for an easier development cycle
+
 ### V2.8
 - New functions to add nodes and to add and remove links
 
