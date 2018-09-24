@@ -23,6 +23,9 @@ var Network = function () {
 
     _classCallCheck(this, Network);
 
+    handlers.error = handlers.error || function () {
+      return undefined;
+    };
     this.handlers = handlers;
     d3.json(dataUrl, function (error, data) {
       if (error) throw error;
@@ -37,7 +40,7 @@ var Network = function () {
           command.addEventListener('click', function () {
             return _this[command.dataset.click](_this.activeNode);
           });
-          command.visibleIf = function (node) {
+          command.visibleIf = function () {
             return command.dataset.visible ? eval(command.dataset.visible) : true;
           };
         });
@@ -50,7 +53,7 @@ var Network = function () {
       var node = function node(id) {
         return data.nodes.find(function (node) {
           return node.id === id;
-        }) || console.error('Node id ' + id + ' not found');
+        }) || handlers.error('Node id ' + id + ' not found');
       };
       _this.links = data.links.map(function (link, id) {
         return { id: id + 1, source: node(link.source), target: node(link.target) };
@@ -253,7 +256,7 @@ var Network = function () {
         }
 
         _this5.diagram.update();
-      }).catch(console.error);
+      }).catch(this.handlers.error);
     }
   }, {
     key: 'update',

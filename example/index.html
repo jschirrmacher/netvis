@@ -49,6 +49,11 @@
         </div>
     </div>
 
+    <div class="selection">
+        <a href=".">Personen</a>
+        <a href="?n=1">Themen</a>
+    </div>
+
     <script id="detailForm" type="text/x-handlebars-template">
         <h2>
             <button class="close">×</button>
@@ -76,7 +81,8 @@
     <script>
       const source = document.getElementById('detailForm').innerHTML
       const detailFormTemplate = Handlebars.compile(source)
-      const network = new Network('data.json', '#root', {
+      const name = location.search.match(/n=(\d+)/) ? 'data.' + RegExp.$1 + '.json' : 'data.json'
+      const network = new Network(name, '#root', {
         nameRequired: function() {
           return Promise.resolve(window.prompt('Name'))
         },

@@ -5,6 +5,7 @@ let commandView
 
 class Network {
   constructor(dataUrl, domSelector, handlers = {}) {
+    handlers.error = handlers.error || (() => undefined)
     this.handlers = handlers
     d3.json(dataUrl, (error, data) => {
       if (error) throw error
@@ -15,13 +16,13 @@ class Network {
       if ((commandView = document.querySelector(domSelector + ' .commandContainer'))) {
         Array.from(commandView.querySelectorAll('.command')).forEach(command => {
           command.addEventListener('click', () => this[command.dataset.click](this.activeNode))
-          command.visibleIf = node => command.dataset.visible ? eval(command.dataset.visible) : true
+          command.visibleIf = () => command.dataset.visible ? eval(command.dataset.visible) : true
         })
         this.diagram.addHandler('click', this.showCommandsView.bind(this))
         this.diagram.addHandler('zoom', transform => commandView.setAttribute('transform', transform))
       }
 
-      const node = id => data.nodes.find(node => node.id === id) || console.error('Node id ' + id + ' not found')
+      const node = id => data.nodes.find(node => node.id === id) || handlers.error('Node id ' + id + ' not found')
       this.links = data.links.map((link, id) => ({id: id + 1, source: node(link.source), target: node(link.target)}))
       this.nodes = data.nodes
 
@@ -172,7 +173,7 @@ class Network {
 
         this.diagram.update()
       })
-      .catch(console.error)
+      .catch(this.handlers.error)
   }
 
   update() {

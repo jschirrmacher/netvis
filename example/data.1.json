@@ -4,14 +4,13 @@
       "id": 2032,
       "name": "XCamp",
       "shape": "circle",
-      "open": true,
-      "visible": true,
-      "keepOpen": true
+      "visible": false
     },
     {
       "id": 2033,
       "name": "Lean Startup",
       "deletable": true,
+      "visible": true,
       "fontSize": 1.2,
       "distance": 50
     },
@@ -19,13 +18,15 @@
       "id": 2034,
       "name": "Design Thinking",
       "deletable": true,
+      "visible": true,
       "fontSize": 1.6,
       "distance": 50
     },
     {
       "id": 2035,
-      "name": "Agile Development",
+      "name": "Agile",
       "deletable": true,
+      "visible": true,
       "fontSize": 1.4,
       "distance": 50
     },
@@ -33,6 +34,7 @@
       "id": 2036,
       "name": "User Experience",
       "deletable": true,
+      "visible": true,
       "fontSize": 1.8,
       "distance": 50
     },
@@ -41,7 +43,7 @@
       "name": "Joachim Schirrmacher",
       "shape": "circle",
       "image": "https://www.xing.com/image/0_4_3_72e679b3d_3230655_6/joachim-schirrmacher-foto.256x256.jpg",
-      "visible": true,
+      "visible": false,
       "connectable": true,
       "details": "node/2037.json"
     },
@@ -50,29 +52,33 @@
       "name": "Christiane Gerigk",
       "shape": "circle",
       "image": "https://www.xing.com/image/1_9_3_3542476e8_3288678_3/christiane-gerigk-foto.256x256.jpg",
-      "visible": true
+      "visible": false
     },
     {
       "id": 2242,
       "name": "Management3.0",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2243,
       "name": "Organisations-Entwicklung",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2244,
       "name": "LeSS",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2245,
       "name": "Scrum",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
@@ -81,90 +87,104 @@
       "name": "Wolf N\u00f6ding",
       "shape": "circle",
       "image": "https://xp-net.com\/network\/LCFRM3\/2248\/Profil_2.png",
-      "visible": true
+      "visible": false,
+       "distance": 50
     },
     {
       "id": 2256,
       "name": "Jens Bothmer",
       "shape": "circle",
       "image": "https://xp-net.com\/network\/LCFRM3\/2256\/Jens_Bothmer_1024_v1.jpg",
-      "visible": true
+      "visible": false
     },
     {
       "id": 2275,
       "name": "Product Management",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2278,
       "name": "Scaling Lean",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2279,
       "name": "leanstack",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2281,
       "name": "Transformation",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2282,
       "name": "Ideenentwicklung",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2283,
       "name": "Confluence",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2284,
       "name": "Business Modelling",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2290,
-      "name": "Holacracy",
+      "name": "Holocracy",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2297,
       "name": "Innovation management",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2298,
       "name": "Improvisation",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2299,
       "name": "Team development",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2308,
       "name": "Kanban",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2309,
       "name": "Enterprise Services Planning",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
@@ -173,35 +193,40 @@
       "name": "Bianca  K\u00f6llner",
       "shape": "circle",
       "image": "https://www.xing.com/img/users/f/1/6/71bdbf591.23456580,3.256x256.jpg",
-      "visible": true
+      "visible": false
     },
     {
       "id": 2316,
       "name": "remote",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2317,
       "name": "futureofwork",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2547,
       "name": "Customer Experience",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2548,
       "name": "Lean UX",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
     {
       "id": 2549,
       "name": "UX in Agile",
+      "visible": true,
       "deletable": true,
       "distance": 50
     },
@@ -210,17 +235,33 @@
       "name": "Stefan Trost",
       "shape": "circle",
       "image": "https://www.xing.com/img/users/1/2/e/2be35a4d7.8857578,3.256x256.jpg",
-      "visible": true
+      "visible": false
     }
   ],
   "links": [
     {
-      "source": 2032,
-      "target": 2033
+      "source": 2242,
+      "target": 2290
     },
     {
       "source": 2032,
-      "target": 2034
+      "target": 2033,
+      "distance": 50
+    },
+    {
+      "source": 2036,
+      "target": 2547,
+      "distance": 50
+    },
+    {
+      "source": 2034,
+      "target": 2282,
+      "distance": 50
+    },
+    {
+      "source": 2032,
+      "target": 2034,
+      "distance": 50
     },
     {
       "source": 2032,
@@ -240,6 +281,22 @@
     },
     {
       "source": 2037,
+      "target": 2035
+    },
+    {
+      "source": 2549,
+      "target": 2036
+    },
+    {
+      "source": 2548,
+      "target": 2036
+    },
+    {
+      "source": 2549,
+      "target": 2035
+    },
+    {
+      "source": 2308,
       "target": 2035
     },
     {

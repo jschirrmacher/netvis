@@ -147,4 +147,17 @@ svg .node {
 .dialogOpen .zoom {
   display: none; }
 
+.selection {
+  position: absolute;
+  top: 0;
+  margin: auto;
+  width: 100%;
+  text-align: center;
+  padding-top: 10px; }
+  .selection a {
+    background: white;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 4px; }
+
 /*# sourceMappingURL=netvis.css.map */
