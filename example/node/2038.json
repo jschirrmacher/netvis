@@ -1,0 +1,32 @@
+{
+  "id": 2038,
+  "firstName": "Christiane",
+  "lastName": "Gerigk",
+  "image": "https://www.xing.com/image/1_9_3_3542476e8_3288678_3/christiane-gerigk-foto.256x256.jpg",
+  "description": "Dr. Christiane Gerigk arbeitet als Coach und Workshop-Moderatorin mit Teams gezielt in der Frühphase von Innovationsprozessen. Sie vermittelt on-the-Job die geeigneten Methoden aus agiler Entwicklung, Lean-Startup und Design Thinking. Gleichzeitig unterstützt sie Unternehmensleitung und Team dabei, wirkungsvolle organisatorische Voraussetzungen für Agilität in der Organisation zu schaffen.",
+  "url": "https://digital-wachsen.de",
+  "links": [
+    {
+      "id": 2034,
+      "name": "Design Thinking",
+      "type": "tag"
+    },
+    {
+      "id": 2033,
+      "name": "Lean Startup",
+      "type": "tag"
+    },
+    {
+      "id": 2035,
+      "name": "Agile",
+      "type": "tag"
+    },
+    {
+      "id": 2281,
+      "name": "Transformation",
+      "type": "tag"
+    }
+  ],
+  "name": "Christiane Gerigk",
+  "twitterName": "justsoandme"
+}

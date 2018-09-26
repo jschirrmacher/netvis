@@ -4,6 +4,8 @@
       "id": 2032,
       "name": "XCamp",
       "shape": "circle",
+      "image": "https://xcamp.co/netvis/xcamp.png",
+      "details": "node/2032.json",
       "open": true,
       "visible": true,
       "keepOpen": true
@@ -24,7 +26,7 @@
     },
     {
       "id": 2035,
-      "name": "Agile Development",
+      "name": "Agile",
       "deletable": true,
       "fontSize": 1.4,
       "distance": 50
@@ -50,6 +52,7 @@
       "name": "Christiane Gerigk",
       "shape": "circle",
       "image": "https://www.xing.com/image/1_9_3_3542476e8_3288678_3/christiane-gerigk-foto.256x256.jpg",
+      "details": "node/2038.json",
       "visible": true
     },
     {
@@ -76,18 +79,20 @@
       "deletable": true,
       "distance": 50
     },
-     {
+    {
       "id": 2248,
       "name": "Wolf N\u00f6ding",
       "shape": "circle",
-      "image": "https://xp-net.com\/network\/LCFRM3\/2248\/Profil_2.png",
+      "image": "https://xcamp.co/netvis/persons/0x7563/picture/Wolf_03.png",
+      "details": "node/2248.json",
       "visible": true
     },
     {
       "id": 2256,
       "name": "Jens Bothmer",
       "shape": "circle",
-      "image": "https://xp-net.com\/network\/LCFRM3\/2256\/Jens_Bothmer_1024_v1.jpg",
+      "image": "https://xcamp.co/netvis/persons/0x7555/picture/Jens_Bothmer_683_683_Portraits_Quadrat.png",
+      "details": "node/2256.json",
       "visible": true
     },
     {
@@ -173,6 +178,7 @@
       "name": "Bianca  K\u00f6llner",
       "shape": "circle",
       "image": "https://www.xing.com/img/users/f/1/6/71bdbf591.23456580,3.256x256.jpg",
+      "details": "node/2313.json",
       "visible": true
     },
     {
@@ -209,7 +215,8 @@
       "id": 2550,
       "name": "Stefan Trost",
       "shape": "circle",
-      "image": "https://www.xing.com/img/users/1/2/e/2be35a4d7.8857578,3.256x256.jpg",
+      "image": "https://xcamp.co/netvis/persons/0x755c/picture/4-small.JPG",
+      "details": "node/2550.json",
       "visible": true
     }
   ],
@@ -341,6 +348,10 @@
     {
       "source": 2313,
       "target": 2299
+    },
+    {
+      "source": 2313,
+      "target": 2034
     },
     {
       "source": 2313,

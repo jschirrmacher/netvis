@@ -1,3 +1,4 @@
+/*global d3*/
 let currentZoom = 1
 
 class ForceDiagram {
@@ -236,12 +237,12 @@ class ForceDiagram {
     node.fy = undefined
   }
 
-  scaleToNode(node, scale) {
+  scaleToNode(node, scale, diffX = 0, diffY = 0) {
     return new Promise(resolve => {
       ForceDiagram.fixNode(node)
       this.svg.transition().duration(1000)
         .call(this.zoom.transform, d3.zoomIdentity
-          .translate(this.center.x, this.center.y)
+          .translate(this.center.x + diffX, this.center.y + diffY)
           .scale(scale)
           .translate(-node.x, -node.y)
         )
@@ -272,7 +273,7 @@ class ForceDiagram {
     this.svg.attr('style', 'opacity: 1; transition: opacity 0.5s')
   }
 
-  getDomElement(node) {
+  static getDomElement(node) {
     return document.getElementById('node-' + node.id)
   }
 }

@@ -1,76 +1,67 @@
+/*global d3,ForceDiagram*/
 const nextId = list => list.reduce((id, entry) => Math.max(id, entry.id), 0) + 1
 
-let overlay
-let commandView
-
 class Network {
-  constructor(dataUrl, domSelector, handlers = {}) {
-    handlers.error = handlers.error || (() => undefined)
-    this.handlers = handlers
-    d3.json(dataUrl, (error, data) => {
-      if (error) throw error
-      this.diagram = new ForceDiagram(document.querySelector(domSelector))
-      if ((overlay = document.querySelector(domSelector + ' .commandOverlay'))) {
-        overlay.addEventListener('click', () => this.hideCommandsView(this.activeNode))
-      }
-      if ((commandView = document.querySelector(domSelector + ' .commandContainer'))) {
-        Array.from(commandView.querySelectorAll('.command')).forEach(command => {
-          command.addEventListener('click', () => this[command.dataset.click](this.activeNode))
-          command.visibleIf = () => command.dataset.visible ? eval(command.dataset.visible) : true
-        })
-        this.diagram.addHandler('click', this.showCommandsView.bind(this))
-        this.diagram.addHandler('zoom', transform => commandView.setAttribute('transform', transform))
-      }
-
-      const node = id => data.nodes.find(node => node.id === id) || handlers.error('Node id ' + id + ' not found')
-      this.links = data.links.map((link, id) => ({id: id + 1, source: node(link.source), target: node(link.target)}))
-      this.nodes = data.nodes
-
-      const setBothSidesVisible = d => d.source.visible = d.target.visible = true
-      this.links.filter(d => d.source.open || d.target.open).map(setBothSidesVisible)
-      const links = this.links.filter(d => d.source.visible && d.target.visible)
-      const nodes = this.nodes.filter(d => d.visible)
-      this.diagram.add(nodes, links)
-      this.diagram.update()
-
-      setTimeout(() => {
-        document.body.className = 'initialized'
-        this.handlers.initialized && this.handlers.initialized()
-      }, 0)
+  d3json(what) {
+    return new Promise((resolve, reject) => {
+      d3.json(what, (error, data) => error ? reject(error) : resolve(data))
     })
   }
 
-  showCommandsView(node) {
-    const setActive = el => {
-      el.parentNode.appendChild(el)
-      el.classList.add('active')
-    }
-    const activate = el => el && setActive(el)
-    const px = n => n ? (n + 'px') : n
-    ForceDiagram.fixNode(node)
-    this.activeNode = node
-    this.diagram.getDomElement(node).classList.add('menuActive')
-    Array.from(commandView.querySelectorAll('.command')).forEach(cmd => cmd.classList.toggle('active', !!cmd.visibleIf(node)))
-    activate(overlay)
-    activate(commandView)
-    if (commandView) {
-      commandView.children[0].setAttribute('style', 'transform: translate(' + px(node.x) + ',' + px(node.y) + ')')
-    }
+  constructor(dataUrl, domSelector, handlers = {}) {
+    handlers.error = handlers.error || (() => undefined)
+    this.handlers = handlers
+    this.d3json(dataUrl)
+      .then(data => {
+        this.diagram = new ForceDiagram(document.querySelector(domSelector))
+        if (this.handlers.showDetails) {
+          this.details = document.createElement('div')
+          this.details.setAttribute('class', 'details')
+          document.body.append(this.details)
+          this.diagram.addHandler('click', node => this.showDetails(node))
+        }
+
+        const node = id => data.nodes.find(node => node.id === id) || handlers.error('Node id ' + id + ' not found')
+        this.links = data.links.map((link, id) => ({id: id + 1, source: node(link.source), target: node(link.target)}))
+        this.nodes = data.nodes
+
+        const setBothSidesVisible = d => d.source.visible = d.target.visible = true
+        this.links.filter(d => d.source.open || d.target.open).map(setBothSidesVisible)
+        const links = this.links.filter(d => d.source.visible && d.target.visible)
+        const nodes = this.nodes.filter(d => d.visible)
+        this.diagram.add(nodes, links)
+        this.diagram.update()
+
+        setTimeout(() => {
+          document.body.className = 'initialized'
+          this.handlers.initialized && this.handlers.initialized()
+        }, 0)
+      })
   }
 
-  hideCommandsView(node) {
-    const setInactive = el => {
-      el.parentNode.insertBefore(el, el.parentNode.children[0])
-      el.classList.remove('active')
-    }
-    const deactivate = el => el && setInactive(el)
-
-    if (node) {
-      ForceDiagram.releaseNode(node)
-      this.diagram.getDomElement(node).classList.remove('menuActive')
-    }
-    deactivate(overlay)
-    deactivate(commandView)
+  showDetails(node) {
+    ForceDiagram.fixNode(node)
+    this.activeNode = node
+    const nodeEl = ForceDiagram.getDomElement(node)
+    nodeEl.classList.add('menuActive')
+    const container = document.createElement('div')
+    const form = document.createElement('div')
+    form.setAttribute('class', 'detailForm')
+    container.appendChild(form)
+    this.details.appendChild(container)
+    this.diagram.scaleToNode(node, 1.2, -175, -30)
+      .then(() => document.body.classList.add('dialogOpen'))
+      .then(() => node.details ? this.d3json(node.details) : {image: node.image, name: node.name})
+      .then(data => this.handlers.showDetails(data, form, node))
+      .catch(() => {})  // ignore errors
+      .then(newData => {
+        node = newData || node
+        document.body.classList.remove('dialogOpen')
+        nodeEl.classList.remove('menuActive')
+        this.details.innerHTML = ''
+        this.diagram.updateNode(node)
+        this.diagram.update()
+      })
   }
 
   toggle(node) {
@@ -95,7 +86,6 @@ class Network {
 
     this.diagram.scaleToNode(node, 1)
     this.diagram.update()
-    this.hideCommandsView(node)
   }
 
   openNode(node) {
@@ -112,7 +102,6 @@ class Network {
 
     this.diagram.scaleToNode(node, 1)
     this.diagram.update()
-    this.hideCommandsView(node)
   }
 
   addNode(node) {
@@ -121,7 +110,6 @@ class Network {
   }
 
   removeNode(node) {
-    this.hideCommandsView(node)
     this.nodes = this.nodes.filter(n => n.id !== node.id)
     this.links = this.links.filter(l => l.source.id !== node.id && l.target.id !== node.id)
     this.diagram.remove([node], [])
@@ -151,7 +139,6 @@ class Network {
   }
 
   newConnection(node) {
-    this.hideCommandsView(node)
     this.handlers.nameRequired()
       .then(name => name ? name : Promise.reject('no name given'))
       .then(name => {
@@ -178,28 +165,6 @@ class Network {
 
   update() {
     this.diagram.update()
-  }
-
-  showDetails(node) {
-    if (this.handlers.showDetails) {
-      document.body.classList.add('dialogOpen')
-      this.hideCommandsView(node)
-      this.diagram.scaleToNode(node, 1000)
-        .then(() => new Promise(resolve => d3.json(node.details, (error, data) => resolve([error, data]))))
-        .then(([error, data]) => error ? Promise.reject(error) : data)
-        .then(data => {
-          this.diagram.hide()
-          return this.handlers.showDetails(data)
-        })
-        .then(newData => {
-          node = newData || node
-          document.body.classList.remove('dialogOpen')
-          this.diagram.show()
-          this.diagram.updateNode(node)
-          this.diagram.scaleToNode(node, 1)
-          this.diagram.update()
-        })
-    }
   }
 
   scale(factor) {

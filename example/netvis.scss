@@ -87,73 +87,26 @@ svg {
   }
 }
 
-.commands {
-  opacity: 0;
-  transition: opacity 0.5s;
-
-  &.commandContainer g {
-    width: 100px;
-    height: 50px;
-    x: -50px;
-    y: -10px;
-    text-align: center;
-
-    .command {
-      display: none;
-
-      &.active {
-        display: inline;
-      }
-
-      circle {
-        fill: white;
-        stroke: #555555;
-        cursor: pointer;
-      }
-
-      text {
-        font-family: 'Glyphicons Halflings';
-        cursor: pointer;
-      }
-    }
-  }
+.command {
+  display: none;
 
   &.active {
-    opacity: 1;
+    display: block;
   }
-}
-
-#openNode {
-  transform: translate(-45px, -20px);
-}
-
-#closeNode {
-  transform: translate(-27px, -41px);
-}
-
-#newConnection {
-  transform: translate(0px, -50px);
-}
-
-#removeNode {
-  transform: translate(27px, -41px);
-}
-
-#showDetails {
-  transform: translate(45px, -20px);
 }
 
 .detailForm {
-  position: absolute;
-  right: 0;
-  left: 0;
   padding: 0 15px 15px;
   line-height: 1.3em;
+  width: 500px;
   max-width: 640px;
-  margin: 2em auto 0 auto;
+  min-height: 300px;
+  margin: 0 auto;
   border: 1px solid #ccc;
   background: white;
   box-shadow: 1px 1px 5px #ddd;
+  opacity: 0;
+  transition: opacity 1s;
 
   &:after {
     content: '';
@@ -161,9 +114,15 @@ svg {
     clear: both;
   }
 
-  img.profile-picture {
+  .profile-picture {
     float: left;
-    margin-right: 1em;
+    display: inline-block;
+    width: 120px;
+    height: 120px;
+    margin: 0 10px 10px 0;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
   }
 
   h2 button.close {
@@ -172,21 +131,52 @@ svg {
     background: transparent;
   }
 
+  .tag-view:before {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
   .tag {
-    border: 1px solid #222222;
-    padding: 3px;
-    line-height: 2em;
+    border: 1px solid #bbbbbb;
+    padding: 5px;
+    line-height: 2.4em;
     border-radius: 4px;
-    background: deepskyblue;
-    font-size: 0.9rem;
+    background: #bbddff;
+    font-size: 0.9em;
     white-space: nowrap;
   }
 }
 
-#showDetails {
+.details {
+  visibility: hidden;
   font-size: 16px;
-  font-family: Courier, monospace;
-  font-weight: bold;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+
+  > div {
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
+.dialogOpen .details {
+  display: table;
+  visibility: visible;
+}
+
+.dialogOpen .detailForm {
+  opacity: 1;
+}
+
+.menuActive .title,
+.menuActive .text-bg {
+  display: none;
 }
 
 .zoom {

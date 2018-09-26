@@ -1,0 +1,26 @@
+{
+  "id": 2313,
+  "firstName": "Bianca",
+  "lastName": "Köllner",
+  "image": "https://www.xing.com/img/users/f/1/6/71bdbf591.23456580,3.256x256.jpg",
+  "description": "Kooperationskultur für digitale Transformation gestalten\nSinnstiftende Formen der Zusammenarbeit für Social Innovation",
+  "url": "https://www.xing.com/profile/BiancaNadine_Koellner/cv",
+  "links": [
+    {
+      "id": 2034,
+      "name": "Design Thinking",
+      "type": "tag"
+    },
+    {
+      "id": 2035,
+      "name": "Agile",
+      "type": "tag"
+    },
+    {
+      "id": 2299,
+      "name": "Team development",
+      "type": "tag"
+    }
+  ],
+  "name": "Bianca Köllner"
+}
