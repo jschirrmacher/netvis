@@ -5,7 +5,7 @@
   "image": "https://www.xing.com/image/0_4_3_72e679b3d_3230655_6/joachim-schirrmacher-foto.256x256.jpg",
   "visible": true,
   "connectable": true,
-  "details": "node/Joachim%20Schirrmacher",
+  "details": "node/2037.json",
   "links": [
     {
       "id": 2033,
@@ -14,7 +14,7 @@
     },
     {
       "id": 2035,
-      "name": "Agile Development",
+      "name": "Agile",
       "type": "tag"
     },
     {

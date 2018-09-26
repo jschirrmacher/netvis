@@ -1,0 +1,37 @@
+{
+  "id": 2248,
+  "name": "Wolf Nöding",
+  "shape": "circle",
+  "image": "https://xcamp.co/netvis/persons/0x7563/picture/Wolf_03.png",
+  "visible": true,
+  "connectable": true,
+  "links": [
+    {
+      "id": 2034,
+      "name": "Design Thinking",
+      "type": "tag"
+    },
+    {
+      "id": 2036,
+      "name": "User Experience",
+      "type": "tag"
+    },
+    {
+      "id": 2035,
+      "name": "Agile",
+      "type": "tag"
+    },
+    {
+      "id": 2547,
+      "name": "Customer Experience",
+      "type": "tag"
+    },
+    {
+      "id": 2548,
+      "name": "Lean UX",
+      "type": "tag"
+    }
+  ],
+  "description": "Als Customer Experience Consultant unterstütze ich Unternehmen in Digitalen Transformations-Projekten. Dabei speziell: Customer Jounrney Entwicklung, Konzepte für neue Online-Services, Omni Channel Modellierung, Prototyping, User Testings.",
+  "url": "http://wolfnoeding.de/"
+}

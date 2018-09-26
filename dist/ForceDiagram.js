@@ -4,6 +4,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/*global d3*/
 var currentZoom = 1;
 
 var ForceDiagram = function () {
@@ -276,9 +277,12 @@ var ForceDiagram = function () {
     value: function scaleToNode(node, scale) {
       var _this5 = this;
 
+      var diffX = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+      var diffY = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+
       return new Promise(function (resolve) {
         ForceDiagram.fixNode(node);
-        _this5.svg.transition().duration(1000).call(_this5.zoom.transform, d3.zoomIdentity.translate(_this5.center.x, _this5.center.y).scale(scale).translate(-node.x, -node.y)).on('end', function () {
+        _this5.svg.transition().duration(1000).call(_this5.zoom.transform, d3.zoomIdentity.translate(_this5.center.x + diffX, _this5.center.y + diffY).scale(scale).translate(-node.x, -node.y)).on('end', function () {
           ForceDiagram.releaseNode(node);
           resolve(true);
         });
@@ -309,11 +313,6 @@ var ForceDiagram = function () {
     value: function show() {
       this.svg.attr('style', 'opacity: 1; transition: opacity 0.5s');
     }
-  }, {
-    key: 'getDomElement',
-    value: function getDomElement(node) {
-      return document.getElementById('node-' + node.id);
-    }
   }], [{
     key: 'isConnected',
     value: function isConnected(link, node) {
@@ -330,6 +329,11 @@ var ForceDiagram = function () {
     value: function releaseNode(node) {
       node.fx = undefined;
       node.fy = undefined;
+    }
+  }, {
+    key: 'getDomElement',
+    value: function getDomElement(node) {
+      return document.getElementById('node-' + node.id);
     }
   }]);
 
