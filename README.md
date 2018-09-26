@@ -2,8 +2,8 @@
 
 This package visualizes network dependencies.
 
-[![Screenshot - click to see it in action](https://jschirrmacher.github.io/netvis/example/netvis.png)](https://jschirrmacher.github.io/netvis/example/netvis.html)
-[Click here to see it live](https://jschirrmacher.github.io/netvis/example/netvis.html)
+[![Screenshot - click to see it in action](https://jschirrmacher.github.io/netvis/example/netvis.png)](https://jschirrmacher.github.io/netvis/example/)
+[Click here to see it live](https://jschirrmacher.github.io/netvis/example/)
 
 It uses the famous https://d3js.org/ library's force diagram and adds a couple of
 functions to make it ease to use it with json formatted data, which might be
