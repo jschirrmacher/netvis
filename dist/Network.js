@@ -2,6 +2,10 @@
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /*global d3,ForceDiagram*/
@@ -50,9 +54,23 @@ var Network = function () {
           return node.id === id;
         }) || handlers.error('Node id ' + id + ' not found');
       };
-      _this.links = data.links.map(function (link, id) {
-        return { id: id + 1, source: node(link.source), target: node(link.target) };
-      });
+      var id = 1;
+      _this.links = data.nodes.map(function (source) {
+        source.links = Object.assign.apply(Object, [{}].concat(_toConsumableArray((source.links || []).map(function (list) {
+          var title = data.texts && data.texts[list.type] || list.type;
+          var links = list.nodes.map(function (targetId) {
+            return { id: id++, source: source, target: node(targetId) };
+          });
+          return _defineProperty({}, list.type, { type: list.type, title: title, links: links });
+        }))));
+        return Object.keys(source.links).map(function (type) {
+          return source.links[type].links;
+        }).reduce(function (a, b) {
+          return a.concat(b);
+        }, []);
+      }).reduce(function (a, b) {
+        return a.concat(b);
+      }, []);
       _this.nodes = data.nodes;
 
       var setBothSidesVisible = function setBothSidesVisible(d) {
@@ -94,7 +112,7 @@ var Network = function () {
       this.diagram.scaleToNode(node, 1.2, -175, -30).then(function () {
         return document.body.classList.add('dialogOpen');
       }).then(function () {
-        return node.details ? _this2.d3json(node.details) : { image: node.image, name: node.name };
+        return node.details ? _this2.d3json(node.details) : node;
       }).then(function (data) {
         return _this2.handlers.showDetails(data, form, node);
       }).catch(function () {}) // ignore errors
@@ -108,6 +126,18 @@ var Network = function () {
       });
     }
   }, {
+    key: 'showNodes',
+    value: function showNodes(node, type) {
+      var _this3 = this;
+
+      node.links[type].links.forEach(function (link) {
+        link.target.visible = true;
+        _this3.addNode(link.target);
+        _this3.diagram.add([link.target], [link]);
+      });
+      this.diagram.update();
+    }
+  }, {
     key: 'toggle',
     value: function toggle(node) {
       return node.open ? this.closeNode(node) : this.openNode(node);
@@ -115,20 +145,20 @@ var Network = function () {
   }, {
     key: 'closeNode',
     value: function closeNode(node) {
-      var _this3 = this;
+      var _this4 = this;
 
       node.open = false;
       this.links.filter(function (link) {
         return link.source.id === node.id || link.target.id === node.id;
       }).forEach(function (link) {
         var otherNode = link.source.id === node.id ? link.target : link.source;
-        if (_this3.diagram.getLinkedNodes(otherNode).length === 1) {
+        if (_this4.diagram.getLinkedNodes(otherNode).length === 1) {
           otherNode.visible = otherNode.keepVisible;
           if (!otherNode.visible) {
-            _this3.diagram.remove([otherNode], []);
+            _this4.diagram.remove([otherNode], []);
           }
         } else {
-          _this3.diagram.remove([], [link]);
+          _this4.diagram.remove([], [link]);
         }
       });
 
@@ -138,7 +168,7 @@ var Network = function () {
   }, {
     key: 'openNode',
     value: function openNode(node) {
-      var _this4 = this;
+      var _this5 = this;
 
       node.open = true;
       this.links.filter(function (link) {
@@ -148,7 +178,7 @@ var Network = function () {
         otherNode.visible = true;
         otherNode.x = node.x;
         otherNode.y = node.y;
-        _this4.diagram.add([otherNode], [link]);
+        _this5.diagram.add([otherNode], [link]);
       });
 
       this.diagram.scaleToNode(node, 1);
@@ -185,12 +215,12 @@ var Network = function () {
   }, {
     key: 'addLinks',
     value: function addLinks(links) {
-      var _this5 = this;
+      var _this6 = this;
 
       this.diagram.add([], links.map(function (l) {
-        return { id: nextId(_this5.links), source: _this5.getNode(l.source.id), target: _this5.getNode(l.target.id) };
+        return { id: nextId(_this6.links), source: _this6.getNode(l.source.id), target: _this6.getNode(l.target.id) };
       }).map(function (l) {
-        _this5.links.push(l);
+        _this6.links.push(l);
         return l;
       }));
     }
@@ -210,30 +240,30 @@ var Network = function () {
   }, {
     key: 'newConnection',
     value: function newConnection(node) {
-      var _this6 = this;
+      var _this7 = this;
 
       this.handlers.nameRequired().then(function (name) {
         return name ? name : Promise.reject('no name given');
       }).then(function (name) {
-        var existing = _this6.nodes.find(function (node) {
+        var existing = _this7.nodes.find(function (node) {
           return node.name.toLowerCase() === name.toLowerCase();
         });
         if (!existing) {
-          existing = _this6.handlers.newNode ? _this6.handlers.newNode(name) : { name: name };
-          existing.id = existing.id || nextId(_this6.nodes);
-          _this6.nodes.push(existing);
-          _this6.diagram.add([existing], []);
+          existing = _this7.handlers.newNode ? _this7.handlers.newNode(name) : { name: name };
+          existing.id = existing.id || nextId(_this7.nodes);
+          _this7.nodes.push(existing);
+          _this7.diagram.add([existing], []);
         }
-        if (!_this6.diagram.nodesConnected(node, existing)) {
-          var newLink = { id: nextId(_this6.links), source: node, target: existing };
-          if (_this6.handlers.newLink) {
-            _this6.handlers.newLink(newLink);
+        if (!_this7.diagram.nodesConnected(node, existing)) {
+          var newLink = { id: nextId(_this7.links), source: node, target: existing };
+          if (_this7.handlers.newLink) {
+            _this7.handlers.newLink(newLink);
           }
-          _this6.links.push(newLink);
-          _this6.diagram.add([], [newLink]);
+          _this7.links.push(newLink);
+          _this7.diagram.add([], [newLink]);
         }
 
-        _this6.diagram.update();
+        _this7.diagram.update();
       }).catch(this.handlers.error);
     }
   }, {

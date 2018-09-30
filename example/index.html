@@ -33,18 +33,13 @@
 
         <p>{{description}}</p>
 
-        {{#url}}
-            <a href="{{url}}" target="_blank">{{url}}</a>
-        {{/url}}
+        <a href="{{url}}" target="_blank">{{url}}</a>
 
         <p class="tag-view">
             {{#each links}}
-                <span class="tag" data-id="{{this.id}}">{{this.name}}</span>
+                <a href="#" class="command" data-cmd="showNodes" data-params="{{this.type}}">{{this.title}} anzeigen</a>
             {{/each}}
         </p>
-
-        <a href="#" class="command" data-visible="!node.open" data-cmd="openNode">Verbindungen einblenden</a><br>
-        <a href="#" class="command" data-visible="node.open" data-cmd="closeNode">Verbindungen ausblenden</a>
     </script>
 
     <script src="//d3js.org/d3.v4.min.js"></script>
@@ -57,7 +52,7 @@
     <script>
       const source = document.getElementById('detailForm').innerHTML
       const detailFormTemplate = Handlebars.compile(source)
-      const name = location.search.match(/n=(\d+)/) ? 'data.' + RegExp.$1 + '.json' : 'data.json'
+      const name = location.search.match(/n=(\w+)/) ? 'data.' + RegExp.$1 + '.json' : 'data.json'
       const network = new Network(name, '#root', {
         nameRequired: function() {
           return Promise.resolve(window.prompt('Name'))
@@ -76,11 +71,9 @@
           return new Promise(resolve => {
             form.innerHTML = detailFormTemplate(data)
             document.querySelectorAll('.command').forEach(el => {
-              if (el.dataset.visible) {
-                el.classList.toggle('active', !!eval(el.dataset.visible))
-              }
+              el.classList.toggle('active', !el.dataset.visible || !!eval(el.dataset.visible))
               el.addEventListener('click', event => {
-                network[event.target.dataset.cmd](node)
+                network[event.target.dataset.cmd](node, event.target.dataset.params)
                 resolve()
               })
             })

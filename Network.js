@@ -21,8 +21,16 @@ class Network {
           this.diagram.addHandler('click', node => this.showDetails(node))
         }
 
-        const node = id => data.nodes.find(node => node.id === id) || handlers.error('Node id ' + id + ' not found')
-        this.links = data.links.map((link, id) => ({id: id + 1, source: node(link.source), target: node(link.target)}))
+        const node = id => data.nodes.find(node => node.id === id) || handlers.error('Node id ' + id + ' not found');
+        let id = 1
+        this.links = data.nodes.map(source => {
+          source.links = Object.assign({}, ...(source.links || []).map(list => {
+            const title = (data.texts && data.texts[list.type]) || list.type
+            const links = list.nodes.map(targetId => ({id: id++, source, target: node(targetId)}))
+            return {[list.type]: {type: list.type, title, links}}
+          }))
+          return Object.keys(source.links).map(type => source.links[type].links).reduce((a, b) => a.concat(b), [])
+        }).reduce((a, b) => a.concat(b), [])
         this.nodes = data.nodes
 
         const setBothSidesVisible = d => d.source.visible = d.target.visible = true
@@ -51,7 +59,7 @@ class Network {
     this.details.appendChild(container)
     this.diagram.scaleToNode(node, 1.2, -175, -30)
       .then(() => document.body.classList.add('dialogOpen'))
-      .then(() => node.details ? this.d3json(node.details) : {image: node.image, name: node.name})
+      .then(() => node.details ? this.d3json(node.details) : node)
       .then(data => this.handlers.showDetails(data, form, node))
       .catch(() => {})  // ignore errors
       .then(newData => {
@@ -62,6 +70,15 @@ class Network {
         this.diagram.updateNode(node)
         this.diagram.update()
       })
+  }
+
+  showNodes(node, type) {
+    node.links[type].links.forEach(link => {
+      link.target.visible = true
+      this.addNode(link.target)
+      this.diagram.add([link.target], [link])
+    })
+    this.diagram.update()
   }
 
   toggle(node) {

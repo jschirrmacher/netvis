@@ -1,12 +1,23 @@
 {
+  "texts": {
+    "topics": "Themen",
+    "interestedParties": "Interessierte Personen"
+  },
   "nodes": [
     {
       "id": 2032,
       "name": "XCamp",
       "shape": "circle",
       "image": "https://xcamp.co/netvis/xcamp.png",
-      "details": "node/2032.json",
-      "visible": true
+      "description": "Auf dem XCamp treffen die Innovationstreiber aus Unternehmen und Start-ups, Design Thinker, Agile und Lean Startup-Experten der Metropolregion Frankfurt Rhein Main zusammen.",
+      "url": "https://xcamp.co/",
+      "twitterName": "xcamp",
+      "open": true,
+      "visible": true,
+      "keepOpen": true,
+      "links": [
+        {"type": "topics", "nodes": [2033, 2034, 2035, 2036]}
+      ]
     },
     {
       "id": 2033,
@@ -14,7 +25,10 @@
       "deletable": true,
       "visible": true,
       "fontSize": 1.2,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2037, 2038]}
+      ]
     },
     {
       "id": 2034,
@@ -22,7 +36,10 @@
       "deletable": true,
       "visible": true,
       "fontSize": 1.6,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2038, 2248, 2256]}
+      ]
     },
     {
       "id": 2035,
@@ -30,7 +47,10 @@
       "deletable": true,
       "visible": true,
       "fontSize": 1.4,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2037, 2038]}
+      ]
     },
     {
       "id": 2036,
@@ -38,68 +58,67 @@
       "deletable": true,
       "visible": true,
       "fontSize": 1.8,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2248, 2550]}
+      ]
     },
     {
       "id": 2037,
       "name": "Joachim Schirrmacher",
       "shape": "circle",
       "image": "https://www.xing.com/image/0_4_3_72e679b3d_3230655_6/joachim-schirrmacher-foto.256x256.jpg",
-      "visible": false,
+      "description": "Software-Developer, Agile, REST, APIs, Lean Camp Organizer, XCamp Organizer, Lean Startup Circle",
+      "url": "https://www.linkedin.com/in/joachimschirrmacher/",
+      "twitterName": "jschirrmacher",
       "connectable": true,
-      "details": "node/2037.json"
+      "links": [
+        {"type": "topics", "nodes": [2033, 2035, 2245, 2275, 2308]}
+      ]
     },
     {
       "id": 2038,
       "name": "Christiane Gerigk",
       "shape": "circle",
       "image": "https://www.xing.com/image/1_9_3_3542476e8_3288678_3/christiane-gerigk-foto.256x256.jpg",
-      "details": "node/2038.json",
-      "visible": false
-    },
-    {
-      "id": 2242,
-      "name": "Management3.0",
-      "visible": true,
-      "deletable": true,
-      "distance": 50
-    },
-    {
-      "id": 2243,
-      "name": "Organisations-Entwicklung",
-      "visible": true,
-      "deletable": true,
-      "distance": 50
-    },
-    {
-      "id": 2244,
-      "name": "LeSS",
-      "visible": true,
-      "deletable": true,
-      "distance": 50
+      "description": "Dr. Christiane Gerigk arbeitet als Coach und Workshop-Moderatorin mit Teams gezielt in der Frühphase von Innovationsprozessen. Sie vermittelt on-the-Job die geeigneten Methoden aus agiler Entwicklung, Lean-Startup und Design Thinking. Gleichzeitig unterstützt sie Unternehmensleitung und Team dabei, wirkungsvolle organisatorische Voraussetzungen für Agilität in der Organisation zu schaffen.",
+      "url": "https://digital-wachsen.de",
+      "twitterName": "justsoandme",
+      "links": [
+        {"type": "interestedParties", "nodes": [2033, 2034, 2035]}
+      ]
     },
     {
       "id": 2245,
       "name": "Scrum",
       "visible": true,
       "deletable": true,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2037]}
+      ]
     },
     {
       "id": 2248,
       "name": "Wolf N\u00f6ding",
       "shape": "circle",
       "image": "https://xcamp.co/netvis/persons/0x7563/picture/Wolf_03.png",
-      "details": "node/2248.json",
-      "visible": false
+      "description": "Als Customer Experience Consultant unterstütze ich Unternehmen in Digitalen Transformations-Projekten. Dabei speziell: Customer Jounrney Entwicklung, Konzepte für neue Online-Services, Omni Channel Modellierung, Prototyping, User Testings.",
+      "url": "http://wolfnoeding.de/",
+      "links": [
+        {"type": "topics", "nodes": [2034, 2036, 2547, 2548, 2549]}
+      ]
     },
     {
       "id": 2256,
       "name": "Jens Bothmer",
       "shape": "circle",
       "image": "https://xcamp.co/netvis/persons/0x7555/picture/Jens_Bothmer_683_683_Portraits_Quadrat.png",
-      "details": "node/2256.json",
-      "visible": false
+      "description": "Mit agilen Innovationsmethoden wie Design Thinking hilft Jens Bothmer Unternehmen dabei, gute Ideen in erfolgreiche Geschäftsmodelle umzusetzen. Aufgrund seines Backgrounds besitzt Jens sehr gutes Fachwissen über Kreativitäts- und Innovationsprozesse von der Ideenentwicklung, über Konzeption bis hin zum Anforderungsmanagement und der Geschäftsmodellierung.\nMehr unter https://goo.gl/fgYNXW",
+      "url": "https://www.autentity.de",
+      "links": [
+        {"type": "topics", "nodes": [2034, 2281, 2282, 2283, 2284]}
+      ]
     },
     {
       "id": 2275,
@@ -109,39 +128,34 @@
       "distance": 50
     },
     {
-      "id": 2278,
-      "name": "Scaling Lean",
-      "visible": true,
-      "deletable": true,
-      "distance": 50
-    },
-    {
-      "id": 2279,
-      "name": "leanstack",
-      "visible": true,
-      "deletable": true,
-      "distance": 50
-    },
-    {
       "id": 2281,
       "name": "Transformation",
       "visible": true,
       "deletable": true,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2256, 2037]}
+      ]
     },
     {
       "id": 2282,
       "name": "Ideenentwicklung",
       "visible": true,
       "deletable": true,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2256]}
+      ]
     },
     {
       "id": 2283,
       "name": "Confluence",
       "visible": true,
       "deletable": true,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2256]}
+      ]
     },
     {
       "id": 2284,
@@ -151,271 +165,75 @@
       "distance": 50
     },
     {
-      "id": 2290,
-      "name": "Holocracy",
-      "visible": true,
-      "deletable": true,
-      "distance": 50
-    },
-    {
-      "id": 2297,
-      "name": "Innovation management",
-      "visible": true,
-      "deletable": true,
-      "distance": 50
-    },
-    {
-      "id": 2298,
-      "name": "Improvisation",
-      "visible": true,
-      "deletable": true,
-      "distance": 50
-    },
-    {
       "id": 2299,
       "name": "Team development",
-      "visible": true,
       "deletable": true,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2313]}
+      ]
     },
     {
       "id": 2308,
       "name": "Kanban",
       "visible": true,
       "deletable": true,
-      "distance": 50
-    },
-    {
-      "id": 2309,
-      "name": "Enterprise Services Planning",
-      "visible": true,
-      "deletable": true,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2037]}
+      ]
     },
     {
       "id": 2313,
       "name": "Bianca  K\u00f6llner",
       "shape": "circle",
       "image": "https://www.xing.com/img/users/f/1/6/71bdbf591.23456580,3.256x256.jpg",
-      "details": "node/2313.json",
-      "visible": false
-    },
-    {
-      "id": 2316,
-      "name": "remote",
-      "visible": true,
-      "deletable": true,
-      "distance": 50
-    },
-    {
-      "id": 2317,
-      "name": "futureofwork",
-      "visible": true,
-      "deletable": true,
-      "distance": 50
+      "description": "Kooperationskultur für digitale Transformation gestalten\nSinnstiftende Formen der Zusammenarbeit für Social Innovation",
+      "url": "https://www.xing.com/profile/BiancaNadine_Koellner/cv",
+      "links": [
+        {"type": "topics", "nodes": [2034, 2035, 2299]}
+      ]
     },
     {
       "id": 2547,
       "name": "Customer Experience",
       "visible": true,
       "deletable": true,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2248]}
+      ]
     },
     {
       "id": 2548,
       "name": "Lean UX",
       "visible": true,
       "deletable": true,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2248]}
+      ]
     },
     {
       "id": 2549,
       "name": "UX in Agile",
       "visible": true,
       "deletable": true,
-      "distance": 50
+      "distance": 50,
+      "links": [
+        {"type": "interestedParties", "nodes": [2248]}
+      ]
     },
     {
       "id": 2550,
       "name": "Stefan Trost",
       "shape": "circle",
       "image": "https://xcamp.co/netvis/persons/0x755c/picture/4-small.JPG",
-      "details": "node/2550.json",
-      "visible": false
-    }
-  ],
-  "links": [
-    {
-      "source": 2242,
-      "target": 2290
-    },
-    {
-      "source": 2032,
-      "target": 2033,
-      "distance": 50
-    },
-    {
-      "source": 2036,
-      "target": 2547,
-      "distance": 50
-    },
-    {
-      "source": 2034,
-      "target": 2282,
-      "distance": 50
-    },
-    {
-      "source": 2032,
-      "target": 2034,
-      "distance": 50
-    },
-    {
-      "source": 2032,
-      "target": 2035
-    },
-    {
-      "source": 2032,
-      "target": 2036
-    },
-    {
-      "source": 2036,
-      "target": 2248
-    },
-    {
-      "source": 2037,
-      "target": 2033
-    },
-    {
-      "source": 2037,
-      "target": 2035
-    },
-    {
-      "source": 2549,
-      "target": 2036
-    },
-    {
-      "source": 2548,
-      "target": 2036
-    },
-    {
-      "source": 2549,
-      "target": 2035
-    },
-    {
-      "source": 2308,
-      "target": 2035
-    },
-    {
-      "source": 2037,
-      "target": 2245
-    },
-    {
-      "source": 2037,
-      "target": 2275
-    },
-    {
-      "source": 2038,
-      "target": 2033
-    },
-    {
-      "source": 2038,
-      "target": 2034
-    },
-    {
-      "source": 2038,
-      "target": 2035
-    },
-    {
-      "source": 2243,
-      "target": 2242
-    },
-    {
-      "source": 2243,
-      "target": 2299
-    },
-    {
-      "source": 2243,
-      "target": 2316
-    },
-    {
-      "source": 2244,
-      "target": 2035
-    },
-    {
-      "source": 2245,
-      "target": 2035
-    },
-    {
-      "source": 2248,
-      "target": 2034
-    },
-    {
-      "source": 2248,
-      "target": 2547
-    },
-    {
-      "source": 2248,
-      "target": 2548
-    },
-    {
-      "source": 2248,
-      "target": 2549
-    },
-    {
-      "source": 2256,
-      "target": 2034
-    },
-    {
-      "source": 2256,
-      "target": 2281
-    },
-    {
-      "source": 2256,
-      "target": 2282
-    },
-    {
-      "source": 2256,
-      "target": 2283
-    },
-    {
-      "source": 2256,
-      "target": 2284
-    },
-    {
-      "source": 2278,
-      "target": 2033
-    },
-    {
-      "source": 2279,
-      "target": 2033
-    },
-    {
-      "source": 2308,
-      "target": 2037
-    },
-    {
-      "source": 2317,
-      "target": 2242
-    },
-    {
-      "source": 2317,
-      "target": 2243
-    },
-    {
-      "source": 2313,
-      "target": 2299
-    },
-    {
-      "source": 2313,
-      "target": 2034
-    },
-    {
-      "source": 2313,
-      "target": 2035
-    },
-    {
-      "source": 2550,
-      "target": 2036
+      "description": "Ich bin Web Entwickler mit großem Interesse an Produktentwicklung.",
+      "url": "https://www.stefantrost.co",
+      "links": [
+        {"type": "topics", "nodes": [2036]}
+      ]
     }
   ]
 }
