@@ -13,6 +13,7 @@
     "visualization"
   ],
   "author": "joachimschirrmacher@gmail.com",
+  "repository": "https://github.com/jschirrmacher/netvis.git",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.1.0",
@@ -30,7 +31,5 @@
     "forever": "^0.15.3",
     "sleep-ms": "^2.0.1"
   },
-  "dependencies": {
-    "handlebars": "^4.0.11"
-  }
+  "dependencies": {}
 }
