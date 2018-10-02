@@ -31,12 +31,14 @@ var Network = function () {
     var _this = this;
 
     var handlers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var texts = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
     _classCallCheck(this, Network);
 
     handlers.error = handlers.error || function () {
       return undefined;
     };
+    this.texts = texts;
     this.handlers = handlers;
     this.d3json(dataUrl).then(function (data) {
       _this.diagram = new ForceDiagram(document.querySelector(domSelector));
@@ -57,7 +59,7 @@ var Network = function () {
       var id = 1;
       _this.links = data.nodes.map(function (source) {
         source.links = Object.assign.apply(Object, [{}].concat(_toConsumableArray((source.links || []).map(function (list) {
-          var title = data.texts && data.texts[list.type] || list.type;
+          var title = _this.texts && _this.texts[list.type] || list.type;
           var links = list.nodes.map(function (targetId) {
             return { id: id++, source: source, target: node(targetId) };
           });
@@ -115,8 +117,7 @@ var Network = function () {
         return node.details ? _this2.d3json(node.details) : node;
       }).then(function (data) {
         return _this2.handlers.showDetails(data, form, node);
-      }).catch(function () {}) // ignore errors
-      .then(function (newData) {
+      }).catch(console.error).then(function (newData) {
         node = newData || node;
         document.body.classList.remove('dialogOpen');
         nodeEl.classList.remove('menuActive');

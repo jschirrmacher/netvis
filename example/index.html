@@ -38,7 +38,7 @@
 
         <p class="tag-view">
             {{#each links}}
-                <a href="#" class="command" data-cmd="showNodes" data-params="{{this.type}}">{{this.title}} anzeigen</a>
+                <a href="#" class="command" data-cmd="showNodes" data-params="{{this.type}}">{{this.linkTitle}}</a>
             {{/each}}
         </p>
     </script>
@@ -49,6 +49,7 @@
 
     <!-- Only needed for the example -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js" integrity="sha256-qlku5J3WO/ehJpgXYoJWC2px3+bZquKChi4oIWrAKoI=" crossorigin="anonymous"></script>
+    <script src="./texts.js"></script>
 
     <script>
       const source = document.getElementById('detailForm').innerHTML
@@ -70,6 +71,9 @@
         },
         showDetails: function(data, form, node) {
           return new Promise(resolve => {
+            Object.keys(data.links).forEach(function (index) {
+              data.links[index].linkTitle = Handlebars.compile(texts.linkTitle)(data.links[index])
+            })
             form.innerHTML = detailFormTemplate(data)
             document.querySelectorAll('.command').forEach(el => {
               el.classList.toggle('active', !el.dataset.visible || !!eval(el.dataset.visible))
@@ -84,7 +88,7 @@
             })
           })
         }
-      })
+      }, texts)
     </script>
 
 </body>

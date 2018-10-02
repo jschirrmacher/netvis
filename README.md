@@ -195,6 +195,10 @@ The intermediate `<div>` is needed to position the buttons in the vertical cente
 
 ## Change log
 
+### V4.1
+- Changed handling of language specific texts. Instead of supplying them with the data, they are now in the
+  responsibility of the caller und need to be given as another (optional) parameter to the `Network` constructor
+
 ### V4.0
 - Breaking change: New format of JSON file. Instead of using a separate `links` section in the JSON file, the links of
   a node are placed in an attribute of the node. See chapter [Structure of network data](#stucture-of-network-data)

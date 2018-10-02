@@ -8,8 +8,9 @@ class Network {
     })
   }
 
-  constructor(dataUrl, domSelector, handlers = {}) {
+  constructor(dataUrl, domSelector, handlers = {}, texts = {}) {
     handlers.error = handlers.error || (() => undefined)
+    this.texts = texts
     this.handlers = handlers
     this.d3json(dataUrl)
       .then(data => {
@@ -25,7 +26,7 @@ class Network {
         let id = 1
         this.links = data.nodes.map(source => {
           source.links = Object.assign({}, ...(source.links || []).map(list => {
-            const title = (data.texts && data.texts[list.type]) || list.type
+            const title = (this.texts && this.texts[list.type]) || list.type
             const links = list.nodes.map(targetId => ({id: id++, source, target: node(targetId)}))
             return {[list.type]: {type: list.type, title, links}}
           }))
@@ -61,7 +62,7 @@ class Network {
       .then(() => document.body.classList.add('dialogOpen'))
       .then(() => node.details ? this.d3json(node.details) : node)
       .then(data => this.handlers.showDetails(data, form, node))
-      .catch(() => {})  // ignore errors
+      .catch(console.error)
       .then(newData => {
         node = newData || node
         document.body.classList.remove('dialogOpen')
