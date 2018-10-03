@@ -97,7 +97,8 @@ class ForceDiagram {
     nodeEnter.filter(d => d.shape === 'circle').call(addCircleNode.bind(this))
     nodeEnter.filter(d => d.shape === 'rect').call(addRectNode.bind(this))
 
-    nodeEnter.append('text')
+    nodeEnter.append('g')
+      .append('text')
       .classed('title', true)
       .text(d => d.name)
       .call(d => wrap(d, 90))

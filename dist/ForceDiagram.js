@@ -115,7 +115,7 @@ var ForceDiagram = function () {
         return d.shape === 'rect';
       }).call(addRectNode.bind(this));
 
-      nodeEnter.append('text').classed('title', true).text(function (d) {
+      nodeEnter.append('g').append('text').classed('title', true).text(function (d) {
         return d.name;
       }).call(function (d) {
         return wrap(d, 90);
