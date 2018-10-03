@@ -5,6 +5,7 @@
   "main": "netvis.js",
   "scripts": {
     "start": "concurrently \"forever --watch --watchDirectory . example\" \"sleepms 1000 && open http://localhost:3000\"",
+    "build": "babel --out-dir dist --source-maps --presets env *.js",
     "test": "eslint *.js"
   },
   "keywords": [
