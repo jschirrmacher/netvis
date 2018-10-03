@@ -4,7 +4,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/*global d3*/
+/*global d3, window*/
 var currentZoom = 1;
 
 var ForceDiagram = function () {
@@ -17,7 +17,10 @@ var ForceDiagram = function () {
     this.nodes = [];
     this.handlers = {};
     this.svg = d3.select(domSelector);
-    this.center = { x: this.svg.node().width.baseVal.value / 2, y: this.svg.node().height.baseVal.value / 2 };
+    this.setCenter();
+    window.addEventListener('resize', function () {
+      return _this.setCenter();
+    });
     this.defs = this.svg.append('defs');
     this.svgGroup = this.svg.append('g').attr('id', 'svgGroup');
 
@@ -78,6 +81,11 @@ var ForceDiagram = function () {
   }
 
   _createClass(ForceDiagram, [{
+    key: 'setCenter',
+    value: function setCenter() {
+      this.center = { x: this.svg.node().width.baseVal.value / 2, y: this.svg.node().height.baseVal.value / 2 };
+    }
+  }, {
     key: 'addHandler',
     value: function addHandler(type, handler) {
       this.handlers[type] = handler;

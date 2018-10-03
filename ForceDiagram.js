@@ -1,4 +1,4 @@
-/*global d3*/
+/*global d3, window*/
 let currentZoom = 1
 
 class ForceDiagram {
@@ -7,7 +7,8 @@ class ForceDiagram {
     this.nodes = []
     this.handlers = {}
     this.svg = d3.select(domSelector)
-    this.center = {x: this.svg.node().width.baseVal.value / 2, y: this.svg.node().height.baseVal.value / 2}
+    this.setCenter()
+    window.addEventListener('resize', () => this.setCenter())
     this.defs = this.svg.append('defs')
     this.svgGroup = this.svg
       .append('g')
@@ -67,6 +68,10 @@ class ForceDiagram {
       d.fx = undefined
       d.fy = undefined
     }
+  }
+
+  setCenter() {
+    this.center = {x: this.svg.node().width.baseVal.value / 2, y: this.svg.node().height.baseVal.value / 2}
   }
 
   addHandler(type, handler) {
