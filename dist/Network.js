@@ -8,7 +8,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/*global d3,ForceDiagram*/
+/*global d3,ForceDiagram, module*/
 var nextId = function nextId(list) {
   return list.reduce(function (id, entry) {
     return Math.max(id, entry.id);
@@ -116,7 +116,8 @@ var Network = function () {
         return node.details ? _this2.d3json(node.details) : node;
       }).then(function (data) {
         return _this2.handlers.showDetails(data, form, node);
-      }).catch(console.error).then(function (newData) {
+      }).catch(console.error) // eslint-disable-line no-console
+      .then(function (newData) {
         node = newData || node;
         document.body.classList.remove('dialogOpen');
         nodeEl.classList.remove('menuActive');
@@ -280,4 +281,6 @@ var Network = function () {
 
   return Network;
 }();
+
+module.exports = Network;
 //# sourceMappingURL=Network.js.map

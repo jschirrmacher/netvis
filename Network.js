@@ -1,4 +1,4 @@
-/*global d3,ForceDiagram*/
+/*global d3,ForceDiagram, module*/
 const nextId = list => list.reduce((id, entry) => Math.max(id, entry.id), 0) + 1
 
 class Network {
@@ -63,7 +63,7 @@ class Network {
       })
       .then(() => node.details ? this.d3json(node.details) : node)
       .then(data => this.handlers.showDetails(data, form, node))
-      .catch(console.error)
+      .catch(console.error) // eslint-disable-line no-console
       .then(newData => {
         node = newData || node
         document.body.classList.remove('dialogOpen')
@@ -190,3 +190,5 @@ class Network {
     return this.diagram.scale(factor)
   }
 }
+
+module.exports = Network

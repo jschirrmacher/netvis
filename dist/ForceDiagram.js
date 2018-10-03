@@ -4,7 +4,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/*global d3, window*/
+/*global d3, window, module*/
 var currentZoom = 1;
 
 var ForceDiagram = function () {
@@ -347,4 +347,6 @@ var ForceDiagram = function () {
 
   return ForceDiagram;
 }();
+
+module.exports = ForceDiagram;
 //# sourceMappingURL=ForceDiagram.js.map

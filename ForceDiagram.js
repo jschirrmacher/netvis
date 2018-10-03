@@ -1,4 +1,4 @@
-/*global d3, window*/
+/*global d3, window, module*/
 let currentZoom = 1
 
 class ForceDiagram {
@@ -283,3 +283,5 @@ class ForceDiagram {
     return document.getElementById('node-' + node.id)
   }
 }
+
+module.exports = ForceDiagram
