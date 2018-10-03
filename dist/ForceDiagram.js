@@ -93,7 +93,7 @@ var ForceDiagram = function () {
       linkData = linkEnter.merge(linkData);
       this.simulation.force('link').links(this.links);
 
-      var nodeData = this.nodeContainer.selectAll('g').data(this.nodes, function (d) {
+      var nodeData = this.nodeContainer.selectAll('.node').data(this.nodes, function (d) {
         return d.id;
       });
       var nodeEnter = nodeData.enter().append('g').attr('id', function (d) {
