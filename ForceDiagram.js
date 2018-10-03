@@ -80,7 +80,7 @@ class ForceDiagram {
     linkData = linkEnter.merge(linkData)
     this.simulation.force('link').links(this.links)
 
-    let nodeData = this.nodeContainer.selectAll('g').data(this.nodes, d => d.id)
+    let nodeData = this.nodeContainer.selectAll('.node').data(this.nodes, d => d.id)
     let nodeEnter = nodeData
       .enter()
       .append('g')
