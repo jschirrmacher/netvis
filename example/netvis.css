@@ -29,31 +29,31 @@ svg .node {
   svg .node.open > circle:first-child, svg .node.open > rect:first-child {
     stroke: #f00;
     stroke-width: 2px; }
-  svg .node > text {
-    transition: 0.5s 0.5s; }
-    svg .node > text tspan {
-      fill: #000;
-      stroke-width: 0;
-      text-anchor: middle;
-      text-shadow: 0 0 5px #fff, 0 0 5px #fff; }
-  svg .node.withBg > text, svg .node.withBg > rect {
+  svg .node > g {
+    transition: 0.5s; }
+    svg .node > g .text-bg {
+      fill: #fcffff;
+      rx: 5px;
+      ry: 5px; }
+    svg .node > g > text {
+      transition: 0.5s 0.5s; }
+      svg .node > g > text tspan {
+        fill: #000;
+        stroke-width: 0;
+        font-weight: normal;
+        text-anchor: middle;
+        text-shadow: 0 0 5px #fff, 0 0 5px #fff; }
+  svg .node.withBg > g {
     transform: translate(0, 40px); }
-    svg .node.withBg > text tspan, svg .node.withBg > rect tspan {
+    svg .node.withBg > g tspan {
       text-shadow: none; }
-  svg .node:hover circle + .title, svg .node.menuActive circle + .title {
-    transition: 0.5s;
+  svg .node:hover circle + g, svg .node.menuActive circle + g {
     transform: translateY(5em) scale(1.5); }
   svg .node rect {
     stroke: none; }
-  svg .node rect + text tspan {
+  svg .node > rect:first-child + text tspan {
     font-weight: bold;
     fill: #666; }
-  svg .node circle + rect + text tspan {
-    font-weight: normal; }
-  svg .node .text-bg {
-    fill: #fcffff;
-    rx: 5px;
-    ry: 5px; }
 
 .command {
   display: none; }
@@ -63,15 +63,19 @@ svg .node {
 .detailForm {
   padding: 0 15px 15px;
   line-height: 1.3em;
-  width: 500px;
-  max-width: 640px;
+  max-width: 100%;
   min-height: 300px;
-  margin: 0 auto;
+  margin: 0 5px;
   border: 1px solid #ccc;
   background: white;
   box-shadow: 1px 1px 5px #ddd;
   opacity: 0;
   transition: opacity 1s; }
+  @media (min-width: 500px) {
+    .detailForm {
+      max-width: 640px;
+      width: 500px;
+      margin: 0 auto; } }
   .detailForm:after {
     content: '';
     display: table;

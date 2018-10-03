@@ -40,18 +40,29 @@ svg {
       stroke-width: 2px;
     }
 
-    > text {
-      transition: 0.5s 0.5s;
+    > g {
+      transition: 0.5s;
 
-      tspan {
-        fill: #000;
-        stroke-width: 0;
-        text-anchor: middle;
-        text-shadow: 0 0 5px #fff, 0 0 5px #fff;
+      .text-bg {
+        fill: #fcffff;
+        rx: 5px;
+        ry: 5px;
+      }
+
+      > text {
+        transition: 0.5s 0.5s;
+
+        tspan {
+          fill: #000;
+          stroke-width: 0;
+          font-weight: normal;
+          text-anchor: middle;
+          text-shadow: 0 0 5px #fff, 0 0 5px #fff;
+        }
       }
     }
 
-    &.withBg > text, &.withBg > rect {
+    &.withBg > g {
       transform: translate(0, 40px);
 
       tspan {
@@ -60,8 +71,7 @@ svg {
     }
 
     &:hover, &.menuActive {
-      circle + .title {
-        transition: 0.5s;
+      circle + g {
         transform: translateY(5em) scale(1.5);
       }
     }
@@ -70,19 +80,9 @@ svg {
       stroke: none;
     }
 
-    rect + text tspan {
+    > rect:first-child + text tspan {
       font-weight: bold;
       fill: #666;
-    }
-
-    circle + rect + text tspan {
-      font-weight: normal;
-    }
-
-    .text-bg {
-      fill: #fcffff;
-      rx: 5px;
-      ry: 5px;
     }
   }
 }
@@ -98,15 +98,20 @@ svg {
 .detailForm {
   padding: 0 15px 15px;
   line-height: 1.3em;
-  width: 500px;
-  max-width: 640px;
+  max-width: 100%;
   min-height: 300px;
-  margin: 0 auto;
+  margin: 0 5px;
   border: 1px solid #ccc;
   background: white;
   box-shadow: 1px 1px 5px #ddd;
   opacity: 0;
   transition: opacity 1s;
+
+  @media (min-width: 500px) {
+    max-width: 640px;
+    width: 500px;
+    margin: 0 auto;
+  }
 
   &:after {
     content: '';
