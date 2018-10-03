@@ -50,16 +50,17 @@ class Network {
 
   showDetails(node) {
     ForceDiagram.fixNode(node)
-    this.activeNode = node
     const nodeEl = ForceDiagram.getDomElement(node)
-    nodeEl.classList.add('menuActive')
     const container = document.createElement('div')
     const form = document.createElement('div')
     form.setAttribute('class', 'detailForm')
     container.appendChild(form)
     this.details.appendChild(container)
     this.diagram.scaleToNode(node, 1.2, -175, -30)
-      .then(() => document.body.classList.add('dialogOpen'))
+      .then(() => {
+        document.body.classList.add('dialogOpen')
+        nodeEl.classList.add('menuActive')
+      })
       .then(() => node.details ? this.d3json(node.details) : node)
       .then(data => this.handlers.showDetails(data, form, node))
       .catch(console.error)
