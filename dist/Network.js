@@ -103,16 +103,15 @@ var Network = function () {
       var _this2 = this;
 
       ForceDiagram.fixNode(node);
-      this.activeNode = node;
       var nodeEl = ForceDiagram.getDomElement(node);
-      nodeEl.classList.add('menuActive');
       var container = document.createElement('div');
       var form = document.createElement('div');
       form.setAttribute('class', 'detailForm');
       container.appendChild(form);
       this.details.appendChild(container);
       this.diagram.scaleToNode(node, 1.2, -175, -30).then(function () {
-        return document.body.classList.add('dialogOpen');
+        document.body.classList.add('dialogOpen');
+        nodeEl.classList.add('menuActive');
       }).then(function () {
         return node.details ? _this2.d3json(node.details) : node;
       }).then(function (data) {
