@@ -1,18 +1,14 @@
-/*global d3,ForceDiagram, module*/
+import ForceDiagram from './ForceDiagram'
+import * as d3  from './d3'
+
 const nextId = list => list.reduce((id, entry) => Math.max(id, entry.id), 0) + 1
 
 class Network {
-  d3json(what) {
-    return new Promise((resolve, reject) => {
-      d3.json(what, (error, data) => error ? reject(error) : resolve(data))
-    })
-  }
-
   constructor(dataUrl, domSelector, handlers = {}, texts = {}) {
     handlers.error = handlers.error || (() => undefined)
     this.texts = texts
     this.handlers = handlers
-    this.d3json(dataUrl)
+    d3.json(dataUrl)
       .then(data => {
         this.diagram = new ForceDiagram(document.querySelector(domSelector))
         if (this.handlers.showDetails) {
@@ -191,4 +187,4 @@ class Network {
   }
 }
 
-module.exports = Network
+export default Network

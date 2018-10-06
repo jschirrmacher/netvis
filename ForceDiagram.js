@@ -1,5 +1,5 @@
-/*global d3, window, module*/
-let currentZoom = 1
+/*global window*/
+import * as d3 from './d3'
 
 class ForceDiagram {
   constructor(domSelector) {
@@ -42,7 +42,7 @@ class ForceDiagram {
     function handleZoom() {
       const transform = `translate(${d3.event.transform.x || 0}, ${d3.event.transform.y || 0}) scale(${d3.event.transform.k || 1})`
       this.svgGroup.attr('transform', transform)
-      currentZoom = d3.event.transform.k
+      this.currentZoom = d3.event.transform.k
       if (this.handlers.zoom) {
         this.handlers.zoom(transform)
       }
@@ -266,7 +266,7 @@ class ForceDiagram {
       this.svg.transition().duration(1000)
         .call(this.zoom.transform, d3.zoomIdentity
           .translate(factor * d[0] - (factor - 1) * this.center.x, factor * d[1] - (factor - 1) * this.center.y)
-          .scale(factor * currentZoom))
+          .scale(factor * this.currentZoom))
         .on('end', () => resolve(true))
     })
   }
@@ -284,4 +284,4 @@ class ForceDiagram {
   }
 }
 
-module.exports = ForceDiagram
+export default ForceDiagram
