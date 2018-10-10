@@ -27,3 +27,5 @@ Features:
 ## [Contribute to NetVis](https://github.com/jschirrmacher/netvis/wiki/Contribute)
 
 ## [History of NetVis](https://github.com/jschirrmacher/netvis/wiki/History)
+
+[![CircleCI](https://circleci.com/gh/jschirrmacher/netvis.svg?style=svg)](https://circleci.com/gh/jschirrmacher/netvis)
