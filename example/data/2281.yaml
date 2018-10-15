@@ -1,0 +1,10 @@
+id: 2281
+name: Transformation
+deletable: true
+type: topic
+distance: 50
+links:
+    -
+        type: interestedParties
+        nodes:
+            - 2256

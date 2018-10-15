@@ -1,0 +1,10 @@
+id: 2547
+name: 'Customer Experience'
+deletable: true
+type: topic
+distance: 50
+links:
+    -
+        type: interestedParties
+        nodes:
+            - 2248

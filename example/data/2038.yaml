@@ -1,0 +1,17 @@
+id: 2038
+name: 'Christiane Gerigk'
+shape: circle
+image: 'https://www.xing.com/image/1_9_3_3542476e8_3288678_3/christiane-gerigk-foto.256x256.jpg'
+description: 'Dr. Christiane Gerigk arbeitet als Coach und Workshop-Moderatorin mit Teams gezielt in der Frühphase von Innovationsprozessen. Sie vermittelt on-the-Job die geeigneten Methoden aus agiler Entwicklung, Lean-Startup und Design Thinking. Gleichzeitig unterstützt sie Unternehmensleitung und Team dabei, wirkungsvolle organisatorische Voraussetzungen für Agilität in der Organisation zu schaffen.'
+url: 'https://digital-wachsen.de'
+twitterName: justsoandme
+type: person
+x: 859.2942928984602
+y: 489.00505997097554
+links:
+    -
+        type: topics
+        nodes:
+            - 2033
+            - 2034
+            - 2035

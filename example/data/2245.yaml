@@ -1,0 +1,10 @@
+id: 2245
+name: Scrum
+deletable: true
+distance: 50
+type: topic
+links:
+    -
+        type: interestedParties
+        nodes:
+            - 2037

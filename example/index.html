@@ -19,8 +19,9 @@
     </div>
 
     <div class="selection">
-        <a href=".">Personen</a>
-        <a href="?n=1">Themen</a>
+        <a href=".">Personen (Verzeichnis)</a>
+        <a href="?n=json">Themen (JSON)</a>
+        <a href="?n=yaml">Personen (YAML)</a>
     </div>
 
     <script id="detailForm" type="text/x-handlebars-template">
@@ -56,7 +57,7 @@
       const converter = new showdown.Converter()
       const source = document.getElementById('detailForm').innerHTML
       const detailFormTemplate = Handlebars.compile(source)
-      const name = location.search.match(/n=(\w+)/) ? 'data.' + RegExp.$1 + '.json' : 'data.json'
+      const name = location.search.match(/n=(\w+)/) ? 'data.' + RegExp.$1 : 'data'
       const network = new Network(name, '#root', {
         nameRequired: function() {
           return Promise.resolve(window.prompt('Name'))

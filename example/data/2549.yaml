@@ -1,0 +1,10 @@
+id: 2549
+name: 'UX in Agile'
+deletable: true
+type: topic
+distance: 50
+links:
+    -
+        type: interestedParties
+        nodes:
+            - 2248

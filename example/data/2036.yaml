@@ -1,0 +1,13 @@
+id: 2036
+name: 'User Experience'
+deletable: true
+type: topic
+distance: 50
+x: 710.1145906384617
+y: 504.28222407864234
+links:
+    -
+        type: interestedParties
+        nodes:
+            - 2248
+            - 2550

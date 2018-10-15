@@ -1,0 +1,13 @@
+id: 2035
+name: Agile
+deletable: true
+type: topic
+distance: 50
+x: 700.4559721779608
+y: 204.76863504174298
+links:
+    -
+        type: interestedParties
+        nodes:
+            - 2037
+            - 2038

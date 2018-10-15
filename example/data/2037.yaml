@@ -1,0 +1,20 @@
+id: 2037
+name: 'Joachim Schirrmacher'
+shape: circle
+image: 'https://www.xing.com/image/0_4_3_72e679b3d_3230655_6/joachim-schirrmacher-foto.256x256.jpg'
+description: 'Software-Developer, Agile, REST, APIs, Lean Camp Organizer, XCamp Organizer, Lean Startup Circle'
+url: 'https://www.linkedin.com/in/joachimschirrmacher/'
+twitterName: jschirrmacher
+type: person
+connectable: true
+x: 850.3376934981387
+y: 210.4628366060079
+links:
+    -
+        type: topics
+        nodes:
+            - 2033
+            - 2035
+            - 2245
+            - 2275
+            - 2308

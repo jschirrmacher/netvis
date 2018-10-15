@@ -1,0 +1,14 @@
+id: 2550
+name: 'Stefan Trost'
+shape: circle
+image: 'https://xcamp.co/netvis/persons/0x755c/picture/4-small.JPG'
+description: 'Ich bin Web Entwickler mit großem Interesse an Produktentwicklung.'
+url: 'https://www.stefantrost.co'
+type: person
+x: 741.8714797573193
+y: 650.8794060915146
+links:
+    -
+        type: topics
+        nodes:
+            - 2036

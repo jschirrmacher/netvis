@@ -1,0 +1,10 @@
+id: 2308
+name: Kanban
+deletable: true
+type: topic
+distance: 50
+links:
+    -
+        type: interestedParties
+        nodes:
+            - 2037
