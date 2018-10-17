@@ -18,6 +18,7 @@ Features:
 - Can show node details on demand
 - Draggable and zoomable canvas, draggable nodes
 - Programmable zoom (e.g. for screen buttons)
+- Can read data from JSON or YAML and also from files in a folder
 - Written completely in ES6
 
 ## [Usage](https://github.com/jschirrmacher/netvis/wiki/Usage)
