@@ -1,6 +1,6 @@
 {
   "name": "js-netvis",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "description": "Visualize a network of interlinked nodes",
   "main": "netvis.js",
   "scripts": {
