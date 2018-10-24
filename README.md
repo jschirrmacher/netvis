@@ -6,20 +6,20 @@ This package visualizes network dependencies.
 
 [Click image to see it live](https://jschirrmacher.github.io/netvis/example/)
 
-It uses the famous https://d3js.org/ library's force diagram and adds a couple of
+It uses https://d3js.org/ library's force diagram and adds a couple of
 functions to make it ease to use it with json formatted data, which might be
 static (from a simple file) or could be created dynamically by a server program.
 
 Features:
 
 - Can show different types of nodes: circle or rectangle
-- Optimized for large networks by letting the user click on the nodes to hide or show the connections of the node
+- Optimized for large networks by letting the user click on the nodes to show the connections of the node
 - Can create new or delete existing nodes and connections with event handlers for easy backend attachment
 - Can show node details on demand
 - Draggable and zoomable canvas, draggable nodes
 - Programmable zoom (e.g. for screen buttons)
-- Can read data from JSON or YAML and also from files in a folder
 - Written completely in ES6
+- [Example application](https://jschirrmacher.github.io/netvis-server/) available
 
 ## [Usage](https://github.com/jschirrmacher/netvis/wiki/Usage)
 
