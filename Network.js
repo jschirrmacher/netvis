@@ -9,6 +9,7 @@ class Network {
     this.texts = texts
     this.handlers = handlers
     d3.json(dataUrl)
+      .then(data => handlers.prepare ? handlers.prepare(data) : data)
       .then(data => {
         this.diagram = new ForceDiagram(document.querySelector(domSelector))
         if (this.handlers.showDetails) {
