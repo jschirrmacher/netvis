@@ -74,6 +74,8 @@ class Network {
   showNodes(node, type) {
     node.links[type].links.forEach(link => {
       link.target.visible = true
+      link.target.x = node.x
+      link.target.y = node.y
       this.addNode(link.target)
       this.diagram.add([link.target], [link])
     })
