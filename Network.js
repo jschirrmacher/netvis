@@ -54,9 +54,10 @@ class Network {
     container.appendChild(form)
     this.details.appendChild(container)
     this.diagram.scaleToNode(node, 1.2, -175, -30)
-      .then(() => {
+      .then(({x, y}) => {
         document.body.classList.add('dialogOpen')
         nodeEl.classList.add('menuActive')
+        container.setAttribute('style', 'padding-top: ' + (y - 123) + 'px')
       })
       .then(() => node.details ? this.d3json(node.details) : node)
       .then(data => this.handlers.showDetails(data, form, node))

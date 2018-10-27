@@ -246,15 +246,17 @@ class ForceDiagram {
   scaleToNode(node, scale, diffX = 0, diffY = 0) {
     return new Promise(resolve => {
       ForceDiagram.fixNode(node)
+      const x = this.center.x + diffX
+      const y = this.center.y + diffY
       this.svg.transition().duration(1000)
         .call(this.zoom.transform, d3.zoomIdentity
-          .translate(this.center.x + diffX, this.center.y + diffY)
+          .translate(x, y)
           .scale(scale)
           .translate(-node.x, -node.y)
         )
         .on('end', () => {
           ForceDiagram.releaseNode(node)
-          resolve(true)
+          resolve({x, y})
         })
     })
   }
