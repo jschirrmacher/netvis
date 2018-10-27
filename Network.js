@@ -54,7 +54,7 @@ class Network {
     container.appendChild(form)
     this.details.appendChild(container)
     this.diagram.scaleToNode(node, 1.2, -175, -30)
-      .then(({x, y}) => {
+      .then(({y}) => {
         document.body.classList.add('dialogOpen')
         nodeEl.classList.add('menuActive')
         container.setAttribute('style', 'padding-top: ' + (y - 123) + 'px')
