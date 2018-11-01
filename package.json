@@ -6,7 +6,7 @@
   "scripts": {
     "start": "open https://jschirrmacher.github.io/netvis-server/public",
     "build": "rollup -c",
-    "test": "eslint *.js"
+    "test": "eslint *.js && NODE_ENV=test mocha --ui bdd --require @babel/register --recursive *.test.js"
   },
   "keywords": [
     "network",
@@ -20,10 +20,11 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
+    "@babel/register": "^7.0.0",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.6",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-es2015-rollup": "^3.0.0",
-    "concurrently": "^4.0.1",
     "eslint": "^5.6.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
@@ -31,10 +32,14 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "forever-fixed": "^0.16.1",
+    "jsdom": "12.2.0",
+    "jsdom-global": "3.0.2",
+    "mocha": "^5.2.0",
     "rollup": "^0.66.3",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-uglify-es": "0.0.1",
+    "should": "^13.2.3",
     "sleep-ms": "^2.0.1"
   },
   "dependencies": {

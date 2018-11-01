@@ -2,7 +2,8 @@
 import * as d3 from './d3'
 
 class ForceDiagram {
-  constructor(domSelector) {
+  constructor(domSelector, options = {}) {
+    this.options = options
     this.links = []
     this.nodes = []
     this.handlers = {}
@@ -121,7 +122,7 @@ class ForceDiagram {
     function addCircleNode(enter) {
       enter.append('circle')
         .attr('r', 50)
-        .attr('fill', getBackground.bind(this))
+        .attr('fill', d => getBackground.bind(this)(d))
     }
 
     function addRectNode(enter) {
@@ -130,7 +131,7 @@ class ForceDiagram {
         .attr('y', -35)
         .attr('width', 100)
         .attr('height', 70)
-        .attr('fill', getBackground.bind(this))
+        .attr('fill', d => getBackground.bind(this)(d))
     }
 
     function handleTicks() {
@@ -140,22 +141,25 @@ class ForceDiagram {
         .attr('x2', d => d.target.x)
         .attr('y2', d => d.target.y)
 
-      nodeData.attr('transform', d => 'translate(' + [d.x, d.y] + ')')
+      nodeData
+        .attr('transform', d => `translate(${[d.x, d.y]})`)
+        .attr('data-level', d => d.level)
     }
 
     function getBackground(node) {
-      if (node.image) {
-        this.defs.select('#bg-' + node.id).remove()
-        this.defs.append('pattern')
-          .attr('id', () => 'bg-' + node.id)
-          .attr('height', 1).attr('width', 1)
-          .append('image')
-          .attr('xlink:href', node.image.replace(/ /g, '%20'))
-          .attr('height', '100px').attr('width', '100px')
-          .attr('preserveAspectRatio', 'xMidYMid slice')
+      if (!node.image || node.level >= this.options.suppressImagesAboveLevel) {
+        return '#eef'
       }
+      this.defs.select('#bg-' + node.id).remove()
+      this.defs.append('pattern')
+        .attr('id', () => 'bg-' + node.id)
+        .attr('height', 1).attr('width', 1)
+        .append('image')
+        .attr('xlink:href', node.image.replace(/ /g, '%20'))
+        .attr('height', '100px').attr('width', '100px')
+        .attr('preserveAspectRatio', 'xMidYMid slice')
 
-      return node.image ? 'url(#bg-' + node.id + ')' : '#eef'
+      return 'url(#bg-' + node.id + ')'
     }
 
     function wrap(text, width) {

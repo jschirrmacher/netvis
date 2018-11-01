@@ -1,48 +1,88 @@
 import ForceDiagram from './ForceDiagram'
-import * as d3  from './d3'
+import * as d3 from './d3'
 
 const nextId = list => list.reduce((id, entry) => Math.max(id, entry.id), 0) + 1
+const defaults = {
+  maxLevel: 99999,
+  handlers: {error: () => {}}
+}
 
 class Network {
-  constructor(dataUrl, domSelector, handlers = {}, texts = {}) {
-    handlers.error = handlers.error || (() => undefined)
-    this.texts = texts
-    this.handlers = handlers
-    d3.json(dataUrl)
-      .then(data => handlers.prepare ? handlers.prepare(data) : data)
+  constructor(options, domSelector, handlers = {}, texts = {}) {
+    if (typeof options === 'string') {
+      console.log('Deprecation notice: Using separate parameters for Network constructor is deprecated, use options structure instead.')
+      options = {dataUrl: options, domSelector, handlers, texts}
+    }
+    this.options = Object.assign({}, defaults, options)
+
+    d3.json(options.dataUrl)
+      .then(data => this.options.handlers.prepare ? this.options.handlers.prepare(data) : data)
       .then(data => {
-        this.diagram = new ForceDiagram(document.querySelector(domSelector))
-        if (this.handlers.showDetails) {
+        const domElem = document.querySelector(this.options.domSelector)
+        this.diagram = new ForceDiagram(domElem, {suppressImagesAboveLevel: this.options.maxLevel})
+        if (this.options.handlers.showDetails) {
           this.details = document.createElement('div')
           this.details.setAttribute('class', 'details')
           document.body.append(this.details)
           this.diagram.addHandler('click', node => this.showDetails(node))
         }
 
-        const node = id => data.nodes.find(node => node.id === id) || handlers.error('Node id ' + id + ' not found');
-        let id = 1
-        this.links = data.nodes.map(source => {
-          source.links = Object.assign({}, ...(source.links || []).map(list => {
-            const title = (this.texts && this.texts[list.type]) || list.type
-            const links = list.nodes.map(targetId => ({id: id++, source, target: node(targetId)}))
-            return {[list.type]: {type: list.type, title, links}}
-          }))
-          return Object.keys(source.links).map(type => source.links[type].links).reduce((a, b) => a.concat(b), [])
-        }).reduce((a, b) => a.concat(b), [])
+        this.links = this.prepareLinks(data.nodes)
         this.nodes = data.nodes
 
         const setBothSidesVisible = d => d.source.visible = d.target.visible = true
         this.links.filter(d => d.source.open || d.target.open).map(setBothSidesVisible)
         const links = this.links.filter(d => d.source.visible && d.target.visible)
         const nodes = this.nodes.filter(d => d.visible)
+        this.setDistancesToNode(nodes[0] || this.nodes[0])
         this.diagram.add(nodes, links)
         this.diagram.update()
 
         setTimeout(() => {
           document.body.className = 'initialized'
-          this.handlers.initialized && this.handlers.initialized()
+          this.options.handlers.initialized && this.options.handlers.initialized()
         }, 0)
       })
+  }
+
+  prepareLinks(nodes) {
+    const getNode = id => nodes.find(node => node.id === id) || handlers.error('Node id ' + id + ' not found')
+    let id = 1
+    return nodes.map(source => {
+      // Handle old data format
+      if (source.links && source.links.length) {
+        source.links = Object.assign({}, ...source.links.map(e => ({[e.type]: e.nodes})))
+      }
+      source.links = source.links || {}
+      return Object.keys(source.links).map(type => {
+        const title = (this.options.texts && this.options.texts[type]) || type
+        const linkIds = source.links[type].map ? source.links[type] : source.links[type].links.map(l => l.target.id)
+        const links = linkIds.map(targetId => ({id: id++, source, target: getNode(targetId)}))
+        source.links[type] = {type, title, links}
+        return links
+      }).reduce((a, b) => a.concat(b), [])
+    }).reduce((a, b) => a.concat(b), [])
+  }
+
+  setDistancesToNode(node) {
+    const nodes = {}
+
+    function getLinks(node) {
+      return Object.keys(node.links).map(type => node.links[type].links).reduce((a, b) => a.concat(b), [])
+    }
+
+    function setLevel(node, level, maxLevel) {
+      if (!nodes[node.id] || nodes[node.id].level > level) {
+        node.level = level
+        nodes[node.id] = node
+        if (level < maxLevel - 1) {
+          getLinks(node).forEach(link => setLevel(link.target, level + 1, maxLevel))
+        }
+      }
+    }
+
+    this.nodes.forEach(n => n.level = this.options.maxLevel)
+    setLevel(node, 0, this.options.maxLevel)
   }
 
   showDetails(node) {
@@ -57,10 +97,11 @@ class Network {
       .then(({y}) => {
         document.body.classList.add('dialogOpen')
         nodeEl.classList.add('menuActive')
+        this.setDistancesToNode(node)
         container.setAttribute('style', 'padding-top: ' + (y - 123) + 'px')
       })
       .then(() => node.details ? this.d3json(node.details) : node)
-      .then(data => this.handlers.showDetails(data, form, node))
+      .then(data => this.options.handlers.showDetails(data, form, node))
       .catch(console.error) // eslint-disable-line no-console
       .then(newData => {
         node = newData || node
@@ -133,8 +174,8 @@ class Network {
     this.links = this.links.filter(l => l.source.id !== node.id && l.target.id !== node.id)
     this.diagram.remove([node], [])
     this.diagram.update()
-    if (this.handlers.nodeRemoved) {
-      this.handlers.nodeRemoved(node)
+    if (this.options.handlers.nodeRemoved) {
+      this.options.handlers.nodeRemoved(node)
     }
   }
 
@@ -158,20 +199,20 @@ class Network {
   }
 
   newConnection(node) {
-    this.handlers.nameRequired()
+    this.options.handlers.nameRequired()
       .then(name => name ? name : Promise.reject('no name given'))
       .then(name => {
         let existing = this.nodes.find(node => node.name.toLowerCase() === name.toLowerCase())
         if (!existing) {
-          existing = this.handlers.newNode ? this.handlers.newNode(name) : {name}
+          existing = this.options.handlers.newNode ? this.options.handlers.newNode(name) : {name}
           existing.id = existing.id || nextId(this.nodes)
           this.nodes.push(existing)
           this.diagram.add([existing], [])
         }
         if (!this.diagram.nodesConnected(node, existing)) {
           const newLink = {id: nextId(this.links), source: node, target: existing}
-          if (this.handlers.newLink) {
-            this.handlers.newLink(newLink)
+          if (this.options.handlers.newLink) {
+            this.options.handlers.newLink(newLink)
           }
           this.links.push(newLink)
           this.diagram.add([], [newLink])
@@ -179,7 +220,7 @@ class Network {
 
         this.diagram.update()
       })
-      .catch(this.handlers.error)
+      .catch(this.options.handlers.error)
   }
 
   update() {
