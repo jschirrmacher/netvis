@@ -8,10 +8,10 @@ const defaults = {
 }
 
 class Network {
-  constructor(options, domSelector, handlers = {}, texts = {}) {
+  constructor(options, domSelector, handlers = {}) {
     if (typeof options === 'string') {
-      console.log('Deprecation notice: Using separate parameters for Network constructor is deprecated, use options structure instead.')
-      options = {dataUrl: options, domSelector, handlers, texts}
+      console.log('Deprecation notice: Using separate parameters for Network constructor is deprecated, use options structure instead.') // eslint-disable-line no-console
+      options = {dataUrl: options, domSelector, handlers}
     }
     this.options = Object.assign({}, defaults, options)
 
@@ -27,8 +27,8 @@ class Network {
           this.diagram.addHandler('click', node => this.showDetails(node))
         }
 
-        this.links = this.prepareLinks(data.nodes)
         this.nodes = data.nodes
+        this.links = this.computeLinks()
 
         const setBothSidesVisible = d => d.source.visible = d.target.visible = true
         this.links.filter(d => d.source.open || d.target.open).map(setBothSidesVisible)
@@ -45,44 +45,34 @@ class Network {
       })
   }
 
-  prepareLinks(nodes) {
-    const getNode = id => nodes.find(node => node.id === id) || handlers.error('Node id ' + id + ' not found')
+  computeLinks() {
     let id = 1
-    return nodes.map(source => {
-      // Handle old data format
-      if (source.links && source.links.length) {
-        source.links = Object.assign({}, ...source.links.map(e => ({[e.type]: e.nodes})))
-      }
+    this.nodes.forEach(node => node.linkedNodes = {})
+    return this.nodes.map(source => {
       source.links = source.links || {}
       return Object.keys(source.links).map(type => {
-        const title = (this.options.texts && this.options.texts[type]) || type
-        const linkIds = source.links[type].map ? source.links[type] : source.links[type].links.map(l => l.target.id)
-        const links = linkIds.map(targetId => ({id: id++, source, target: getNode(targetId)}))
-        source.links[type] = {type, title, links}
-        return links
+        return source.links[type] = source.links[type].map(target => {
+          target = this.getNode((target.target && target.target.id) || target)
+          source.linkedNodes[target.id] = target
+          target.linkedNodes[source.id] = source
+          return {id: id++, source, target}
+        })
       }).reduce((a, b) => a.concat(b), [])
     }).reduce((a, b) => a.concat(b), [])
   }
 
-  setDistancesToNode(node) {
-    const nodes = {}
-
-    function getLinks(node) {
-      return Object.keys(node.links).map(type => node.links[type].links).reduce((a, b) => a.concat(b), [])
-    }
-
-    function setLevel(node, level, maxLevel) {
-      if (!nodes[node.id] || nodes[node.id].level > level) {
-        node.level = level
-        nodes[node.id] = node
-        if (level < maxLevel - 1) {
-          getLinks(node).forEach(link => setLevel(link.target, level + 1, maxLevel))
-        }
+  setLevel(node, level) {
+    if (node.level > level) {
+      node.level = level
+      if (level < this.options.maxLevel) {
+        Object.values(node.linkedNodes).forEach(n => this.setLevel(n, level + 1))
       }
     }
+  }
 
+  setDistancesToNode(node) {
     this.nodes.forEach(n => n.level = this.options.maxLevel)
-    setLevel(node, 0, this.options.maxLevel)
+    this.setLevel(node, 0)
   }
 
   showDetails(node) {
@@ -114,7 +104,7 @@ class Network {
   }
 
   showNodes(node, type) {
-    node.links[type].links.forEach(link => {
+    node.links[type].forEach(link => {
       link.target.visible = true
       link.target.x = node.x
       link.target.y = node.y
@@ -130,19 +120,16 @@ class Network {
 
   closeNode(node) {
     node.open = false
-    this.links
-      .filter(link => link.source.id === node.id || link.target.id === node.id)
-      .forEach(link => {
-        const otherNode = link.source.id === node.id ? link.target : link.source
-        if (this.diagram.getLinkedNodes(otherNode).length === 1) {
-          otherNode.visible = otherNode.keepVisible
-          if (!otherNode.visible) {
-            this.diagram.remove([otherNode], [])
-          }
-        } else {
-          this.diagram.remove([], [link])
+    node.linkedNodes.forEach(otherNode => {
+      if (this.diagram.getLinkedNodes(otherNode).length === 1) {
+        otherNode.visible = otherNode.keepVisible
+        if (!otherNode.visible) {
+          this.diagram.remove([otherNode], [])
         }
-      })
+      } else {
+        this.diagram.remove([], [link])
+      }
+    })
 
     this.diagram.scaleToNode(node, 1)
     this.diagram.update()
@@ -150,15 +137,12 @@ class Network {
 
   openNode(node) {
     node.open = true
-    this.links
-      .filter(link => link.source.id === node.id || link.target.id === node.id)
-      .forEach(link => {
-        const otherNode = link.source.id === node.id ? link.target : link.source
-        otherNode.visible = true
-        otherNode.x = node.x
-        otherNode.y = node.y
-        this.diagram.add([otherNode], [link])
-      })
+    node.linkedNodes.forEach(otherNode => {
+      otherNode.visible = true
+      otherNode.x = node.x
+      otherNode.y = node.y
+      this.diagram.add([otherNode], [link])
+    })
 
     this.diagram.scaleToNode(node, 1)
     this.diagram.update()

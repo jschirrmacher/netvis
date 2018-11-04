@@ -65,7 +65,7 @@ describe('Network', () => {
     const network = new Network({dataUrl: '/y', domSelector: '#root', handlers: {
       initialized: () => {
         network.setDistancesToNode(network.getNode(1))
-        getNodeLevels(network).should.deepEqual({1: 0, 2: 1, 3: 2, 4: 3, 5: 4})
+        getNodeLevels(network).should.deepEqual({1: 0, 2: 1, 3: 2, 4: 2, 5: 1})
         done()
       }
     }})
