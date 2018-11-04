@@ -120,16 +120,19 @@ class Network {
 
   closeNode(node) {
     node.open = false
-    node.linkedNodes.forEach(otherNode => {
-      if (this.diagram.getLinkedNodes(otherNode).length === 1) {
-        otherNode.visible = otherNode.keepVisible
-        if (!otherNode.visible) {
-          this.diagram.remove([otherNode], [])
+    this.links
+      .filter(link => link.source.id === node.id || link.target.id === node.id)
+      .forEach(link => {
+        const otherNode = link.source.id === node.id ? link.target : link.source
+        if (this.diagram.getLinkedNodes(otherNode).length === 1) {
+          otherNode.visible = otherNode.keepVisible
+          if (!otherNode.visible) {
+            this.diagram.remove([otherNode], [])
+          }
+        } else {
+          this.diagram.remove([], [link])
         }
-      } else {
-        this.diagram.remove([], [link])
-      }
-    })
+      })
 
     this.diagram.scaleToNode(node, 1)
     this.diagram.update()
@@ -137,12 +140,15 @@ class Network {
 
   openNode(node) {
     node.open = true
-    node.linkedNodes.forEach(otherNode => {
-      otherNode.visible = true
-      otherNode.x = node.x
-      otherNode.y = node.y
-      this.diagram.add([otherNode], [link])
-    })
+    this.links
+      .filter(link => link.source.id === node.id || link.target.id === node.id)
+      .forEach(link => {
+        const otherNode = link.source.id === node.id ? link.target : link.source
+        otherNode.visible = true
+        otherNode.x = node.x
+        otherNode.y = node.y
+        this.diagram.add([otherNode], [link])
+      })
 
     this.diagram.scaleToNode(node, 1)
     this.diagram.update()
