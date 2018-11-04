@@ -47,9 +47,11 @@ class Network {
 
   computeLinks() {
     let id = 1
-    this.nodes.forEach(node => node.linkedNodes = {})
+    this.nodes.forEach(node => {
+      node.links = node.links || {}
+      node.linkedNodes = {}
+    })
     return this.nodes.map(source => {
-      source.links = source.links || {}
       return Object.keys(source.links).map(type => {
         return source.links[type] = source.links[type].map(target => {
           target = this.getNode((target.target && target.target.id) || target)
@@ -108,7 +110,6 @@ class Network {
       link.target.visible = true
       link.target.x = node.x
       link.target.y = node.y
-      this.addNode(link.target)
       this.diagram.add([link.target], [link])
     })
     this.diagram.update()

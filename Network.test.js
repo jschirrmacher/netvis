@@ -70,4 +70,33 @@ describe('Network', () => {
       }
     }})
   })
+
+  it('should show connections of a given type', done => {
+    const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
+      initialized: () => {
+        network.diagram = {
+          add: () => {},
+          update: () => {}
+        }
+        network.showNodes(network.getNode(1), 'topic')
+        network.nodes.map(n => n.visible).should.deepEqual([undefined, true, undefined, undefined, undefined])
+        done()
+      }
+    }})
+  })
+
+  it('should open all connections of a node', done => {
+    const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
+      initialized: () => {
+        network.diagram = {
+          scaleToNode: () => {},
+          add: () => {},
+          update: () => {}
+        }
+        network.openNode(network.getNode(1))
+        network.nodes.map(n => n.visible).should.deepEqual([undefined, true, undefined, undefined, undefined])
+        done()
+      }
+    }})
+  })
 })
