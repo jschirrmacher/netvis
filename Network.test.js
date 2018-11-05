@@ -1,5 +1,7 @@
 /* eslint-env node, mocha */
 
+const sinon = require('sinon')
+
 const node1 = {id: 1, name: 'Node 1', links: {topic: [2]}}
 const node2 = {id: 2, name: 'Node 2', links: {topic: [3]}}
 const node3 = {id: 3, name: 'Node 3', links: {topic: [4]}}
@@ -75,11 +77,16 @@ describe('Network', () => {
     const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
       initialized: () => {
         network.diagram = {
-          add: () => {},
-          update: () => {}
+          add: sinon.fake(),
+          update: sinon.fake()
         }
-        network.showNodes(network.getNode(1), 'topic')
+        network.showNodes(node1, 'topic')
         network.nodes.map(n => n.visible).should.deepEqual([undefined, true, undefined, undefined, undefined])
+        network.diagram.add.callCount.should.equal(1)
+        network.diagram.add.args[0][0][0].id.should.equal(2)
+        network.diagram.add.args[0][0][0].name.should.equal('Node 2')
+        network.diagram.update.callCount.should.equal(1)
+        network.diagram.update.calledWith().should.be.true()
         done()
       }
     }})
@@ -89,12 +96,18 @@ describe('Network', () => {
     const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
       initialized: () => {
         network.diagram = {
-          scaleToNode: () => {},
-          add: () => {},
-          update: () => {}
+          scaleToNode: sinon.fake(),
+          add: sinon.fake(),
+          update: sinon.fake()
         }
-        network.openNode(network.getNode(1))
+        network.openNode(node1)
         network.nodes.map(n => n.visible).should.deepEqual([undefined, true, undefined, undefined, undefined])
+        network.diagram.scaleToNode.callCount.should.equal(1)
+        network.diagram.scaleToNode.calledWith(node1, 1).should.be.true()
+        network.diagram.add.callCount.should.equal(1)
+        network.diagram.add.calledWith([node2], [node1.links.topic[0]]).should.be.true()
+        network.diagram.update.callCount.should.equal(1)
+        network.diagram.update.calledWith().should.be.true()
         done()
       }
     }})
