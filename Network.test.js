@@ -31,6 +31,12 @@ function getNodeLevels(network) {
 describe('Network', () => {
   before(function () {
     this.jsdom = require('jsdom-global')()
+    window.Element.prototype.getComputedTextLength = function() {
+      return 200
+    }
+    window.HTMLUnknownElement.prototype.getBBox = function () {
+      return [0, 0, 200, 200]
+    }
 
     const svg = document.createElement('svg')
     svg.setAttribute('id', 'root')
@@ -101,15 +107,68 @@ describe('Network', () => {
           update: sinon.fake()
         }
         network.openNode(node1)
-        network.nodes.map(n => n.visible).should.deepEqual([undefined, true, undefined, undefined, undefined])
+        network.getNode(2).visible.should.be.true()
         network.diagram.scaleToNode.callCount.should.equal(1)
         network.diagram.scaleToNode.calledWith(node1, 1).should.be.true()
         network.diagram.add.callCount.should.equal(1)
-        network.diagram.add.calledWith([node2], [node1.links.topic[0]]).should.be.true()
+        network.diagram.add.calledWith([network.getNode(2)], [network.getNode(1).links.topic[0]]).should.be.true()
         network.diagram.update.callCount.should.equal(1)
         network.diagram.update.calledWith().should.be.true()
         done()
       }
     }})
+  })
+
+  it('should close all connections of a node', done => {
+    const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
+        initialized: () => {
+          network.diagram = {
+            scaleToNode: sinon.fake(),
+            getLinkedNodes: sinon.fake.returns([node2]),
+            remove: sinon.fake(),
+            update: sinon.fake()
+          }
+          network.getNode(1).open = true
+          network.getNode(2).visible = true
+          network.closeNode(node1)
+          should.not.exist(network.getNode(2).visible)
+          network.diagram.scaleToNode.callCount.should.equal(1)
+          network.diagram.scaleToNode.calledWith(node1, 1).should.be.true()
+          network.diagram.remove.callCount.should.equal(1)
+          network.diagram.remove.args[0][0][0].id.should.equal(2)
+          network.diagram.remove.args[0][0][0].name.should.equal('Node 2')
+          network.diagram.update.callCount.should.equal(1)
+          network.diagram.update.calledWith().should.be.true()
+          done()
+        }
+      }})
+  })
+
+  it('should route update requests to the diagram', done => {
+    const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
+        initialized: () => {
+          network.diagram = {
+            update: sinon.fake()
+          }
+          network.update()
+          network.diagram.update.callCount.should.equal(1)
+          network.diagram.update.calledWith().should.be.true()
+          done()
+        }
+      }})
+  })
+
+  it('should route scale requests to the diagram', done => {
+    const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
+        initialized: () => {
+          network.diagram = {
+            scale: sinon.fake()
+          }
+          network.scale(2)
+          network.diagram.scale.callCount.should.equal(1)
+          network.diagram.scale.calledWith(2).should.be.true()
+          done()
+        }
+      }})
   })
 })
