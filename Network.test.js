@@ -22,7 +22,7 @@ global.fetch = function (url) {
   })
 }
 const Network = require('./Network').default
-require('should')
+const should = require('should')
 
 function getNodeLevels(network) {
   return Object.assign({}, ...[...Array(5).keys()].map(id => ({[id + 1]: network.getNode(id + 1).level})))
