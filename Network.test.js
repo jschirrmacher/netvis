@@ -144,6 +144,29 @@ describe('Network', () => {
       }})
   })
 
+  it('should toggle node visibilty', done => {
+    const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
+        initialized: () => {
+          network.diagram = {
+            add: sinon.fake(),
+            remove: sinon.fake(),
+            scaleToNode: sinon.fake(),
+            update: sinon.fake(),
+            getLinkedNodes: sinon.fake.returns([])
+          }
+
+          network.toggle(node4)
+          node4.open.should.be.true()
+          network.diagram.add.callCount.should.equal(2)
+
+          network.toggle(node4)
+          node4.open.should.be.false()
+          network.diagram.remove.callCount.should.equal(2)
+          done()
+        }
+      }})
+  })
+
   it('should route update requests to the diagram', done => {
     const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
         initialized: () => {
@@ -167,6 +190,59 @@ describe('Network', () => {
           network.scale(2)
           network.diagram.scale.callCount.should.equal(1)
           network.diagram.scale.calledWith(2).should.be.true()
+          done()
+        }
+      }})
+  })
+
+  it('should allow to add a node', done => {
+    const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
+        initialized: () => {
+          network.diagram = {
+            add: sinon.fake()
+          }
+          const node = {id: 6, name: 'Added Node'}
+          network.addNode(node)
+          network.nodes.length.should.equal(6)
+          network.nodes[5].id.should.equal(6)
+          network.diagram.add.callCount.should.equal(1)
+          network.diagram.add.calledWith([node], []).should.be.true()
+          done()
+        }
+      }})
+  })
+
+  it('should compute links in new nodes', done => {
+    const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
+        initialized: () => {
+          const node = {id: 6, name: 'Added Node', links: {topics: [2]}}
+          network.addNode(node)
+          node.should.have.property('linkedNodes')
+          Object.keys(node.linkedNodes).should.deepEqual(['2'])
+          node.links.topics[0].source.id.should.equal(6)
+          node.links.topics[0].target.id.should.equal(2)
+          network.links.length.should.equal(5)
+          network.links[4].source.id.should.equal(6)
+          network.links[4].target.id.should.equal(2)
+          done()
+        }
+      }})
+  })
+
+  it('should allow to remove a node', done => {
+    const network = new Network({dataUrl: '/x', domSelector: '#root', handlers: {
+        initialized: () => {
+          network.diagram = {
+            remove: sinon.fake(),
+            update: sinon.fake()
+          }
+          network.removeNode(node3)
+          network.nodes.length.should.equal(4)
+          network.nodes[2].id.should.equal(4)
+          network.diagram.remove.callCount.should.equal(1)
+          network.diagram.remove.calledWith([node3], []).should.be.true()
+          network.diagram.update.callCount.should.equal(1)
+          network.diagram.update.calledWith().should.be.true()
           done()
         }
       }})

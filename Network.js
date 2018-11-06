@@ -1,6 +1,7 @@
 import ForceDiagram from './ForceDiagram'
 import * as d3 from './d3'
 
+let nextLinkId = 1
 const nextId = list => list.reduce((id, entry) => Math.max(id, entry.id), 0) + 1
 const defaults = {
   maxLevel: 99999,
@@ -28,7 +29,7 @@ class Network {
         }
 
         this.nodes = data.nodes
-        this.links = this.computeLinks()
+        this.links = this.computeLinks(this.nodes)
 
         const setBothSidesVisible = d => d.source.visible = d.target.visible = true
         this.links.filter(d => d.source.open || d.target.open).map(setBothSidesVisible)
@@ -45,19 +46,18 @@ class Network {
       })
   }
 
-  computeLinks() {
-    let id = 1
-    this.nodes.forEach(node => {
+  computeLinks(nodes) {
+    nodes.forEach(node => {
       node.links = node.links || {}
       node.linkedNodes = {}
     })
-    return this.nodes.map(source => {
+    return nodes.map(source => {
       return Object.keys(source.links).map(type => {
         return source.links[type] = source.links[type].map(target => {
           target = this.getNode((target.target && target.target.id) || target)
           source.linkedNodes[target.id] = target
           target.linkedNodes[source.id] = source
-          return {id: id++, source, target}
+          return {id: nextLinkId++, source, target}
         })
       }).reduce((a, b) => a.concat(b), [])
     }).reduce((a, b) => a.concat(b), [])
@@ -156,8 +156,10 @@ class Network {
   }
 
   addNode(node) {
+    const links = this.computeLinks([node])
     this.nodes.push(node)
-    this.diagram.add([node], [])
+    links.forEach(link => this.links.push(link))
+    this.diagram.add([node], links)
   }
 
   removeNode(node) {
@@ -176,7 +178,7 @@ class Network {
 
   addLinks(links) {
     this.diagram.add([], links
-      .map(l => ({id: nextId(this.links), source: this.getNode(l.source.id), target: this.getNode(l.target.id)}))
+      .map(l => ({id: nextLinkId++, source: this.getNode(l.source.id), target: this.getNode(l.target.id)}))
       .map(l => {
         this.links.push(l)
         return l
@@ -201,7 +203,7 @@ class Network {
           this.diagram.add([existing], [])
         }
         if (!this.diagram.nodesConnected(node, existing)) {
-          const newLink = {id: nextId(this.links), source: node, target: existing}
+          const newLink = {id: nextLinkId++, source: node, target: existing}
           if (this.options.handlers.newLink) {
             this.options.handlers.newLink(newLink)
           }
