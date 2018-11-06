@@ -20,7 +20,7 @@ class Network {
       .then(data => this.options.handlers.prepare ? this.options.handlers.prepare(data) : data)
       .then(data => {
         const domElem = document.querySelector(this.options.domSelector)
-        this.diagram = new ForceDiagram(domElem, {suppressImagesAboveLevel: this.options.maxLevel})
+        this.diagram = new ForceDiagram(domElem, options)
         if (this.options.handlers.showDetails) {
           this.details = document.createElement('div')
           this.details.setAttribute('class', 'details')

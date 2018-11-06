@@ -147,7 +147,7 @@ class ForceDiagram {
     }
 
     function getBackground(node) {
-      if (!node.image || node.level >= this.options.suppressImagesAboveLevel) {
+      if (!node.image || (this.options.suppressImagesAboveLevel > 0 && node.level >= this.options.suppressImagesAboveLevel)) {
         return '#eef'
       }
       this.defs.select('#bg-' + node.id).remove()
