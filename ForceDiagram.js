@@ -10,7 +10,7 @@ class ForceDiagram {
     this.svg = d3.select(domSelector)
     this.setCenter()
     window.addEventListener('resize', () => this.setCenter())
-    this.defs = this.svg.append('defs')
+    this.options.nodeRenderer.setup(this.svg)
     this.svgGroup = this.svg
       .append('g')
       .attr('id', 'svgGroup')
@@ -80,28 +80,25 @@ class ForceDiagram {
   }
 
   update() {
+    const nodeRenderer = this.options.nodeRenderer
     let linkData = this.linkContainer.selectAll('line').data(this.links, d => d.id)
-    let linkEnter = linkData.enter().append('line')
+    const linkEnter = linkData.enter().append('line')
     linkData.exit().remove()
     linkData = linkEnter.merge(linkData)
     this.simulation.force('link').links(this.links)
 
     let nodeData = this.nodeContainer.selectAll('.node').data(this.nodes, d => d.id)
-    let nodeEnter = nodeData
+    const nodeEnter = nodeData
       .enter()
       .append('g')
       .attr('id', d => 'node-' + d.id)
-      .attr('class', d => d.className || '')
-      .classed('node', true)
-      .classed('open', d => d.open)
-      .classed('withBg', d => d.image)
+      .attr('class', nodeRenderer.getClass.bind(nodeRenderer))
       .call(this.drag)
       .call(bindHandlers.bind(this))
 
     nodeData.exit().remove()
 
-    nodeEnter.filter(d => d.shape === 'circle').call(addCircleNode.bind(this))
-    nodeEnter.filter(d => d.shape === 'rect').call(addRectNode.bind(this))
+    nodeEnter.call(nodeRenderer.render.bind(nodeRenderer))
 
     nodeEnter.append('g')
       .append('text')
@@ -110,7 +107,7 @@ class ForceDiagram {
       .call(d => wrap(d, 90))
 
     nodeData = nodeEnter.merge(nodeData)
-    this.simulation.nodes(this.nodes).on('tick', () => handleTicks())
+    this.simulation.nodes(this.nodes).on('tick', () => handleTicks.bind(this)())
 
     this.simulation.alpha(0.3)
     this.simulation.restart()
@@ -119,47 +116,17 @@ class ForceDiagram {
       Object.keys(this.handlers).forEach(type => node.on(type, this.handlers[type]))
     }
 
-    function addCircleNode(enter) {
-      enter.append('circle')
-        .attr('r', 50)
-        .attr('fill', d => getBackground.bind(this)(d))
-    }
-
-    function addRectNode(enter) {
-      enter.append('rect')
-        .attr('x', -50)
-        .attr('y', -35)
-        .attr('width', 100)
-        .attr('height', 70)
-        .attr('fill', d => getBackground.bind(this)(d))
-    }
-
     function handleTicks() {
       linkData
         .attr('x1', d => d.source.x)
         .attr('y1', d => d.source.y)
         .attr('x2', d => d.target.x)
         .attr('y2', d => d.target.y)
+        .attr('class', d => 'level-' + Math.max(d.source.level, d.target.level))
 
       nodeData
-        .attr('transform', d => `translate(${[d.x, d.y]})`)
-        .attr('data-level', d => d.level)
-    }
-
-    function getBackground(node) {
-      if (!node.image || (this.options.suppressImagesAboveLevel > 0 && node.level >= this.options.suppressImagesAboveLevel)) {
-        return '#eef'
-      }
-      this.defs.select('#bg-' + node.id).remove()
-      this.defs.append('pattern')
-        .attr('id', () => 'bg-' + node.id)
-        .attr('height', 1).attr('width', 1)
-        .append('image')
-        .attr('xlink:href', node.image.replace(/ /g, '%20'))
-        .attr('height', '100px').attr('width', '100px')
-        .attr('preserveAspectRatio', 'xMidYMid slice')
-
-      return 'url(#bg-' + node.id + ')'
+        .attr('transform', d => nodeRenderer.getTransformation.call(nodeRenderer, d))
+        .attr('class', d => nodeRenderer.getClass.call(nodeRenderer, d))
     }
 
     function wrap(text, width) {

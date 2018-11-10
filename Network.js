@@ -1,4 +1,5 @@
 import ForceDiagram from './ForceDiagram'
+import NodeRenderer from './NodeRenderer'
 import * as d3 from './d3'
 
 let nextLinkId = 1
@@ -15,12 +16,13 @@ class Network {
       options = {dataUrl: options, domSelector, handlers}
     }
     this.options = Object.assign({}, defaults, options)
+    this.options.nodeRenderer = this.options.nodeRenderer || new NodeRenderer()
 
-    d3.json(options.dataUrl)
+    d3.json(this.options.dataUrl)
       .then(data => this.options.handlers.prepare ? this.options.handlers.prepare(data) : data)
       .then(data => {
         const domElem = document.querySelector(this.options.domSelector)
-        this.diagram = new ForceDiagram(domElem, options)
+        this.diagram = new ForceDiagram(domElem, this.options)
         if (this.options.handlers.showDetails) {
           this.details = document.createElement('div')
           this.details.setAttribute('class', 'details')
@@ -44,6 +46,7 @@ class Network {
           this.options.handlers.initialized && this.options.handlers.initialized()
         }, 0)
       })
+      .catch(error => console.error(error)) // eslint-disable-line no-console
   }
 
   computeLinks(nodes) {

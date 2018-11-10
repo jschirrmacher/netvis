@@ -1,5 +1,7 @@
 /* eslint-env node, mocha */
 
+import NodeRenderer from './NodeRenderer'
+
 const sinon = require('sinon')
 
 const node1 = {id: 1, name: 'Node 1', links: {topic: [2]}}
@@ -8,6 +10,9 @@ const node3 = {id: 3, name: 'Node 3', links: {topic: [4]}}
 const node4 = {id: 4, name: 'Node 4', links: {topic: [5]}}
 const node5 = {id: 5, name: 'Node 5'}
 const node5a = {id: 5, name: 'Node 5', links: {topic: [1]}}
+const node6 = {id: 6, name: 'Circular Node', open: true, visible: true, shape: 'circle', links: {next: [7]}}
+const node7 = {id: 7, name: 'Node with background', image: 'abc.png', visible: true, shape: 'circle', links: {next: [8]}}
+const node8 = {id: 8, name: 'Node with background which is not shown', image: 'abc.png', visible: true, shape: 'circle'}
 
 const deepCopy = arr => arr.map(e => Object.assign({}, e))
 global.fetch = function (url) {
@@ -16,6 +21,8 @@ global.fetch = function (url) {
       resolve({ok: true, json: () => ({nodes: deepCopy([node1, node2, node3, node4, node5])})})
     } else if (url === '/y') {
       resolve({ok: true, json: () => ({nodes: deepCopy([node1, node2, node3, node4, node5a])})})
+    } else if (url === '/visibles') {
+      resolve({ok: true, json: () => ({nodes: deepCopy([node6, node7, node8])})})
     } else {
       reject('Unknown path')
     }
@@ -31,7 +38,7 @@ function getNodeLevels(network) {
 describe('Network', () => {
   before(function () {
     this.jsdom = require('jsdom-global')()
-    window.Element.prototype.getComputedTextLength = function() {
+    window.Element.prototype.getComputedTextLength = function () {
       return 200
     }
     window.HTMLUnknownElement.prototype.getBBox = function () {
@@ -43,6 +50,11 @@ describe('Network', () => {
     svg.width = {baseVal: 500}
     svg.height = {baseVal: 500}
     document.body.appendChild(svg)
+  })
+
+  beforeEach(() => {
+    const rootNode = document.getElementById('root')
+    rootNode.innerHTML = ''
   })
 
   after(function () {
@@ -246,5 +258,44 @@ describe('Network', () => {
           done()
         }
       }})
+  })
+
+  it('should render circles', done => {
+    new Network({
+      dataUrl: '/visibles', domSelector: '#root', handlers: {
+        initialized: () => {
+          const node = document.getElementById('node-6')
+          node.childNodes[0].tagName.should.equal('CIRCLE')
+          done()
+        }
+      }
+    })
+  })
+
+  it('should render backgrounds', done => {
+    const network = new Network({
+      dataUrl: '/visibles', domSelector: '#root', handlers: {
+        initialized: () => {
+          network.setDistancesToNode(network.getNode(6))
+          const node = document.getElementById('node-8')
+          node.childNodes[0].getAttribute('fill').should.equal('url(#bg-8)')
+          done()
+        }
+      }
+    })
+  })
+
+  it('should respect imageSuppressionLevel', done => {
+    const nodeRenderer = new NodeRenderer({imageSuppressionLevel: 2})
+    const network = new Network({
+      dataUrl: '/visibles', domSelector: '#root', nodeRenderer, handlers: {
+        initialized: () => {
+          network.setDistancesToNode(network.getNode(6))
+          const node = document.getElementById('node-8')
+          node.childNodes[0].getAttribute('fill').should.equal('#eef')
+          done()
+        }
+      }
+    })
   })
 })
