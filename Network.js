@@ -179,6 +179,15 @@ class Network {
     return this.nodes.find(node => node.id === id)
   }
 
+  updateNode(node) {
+    this.diagram.updateNode(node)
+    this.diagram.update()
+  }
+
+  scaleToNode(node) {
+    this.diagram.scaleToNode(node, 1)
+  }
+
   addLinks(links) {
     this.diagram.add([], links
       .map(l => ({id: nextLinkId++, source: this.getNode(l.source.id), target: this.getNode(l.target.id)}))
