@@ -31,7 +31,6 @@
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
-    "forever-fixed": "^0.16.1",
     "jsdom": "12.2.0",
     "jsdom-global": "3.0.2",
     "mocha": "^5.2.0",
@@ -41,8 +40,7 @@
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-uglify-es": "0.0.1",
     "should": "^13.2.3",
-    "sinon": "^7.1.1",
-    "sleep-ms": "^2.0.1"
+    "sinon": "^7.1.1"
   },
   "dependencies": {
     "d3-drag": "^1.2.3",
