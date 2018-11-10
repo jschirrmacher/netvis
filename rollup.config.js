@@ -3,7 +3,7 @@ import resolve from 'rollup-plugin-node-resolve'
 import uglify from 'rollup-plugin-uglify-es'
 
 export default {
-  input: 'global.js',
+  input: 'src/global.js',
   output: {
     name: 'NetVis',
     file: 'dist/bundle.js',
