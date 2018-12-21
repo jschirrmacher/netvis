@@ -18,7 +18,7 @@ class Network {
     this.options = Object.assign({}, defaults, options)
     this.options.nodeRenderer = this.options.nodeRenderer || new NodeRenderer()
 
-    d3.json(this.options.dataUrl)
+    d3.json(this.options.dataUrl, options.fetchOptions)
       .then(data => this.options.handlers.prepare ? this.options.handlers.prepare(data) : data)
       .then(data => {
         const domElem = document.querySelector(this.options.domSelector)
