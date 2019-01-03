@@ -14,11 +14,7 @@ const defaults = {
 }
 
 class Network {
-  constructor(options, domSelector, handlers = {}) {
-    if (typeof options === 'string') {
-      defaults.logger.warn('Deprecation notice: Using separate parameters for Network constructor is deprecated, use options structure instead.')
-      options = {dataUrl: options, domSelector, handlers}
-    }
+  constructor(options) {
     this.options = Object.assign({}, defaults, options)
     this.options.nodeRenderer = this.options.nodeRenderer || new NodeRenderer()
 
