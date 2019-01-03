@@ -6,7 +6,10 @@ let nextLinkId = 1
 const nextId = list => list.reduce((id, entry) => Math.max(id, entry.id), 0) + 1
 const defaults = {
   maxLevel: 99999,
-  handlers: {error: () => {}}
+  handlers: {
+    error: () => {
+    }
+  }
 }
 
 class Network {
@@ -45,7 +48,32 @@ class Network {
           this.options.handlers.initialized && this.options.handlers.initialized()
         }, 0)
       })
-      .catch(error => console.error(error)) // eslint-disable-line no-console
+      .catch(error => logger.error(error))
+
+    const self = this
+    document.addEventListener("click", function (event) {
+      if (false === self.handleClicks(event)) {
+        event.stopImmediatePropagation()
+        event.preventDefault()
+        return false
+      }
+    })
+  }
+
+  handleClicks(t) {
+    const path = t.path || t.composedPath && t.composedPath() || []
+
+    const refLinksIndex = path.findIndex(t => t.className && "reflinks" === t.className.baseVal)
+    if (refLinksIndex >= 0) {
+      this.showNodes(path[refLinksIndex + 1].__data__, path[refLinksIndex - 1].dataset.ref)
+      return false
+    }
+
+    const nodeIndex = path.find(t => t.classList && t.classList.contains("node"))
+    if (nodeIndex) {
+      this.showDetails(nodeIndex.__data__)
+      return false
+    }
   }
 
   computeLinks(nodes) {
