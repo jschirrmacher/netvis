@@ -1,3 +1,5 @@
+import * as d3 from './d3'
+
 class NodeRenderer {
   constructor(options = {imageSuppressionLevel: -1, levelSteps: 0}) {
     this.options = options
@@ -8,17 +10,62 @@ class NodeRenderer {
   }
 
   render(enter) {
-    enter.filter(d => d.shape === 'circle')
-      .append('circle')
+    this.renderCircle(enter.filter(d => d.shape === 'circle'))
+    this.renderRect(enter.filter(d => d.shape === 'rect'))
+    this.renderTitle(enter)
+    if (this.options.showRefLinks) {
+      this.renderRefLinks(enter)
+    }
+  }
+
+  renderCircle(enter) {
+    enter.append('circle')
       .attr('r', 50)
       .attr('fill', this.getBackground.bind(this))
-    enter.filter(d => d.shape === 'rect')
-      .append('rect')
+  }
+
+  renderRect(enter) {
+    enter.append('rect')
       .attr('x', -50)
       .attr('y', -35)
       .attr('width', 100)
       .attr('height', 70)
       .attr('fill', this.getBackground.bind(this))
+  }
+
+  renderTitle(enter) {
+    enter.append('g')
+      .classed('title', true)
+      .append('text')
+      .text(d => d.name)
+      .call(d => this.wrap(d, 90))
+  }
+
+  renderRefLinks(enter) {
+    enter.append('g')
+      .attr('class', 'reflinks')
+      .selectAll(null)
+      .data(d => {
+        const types = Object.keys(d.links || {})
+        const angle = types.length / 10 * Math.PI
+        return types.map((type, i) => ({
+          type,
+          x: 50 * Math.cos((i - types.length / 2) * angle),
+          y: 50 * Math.sin((i - types.length / 2) * angle)
+        }))
+      })
+      .enter()
+      .append('g')
+      .attr('transform', d => `translate(${d.x}, ${d.y})`)
+      .attr('data-ref', d => d.type)
+      .append('text')
+      .call(this.renderRefLinksContent)
+  }
+
+  renderRefLinksContent(enter) {
+    enter
+      .text(d => this.options.texts[d.type] || d.type)
+      .call(d => this.makeTextBackground(d, 15, 8))
   }
 
   getBackground(node) {
@@ -51,6 +98,47 @@ class NodeRenderer {
       d.image && 'withBg',
       'level-' + d.level
     ].filter(c => c).join(' ')
+  }
+
+  wrap(text, width) {
+    const self = this
+    text.each(function (node) {
+      node.fontSize = node.fontSize || 1
+      const text = d3.select(this)
+      const words = (node.name || '').split(/[\s-]+/).reverse()
+      const lineHeight = 1.1
+      let line = []
+      let tspan = text.text(null).append('tspan').attr('style', 'font-size: ' + (node.fontSize * 14) + 'px')
+      let word
+      let lineCount = 0
+      while ((word = words.pop())) {
+        line.push(word)
+        tspan.text(line.join(' '))
+        if (tspan.node().getComputedTextLength() > width) {
+          line.pop()
+          tspan.text(line.join(' '))
+          lineCount++
+          line = [word]
+          tspan = text.append('tspan').attr('x', 0).attr('dy', lineHeight + 'em').text(word)
+            .attr('style', 'font-size: ' + (node.fontSize * 14) + 'px')
+        }
+      }
+      text.attr('y', (-lineCount * 0.3) + 'em')
+      self.makeTextBackground(text)
+    })
+  }
+
+  makeTextBackground(text, paddingX = 10, paddingY = 5) {
+    text.each(function () {
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+      const bbox = this.getBBox()
+      rect.setAttribute('class', 'text-bg')
+      rect.setAttribute('x', bbox.x - 5)
+      rect.setAttribute('y', bbox.y - 3)
+      rect.setAttribute('width', bbox.width + paddingX)
+      rect.setAttribute('height', bbox.height + paddingY)
+      this.parentNode.insertBefore(rect, this)
+    })
   }
 }
 

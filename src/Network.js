@@ -27,7 +27,6 @@ class Network {
           this.details = document.createElement('div')
           this.details.setAttribute('class', 'details')
           document.body.append(this.details)
-          this.diagram.addHandler('click', node => this.showDetails(node))
         }
 
         this.nodes = data.nodes

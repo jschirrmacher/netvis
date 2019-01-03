@@ -100,12 +100,6 @@ class ForceDiagram {
 
     nodeEnter.call(nodeRenderer.render.bind(nodeRenderer))
 
-    nodeEnter.append('g')
-      .append('text')
-      .classed('title', true)
-      .text(d => d.name)
-      .call(d => wrap(d, 90))
-
     nodeData = nodeEnter.merge(nodeData)
     this.simulation.nodes(this.nodes).on('tick', () => handleTicks.bind(this)())
 
@@ -127,41 +121,6 @@ class ForceDiagram {
       nodeData
         .attr('transform', d => nodeRenderer.getTransformation.call(nodeRenderer, d))
         .attr('class', d => nodeRenderer.getClass.call(nodeRenderer, d))
-    }
-
-    function wrap(text, width) {
-      text.each(function (node) {
-        node.fontSize = node.fontSize || 1
-        const text = d3.select(this)
-        const words = (node.name || '').split(/[\s-]+/).reverse()
-        const lineHeight = 1.1
-        let line = []
-        let tspan = text.text(null).append('tspan').attr('style', 'font-size: ' + (node.fontSize * 14) + 'px')
-        let word
-        let lineCount = 0
-        while ((word = words.pop())) {
-          line.push(word)
-          tspan.text(line.join(' '))
-          if (tspan.node().getComputedTextLength() > width) {
-            line.pop()
-            tspan.text(line.join(' '))
-            lineCount++
-            line = [word]
-            tspan = text.append('tspan').attr('x', 0).attr('dy', lineHeight + 'em').text(word)
-              .attr('style', 'font-size: ' + (node.fontSize * 14) + 'px')
-          }
-        }
-        text.attr('y', (-lineCount * 0.3) + 'em')
-
-        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
-        const bbox = this.getBBox()
-        rect.setAttribute('class', 'text-bg')
-        rect.setAttribute('x', bbox.x - 5)
-        rect.setAttribute('y', bbox.y - 3)
-        rect.setAttribute('width', bbox.width + 10)
-        rect.setAttribute('height', bbox.height + 6)
-        text.node().parentNode.insertBefore(rect, this)
-      })
     }
   }
 
