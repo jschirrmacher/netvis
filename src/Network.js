@@ -9,13 +9,14 @@ const defaults = {
   handlers: {
     error: () => {
     }
-  }
+  },
+  logger: console
 }
 
 class Network {
   constructor(options, domSelector, handlers = {}) {
     if (typeof options === 'string') {
-      console.log('Deprecation notice: Using separate parameters for Network constructor is deprecated, use options structure instead.') // eslint-disable-line no-console
+      defaults.logger.warn('Deprecation notice: Using separate parameters for Network constructor is deprecated, use options structure instead.')
       options = {dataUrl: options, domSelector, handlers}
     }
     this.options = Object.assign({}, defaults, options)
@@ -48,7 +49,7 @@ class Network {
           this.options.handlers.initialized && this.options.handlers.initialized()
         }, 0)
       })
-      .catch(error => logger.error(error))
+      .catch(error => this.options.logger.error(error))
 
     const self = this
     document.addEventListener("click", function (event) {
@@ -124,7 +125,7 @@ class Network {
       })
       .then(() => node.details ? this.d3json(node.details) : node)
       .then(data => this.options.handlers.showDetails(data, form, node))
-      .catch(console.error) // eslint-disable-line no-console
+      .catch(this.options.logger.error)
       .then(newData => {
         node = newData || node
         document.body.classList.remove('dialogOpen')
