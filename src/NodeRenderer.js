@@ -47,11 +47,11 @@ class NodeRenderer {
       .selectAll(null)
       .data(d => {
         const types = Object.keys(d.links || {})
-        const angle = types.length / 10 * Math.PI
+        const angle = Math.PI / 5
         return types.map((type, i) => ({
           type,
-          x: 50 * Math.cos((i - types.length / 2) * angle),
-          y: 50 * Math.sin((i - types.length / 2) * angle)
+          x: 70 * Math.cos((i - types.length / 2) * angle),
+          y: 70 * Math.sin((i - types.length / 2) * angle)
         }))
       })
       .enter()
