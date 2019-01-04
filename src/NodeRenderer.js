@@ -59,12 +59,12 @@ class NodeRenderer {
       .attr('transform', d => `translate(${d.x}, ${d.y})`)
       .attr('data-ref', d => d.type)
       .append('text')
-      .call(this.renderRefLinksContent)
+      .call(this.renderRefLinksContent.bind(this))
   }
 
   renderRefLinksContent(enter) {
     enter
-      .text(d => this.options.texts[d.type] || d.type)
+      .text(d => (this.options.texts && this.options.texts[d.type]) || d.type)
       .call(d => this.makeTextBackground(d, 15, 8))
   }
 
