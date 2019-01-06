@@ -61,20 +61,19 @@ class Network {
     })
   }
 
-  handleClicks(t) {
-    const path = t.path || t.composedPath && t.composedPath() || []
-
-    const refLinksIndex = path.findIndex(t => t.className && "reflinks" === t.className.baseVal)
-    if (refLinksIndex >= 0) {
-      this.showNodes(path[refLinksIndex + 1].__data__, path[refLinksIndex - 1].dataset.ref)
-      return false
+  handleClicks(event) {
+    const path = event.path || event.composedPath && event.composedPath() || []
+    const handlers = {
+      reflinks: index => this.toggleNodes(path[index + 1].__data__, path[index - 1].dataset.ref),
+      node:     index => this.showDetails(path[index].__data__)
     }
-
-    const nodeIndex = path.find(t => t.classList && t.classList.contains("node"))
-    if (nodeIndex) {
-      this.showDetails(nodeIndex.__data__)
-      return false
-    }
+    return !!Object.keys(handlers).findIndex(className => {
+      const index = path.findIndex(t => t.classList && t.classList.contains(className))
+      if (index >= 0) {
+        handlers[className](index)
+      }
+      return index >= 0
+    })
   }
 
   computeLinks(nodes) {
@@ -136,14 +135,38 @@ class Network {
       })
   }
 
-  showNodes(node, type) {
-    node.links[type].forEach(link => {
-      link.target.visible = true
-      link.target.x = node.x
-      link.target.y = node.y
-      this.diagram.add([link.target], [link])
-    })
+  toggleNodes(node, type){
+    const visibleNodes = node.links[type].filter(l => l.target.visible).map(l => l.target)
+    const allNodesVisible = visibleNodes.length === node.links[type].length
+    node.links[type].forEach(link => link.target.visible = !allNodesVisible)
+    if (allNodesVisible) {
+      this.diagram.remove(visibleNodes, [])
+    } else {
+      this.diagram.add(node.links[type].map(l => l.target), node.links[type])
+    }
     this.diagram.update()
+  }
+
+  showNodes(node, type) {
+    const nodes = this.setTargetNodeVisibility(node.links[type], true)
+    if (nodes.length) {
+      this.diagram.add(nodes, node.links[type])
+      this.diagram.update()
+    }
+  }
+
+  hideNodes(node, type) {
+    const nodes = this.setTargetNodeVisibility(node.links[type], false)
+    if (nodes.length) {
+      this.diagram.remove(nodes, [])
+      this.diagram.update()
+    }
+  }
+
+  setTargetNodeVisibility(links, visibility) {
+    const nodes = links.filter(l => l.target.visible !== visibility).map(l => l.target)
+    nodes.forEach(node => node.visible = visibility)
+    return nodes
   }
 
   toggle(node) {
