@@ -138,35 +138,37 @@ class Network {
   toggleNodes(node, type){
     const visibleNodes = node.links[type].filter(l => l.target.visible).map(l => l.target)
     const allNodesVisible = visibleNodes.length === node.links[type].length
-    node.links[type].forEach(link => link.target.visible = !allNodesVisible)
     if (allNodesVisible) {
-      this.diagram.remove(visibleNodes, [])
+      visibleNodes.forEach(node => this.hideNodes(node, type))
     } else {
-      this.diagram.add(node.links[type].map(l => l.target), node.links[type])
+      node.links[type].forEach(node => this.showNodes(node, type))
     }
-    this.diagram.update()
   }
 
   showNodes(node, type) {
-    const nodes = this.setTargetNodeVisibility(node.links[type], true)
+    const nodes = node.links[type]
+      .filter(link => !link.target.visible)
+      .map(link => link.target)
+      .filter(node => node.visible = true)
     if (nodes.length) {
       this.diagram.add(nodes, node.links[type])
       this.diagram.update()
     }
   }
 
-  hideNodes(node, type) {
-    const nodes = this.setTargetNodeVisibility(node.links[type], false)
-    if (nodes.length) {
-      this.diagram.remove(nodes, [])
-      this.diagram.update()
-    }
+  getNumberOfVisibleConnections(node) {
+    return Object.keys(node.links).reduce((sum, type) => sum + (node.links[type].target.visible ? 1 : 0), 0)
   }
 
-  setTargetNodeVisibility(links, visibility) {
-    const nodes = links.filter(l => l.target.visible !== visibility).map(l => l.target)
-    nodes.forEach(node => node.visible = visibility)
-    return nodes
+  hideNodes(node, type) {
+    const nodes = node.links[type]
+      .map(link => link.target)
+      .filter(node => node.visible && this.getNumberOfVisibleConnections(node) === 1)
+      .filter(node => !(node.visible = false))
+    if (nodes.length || node.links[type].length) {
+      this.diagram.remove(nodes, node.links[type])
+      this.diagram.update()
+    }
   }
 
   toggle(node) {
