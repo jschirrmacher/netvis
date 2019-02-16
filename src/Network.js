@@ -122,7 +122,7 @@ class Network {
         this.setDistancesToNode(node)
         container.setAttribute('style', 'padding-top: ' + (y - 123) + 'px')
       })
-      .then(() => node.details ? this.d3json(node.details) : node)
+      .then(() => node.details ? d3.json(node.details) : node)
       .then(data => this.options.handlers.showDetails(data, form, node))
       .catch(this.options.logger.error)
       .then(newData => {
