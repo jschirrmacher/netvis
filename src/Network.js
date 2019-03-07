@@ -117,7 +117,6 @@ class Network {
     this.details.appendChild(container)
     const diffX = this.options.detailsDialogOffsetX || -175
     const diffY = this.options.detailsDialogOffsetY || -30
-    console.log({diffX, diffY})
     this.diagram.scaleToNode(node, 1.2, diffX, diffY)
       .then(({y}) => {
         document.body.classList.add('dialogOpen')
