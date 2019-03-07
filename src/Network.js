@@ -115,7 +115,10 @@ class Network {
     form.setAttribute('class', 'detailForm')
     container.appendChild(form)
     this.details.appendChild(container)
-    this.diagram.scaleToNode(node, 1.2, -175, -30)
+    const diffX = this.options.detailsDialogOffsetX || -175
+    const diffY = this.options.detailsDialogOffsetY || -30
+    console.log({diffX, diffY})
+    this.diagram.scaleToNode(node, 1.2, diffX, diffY)
       .then(({y}) => {
         document.body.classList.add('dialogOpen')
         nodeEl.classList.add('menuActive')
@@ -136,17 +139,24 @@ class Network {
   }
 
   toggleNodes(node, type){
-    const visibleNodes = node.links[type].filter(l => l.target.visible).map(l => l.target)
-    const allNodesVisible = visibleNodes.length === node.links[type].length
-    if (allNodesVisible) {
-      visibleNodes.forEach(node => this.hideNodes(node, type))
-    } else {
-      node.links[type].forEach(node => this.showNodes(node, type))
+    const links = node.links[type]
+    if (links.length) {
+      const visibleNodeLinks = links.filter(l => this.diagram.nodesConnected(l.target, node))
+      const allNodesVisible = visibleNodeLinks.length === links.length
+      if (allNodesVisible) {
+        this.diagram.remove([], links)
+        const nodesToRemove = links.map(l => l.target).filter(n => !this.diagram.getConnections(n).length)
+        this.diagram.remove(nodesToRemove, [])
+      } else {
+        links.forEach(l => l.target.visible = true)
+        this.diagram.add(links.map(l => l.target), links)
+      }
+      this.diagram.update()
     }
   }
 
   showNodes(node, type) {
-    const nodes = node.links[type]
+    const nodes = (node.links[type] || [])
       .filter(link => !link.target.visible)
       .map(link => link.target)
       .filter(node => node.visible = true)
@@ -157,11 +167,11 @@ class Network {
   }
 
   getNumberOfVisibleConnections(node) {
-    return Object.keys(node.links).reduce((sum, type) => sum + (node.links[type].target.visible ? 1 : 0), 0)
+    return Object.keys(node.links).reduce((sum, type) => sum + node.links[type].filter(l => l.target.visible).length, 0)
   }
 
   hideNodes(node, type) {
-    const nodes = node.links[type]
+    const nodes = (node.links[type] ||[])
       .map(link => link.target)
       .filter(node => node.visible && this.getNumberOfVisibleConnections(node) === 1)
       .filter(node => !(node.visible = false))
