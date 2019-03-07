@@ -146,15 +146,21 @@ class ForceDiagram {
     }
   }
 
+  static equalLinks(l1, l2) {
+    return (l2.source.id === l1.source.id && l2.target.id === l1.target.id)
+      || (l2.source.id === l1.target.id && l2.target.id === l1.source.id)
+  }
+
   remove(nodesToRemove, linksToRemove) {
     nodesToRemove.forEach(node => {
       this.links = this.links.filter(l => !ForceDiagram.isConnected(l, node))
       this.nodes = this.nodes.filter(n => n.id !== node.id)
     })
-    this.links = this.links.filter(l => !linksToRemove.some(r => {
-      return (r.source.id === l.source.id && r.target.id === l.target.id)
-        || (r.source.id === l.target.id && r.source.id === l.source.id)
-    }))
+    this.links = this.links.filter(l => !linksToRemove.some(r => ForceDiagram.equalLinks(l, r)))
+  }
+
+  getConnections(node) {
+    return this.links.filter(l => l.source.id === node.id || l.target.id === node.id)
   }
 
   updateNode(node) {
