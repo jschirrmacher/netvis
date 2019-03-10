@@ -242,6 +242,7 @@ class Network {
   }
 
   updateNode(node) {
+    this.computeLinks([node])
     this.diagram.updateNode(node)
     this.diagram.update()
   }
