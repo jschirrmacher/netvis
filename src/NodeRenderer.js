@@ -86,8 +86,8 @@ class NodeRenderer {
   }
 
   getTransformation(d) {
-    const scale = this.options.levelSteps ? ` scale(${1 - d.level * this.options.levelSteps})` : ''
-    return `translate(${[d.x, d.y]})${scale}`
+    const scale = this.options.levelSteps ? ` scale(${1 - (d.level || 1) * this.options.levelSteps})` : ''
+    return `translate(${[d.x || 0, d.y || 0]})${scale}`
   }
 
   getClass(d) {
