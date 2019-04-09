@@ -32,6 +32,8 @@ class Network {
           this.details.setAttribute('class', 'details')
           document.body.append(this.details)
         }
+        this.options.handlers.clickOnNode = this.options.handlers.clickOnNode || this.showDetails
+        this.options.handlers.clickOnRefLink = this.options.handlers.clickOnRefLink || this.toggleNodes
 
         this.nodes = data.nodes
         this.links = this.computeLinks(this.nodes)
@@ -64,8 +66,8 @@ class Network {
   handleClicks(event) {
     const path = event.path || event.composedPath && event.composedPath() || []
     const handlers = {
-      reflinks: index => this.toggleNodes(path[index + 1].__data__, path[index - 1].dataset.ref),
-      node:     index => this.showDetails(path[index].__data__)
+      reflinks: index => this.options.handlers.clickOnRefLink(path[index + 1].__data__, path[index - 1].dataset.ref),
+      node:     index => this.options.handlers.clickOnNode(path[index].__data__)
     }
     return !!Object.keys(handlers).findIndex(className => {
       const index = path.findIndex(t => t.classList && t.classList.contains(className))
@@ -139,7 +141,7 @@ class Network {
 
   toggleNodes(node, type){
     const links = node.links[type]
-    if (links.length) {
+    if (links && links.length) {
       const visibleNodeLinks = links.filter(l => this.diagram.nodesConnected(l.target, node))
       const allNodesVisible = visibleNodeLinks.length === links.length
       if (allNodesVisible) {
