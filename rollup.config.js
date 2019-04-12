@@ -1,6 +1,5 @@
-import babel from 'rollup-plugin-babel'
+import minify from 'rollup-plugin-babel-minify'
 import resolve from 'rollup-plugin-node-resolve'
-import uglify from 'rollup-plugin-uglify-es'
 
 export default {
   input: 'src/global.js',
@@ -8,11 +7,10 @@ export default {
     name: 'NetVis',
     file: 'dist/bundle.js',
     format: 'iife',
-    sourcemap: 'dist/bundle.map.js'
+    sourcemap: true
   },
   plugins: [
     resolve(),
-    babel(),
-    uglify()
+    minify()
   ]
 }
