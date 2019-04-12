@@ -32,8 +32,8 @@ class Network {
           this.details.setAttribute('class', 'details')
           document.body.append(this.details)
         }
-        this.options.handlers.clickOnNode = this.options.handlers.clickOnNode || this.showDetails
-        this.options.handlers.clickOnRefLink = this.options.handlers.clickOnRefLink || this.toggleNodes
+        this.options.handlers.clickOnNode = this.options.handlers.clickOnNode || this.showDetails.bind(this)
+        this.options.handlers.clickOnRefLink = this.options.handlers.clickOnRefLink || this.toggleNodes.bind(this)
 
         this.nodes = data.nodes
         this.links = this.computeLinks(this.nodes)
