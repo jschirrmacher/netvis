@@ -47,7 +47,7 @@ class Network {
         this.diagram.update()
 
         setTimeout(() => {
-          document.body.className = 'initialized'
+          document.body.classList.add('initialized')
           this.options.handlers.initialized && this.options.handlers.initialized()
         }, 0)
       })
