@@ -27,7 +27,7 @@ class NodeRenderer {
   renderRect(enter) {
     enter.append('rect')
       .attr('x', d => (d.width || 100) / -2)
-      .attr('y', (d.width || 70) / -2)
+      .attr('y', d => (d.width || 70) / -2)
       .attr('width', d => d.width || 100)
       .attr('height', d => d.height || 70)
       .attr('fill', this.getBackground.bind(this))
