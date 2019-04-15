@@ -19,7 +19,7 @@ class ForceDiagram {
       .velocityDecay(0.55)
       .force('link', d3.forceLink().distance(d => d.distance || 100).id(d => d.id))
       .force('charge', d3.forceManyBody().strength(-100).distanceMin(1000))
-      .force('collide', d3.forceCollide().radius(d => d.distance || 100).iterations(2))
+      .force('collide', d3.forceCollide().radius(d => d.radius || d.width || 50).iterations(2))
       .force('center', d3.forceCenter(this.center.x, this.center.y))
       .force('x', d3.forceX(this.center.x).strength(0.1))
       .force('y', d3.forceY(this.center.y).strength(0.1))

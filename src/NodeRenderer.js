@@ -20,16 +20,16 @@ class NodeRenderer {
 
   renderCircle(enter) {
     enter.append('circle')
-      .attr('r', 50)
+      .attr('r', d => d.radius || 50)
       .attr('fill', this.getBackground.bind(this))
   }
 
   renderRect(enter) {
     enter.append('rect')
-      .attr('x', -50)
-      .attr('y', -35)
-      .attr('width', 100)
-      .attr('height', 70)
+      .attr('x', d => (d.width || 100) / -2)
+      .attr('y', (d.width || 70) / -2)
+      .attr('width', d => d.width || 100)
+      .attr('height', d => d.height || 70)
       .attr('fill', this.getBackground.bind(this))
   }
 
@@ -47,7 +47,7 @@ class NodeRenderer {
       .selectAll(null)
       .data(d => {
         const types = Object.keys(d.links || {})
-        const angle = Math.PI / 5
+        const angle = Math.PI / 8
         return types.map((type, i) => ({
           type,
           x: 70 * Math.cos((i - types.length / 2) * angle),

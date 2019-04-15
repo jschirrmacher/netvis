@@ -79,6 +79,7 @@ class Network {
   }
 
   computeLinks(nodes) {
+    const handler = this.options.handlers.prepareLink || (data => data)
     nodes.forEach(node => {
       node.links = node.links || {}
       node.linkedNodes = {}
@@ -89,7 +90,7 @@ class Network {
           target = this.getNode((target.target && target.target.id) || target)
           source.linkedNodes[target.id] = target
           target.linkedNodes[source.id] = source
-          return {id: nextLinkId++, source, target}
+          return handler({id: nextLinkId++, source, target})
         })
       }).reduce((a, b) => a.concat(b), [])
     }).reduce((a, b) => a.concat(b), [])
