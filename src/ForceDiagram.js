@@ -18,7 +18,7 @@ class ForceDiagram {
     const manyBody = d3.forceManyBody()
     const charge = this.options.charge && this.options.charge(manyBody) || manyBody.strength(-100).distanceMin(1000)
     const d3Collide = d3.forceCollide()
-    const collide = this.options.collide && this.options.collide(d3Collide) || d3Collide.radius(d.radius || d.width / 2 || 50).iterations(2)
+    const collide = this.options.collide && this.options.collide(d3Collide) || d3Collide.radius(d => d.radius || d.width / 2 || 50).iterations(2)
     const d3ForceX = d3.forceX(this.center.x)
     const forceX = this.options.forceX && this.options.forceX(d3ForceX) || d3ForceX.strength(0.1)
     const d3ForceY = d3.forceY(this.center.y)
