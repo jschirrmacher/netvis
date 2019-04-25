@@ -38,7 +38,7 @@ class NodeRenderer {
       .classed('title', true)
       .append('text')
       .text(d => d.name)
-      .call(d => this.wrap(d, 90))
+      .call(d => this.wrap(d, (d.width || 100) - 10))
   }
 
   renderRefLinks(enter) {
@@ -104,23 +104,22 @@ class NodeRenderer {
     const self = this
     text.each(function (node) {
       node.fontSize = node.fontSize || 1
-      const text = d3.select(this)
+      const text = d3.select(this).attr('style', 'font-size: ' + (node.fontSize * 14) + 'px')
       const words = (node.name || '').split(/[\s-]+/).reverse()
       const lineHeight = 1.1
       let line = []
-      let tspan = text.text(null).append('tspan').attr('style', 'font-size: ' + (node.fontSize * 14) + 'px')
+      let tspan = text.text(null).append('tspan')
       let word
       let lineCount = 0
       while ((word = words.pop())) {
         line.push(word)
         tspan.text(line.join(' '))
-        if (tspan.node().getComputedTextLength() > width) {
+        if (lineCount && tspan.node().getComputedTextLength() > width) {
           line.pop()
           tspan.text(line.join(' '))
           lineCount++
           line = [word]
           tspan = text.append('tspan').attr('x', 0).attr('dy', lineHeight + 'em').text(word)
-            .attr('style', 'font-size: ' + (node.fontSize * 14) + 'px')
         }
       }
       text.attr('y', (-lineCount * 0.3) + 'em')
