@@ -38,7 +38,7 @@ class NodeRenderer {
       .classed('title', true)
       .append('text')
       .text(d => d.name)
-      .call(d => this.wrap(d, 90))
+      .call(d => this.wrap(d, (d.width || d.radius * 2 || 100) - 10))
   }
 
   calculateRefLinkPosition(d) {
@@ -68,7 +68,7 @@ class NodeRenderer {
   renderRefLinksContent(enter) {
     enter
       .text(d => (this.options.texts && this.options.texts[d.type]) || d.type)
-      .call(d => this.makeTextBackground(d, 15, 8))
+      .call(d => this.makeTextBackground(d, false, 15, 8))
   }
 
   getBackground(node) {
@@ -103,7 +103,7 @@ class NodeRenderer {
     ].filter(c => c).join(' ')
   }
 
-  wrap(text, width) {
+  wrap(text, width, fixedWidth = false) {
     const self = this
     text.each(function (node) {
       node.fontSize = node.fontSize || 1
@@ -127,21 +127,23 @@ class NodeRenderer {
         }
       }
       text.attr('y', (-lineCount * 0.3) + 'em')
-      self.makeTextBackground(text)
+      node.bbox = self.makeTextBackground(text, fixedWidth && width)
     })
   }
 
-  makeTextBackground(text, paddingX = 10, paddingY = 5) {
+  makeTextBackground(text, width, paddingX = 5, paddingY = 3) {
+    let bbox
     text.each(function () {
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
-      const bbox = this.getBBox()
+      bbox = this.getBBox()
       rect.setAttribute('class', 'text-bg')
-      rect.setAttribute('x', bbox.x - 5)
-      rect.setAttribute('y', bbox.y - 3)
-      rect.setAttribute('width', bbox.width + paddingX)
-      rect.setAttribute('height', bbox.height + paddingY)
+      rect.setAttribute('x', bbox.x - paddingX)
+      rect.setAttribute('y', bbox.y - paddingY)
+      rect.setAttribute('width', (width || bbox.width) + 2 * paddingX)
+      rect.setAttribute('height', bbox.height + 2 * paddingY)
       this.parentNode.insertBefore(rect, this)
     })
+    return bbox
   }
 }
 
