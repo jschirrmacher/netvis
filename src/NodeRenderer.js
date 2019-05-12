@@ -41,19 +41,22 @@ class NodeRenderer {
       .call(d => this.wrap(d, 90))
   }
 
+  calculateRefLinkPosition(d) {
+    const types = Object.keys(d.links || {})
+    const angle = Math.PI / 8
+    const radius = d.radius || 70
+    return types.map((type, i) => ({
+      type,
+      x: radius * Math.cos((i - types.length / 2) * angle),
+      y: radius * Math.sin((i - types.length / 2) * angle)
+    }))
+  }
+
   renderRefLinks(enter) {
     enter.append('g')
       .attr('class', 'reflinks')
       .selectAll(null)
-      .data(d => {
-        const types = Object.keys(d.links || {})
-        const angle = Math.PI / 8
-        return types.map((type, i) => ({
-          type,
-          x: 70 * Math.cos((i - types.length / 2) * angle),
-          y: 70 * Math.sin((i - types.length / 2) * angle)
-        }))
-      })
+      .data(this.calculateRefLinkPosition.bind(this))
       .enter()
       .append('g')
       .attr('transform', d => `translate(${d.x}, ${d.y})`)
