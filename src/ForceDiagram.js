@@ -91,6 +91,12 @@ class ForceDiagram {
     const nodeRenderer = this.options.nodeRenderer
     let linkData = this.linkContainer.selectAll('line').data(this.links, d => d.id)
     const linkEnter = linkData.enter().append('line')
+
+    if (this.options.useMarkers) {
+      linkEnter
+        .attr('marker-start', 'url(#marker-start)')
+        .attr('marker-end', 'url(#marker-end)')
+    }
     linkData.exit().remove()
     linkData = linkEnter.merge(linkData)
     this.simulation.force('link').links(this.links)
@@ -118,12 +124,44 @@ class ForceDiagram {
       Object.keys(this.handlers).forEach(type => node.on(type, this.handlers[type]))
     }
 
+    function lineLength(d) {
+      return Math.sqrt(Math.pow(d.target.y - d.source.y, 2) + Math.pow(d.target.x - d.source.x, 2))
+    }
+
+    function nodeRadius(node) {
+      return node.radius || ((node.width + node.height) / 4) || 50
+    }
+
+    function lineX1(d) {
+      const length = lineLength(d)
+      const dx = d.target.x - d.source.x
+      return d.source.x + dx * (1 - (length - nodeRadius(d.source)) / length)
+    }
+
+    function lineX2(d) {
+      const length = lineLength(d)
+      const dx = d.target.x - d.source.x
+      return d.target.x - dx * (1 - (length - nodeRadius(d.target)) / length)
+    }
+
+    function lineY1(d) {
+      const length = lineLength(d)
+      const dy = d.target.y - d.source.y
+      return d.source.y + dy * (1 - (length - nodeRadius(d.source)) / length)
+    }
+
+    function lineY2(d) {
+      const length = lineLength(d)
+      const dy = d.target.y - d.source.y
+      return d.target.y - dy * (1 - (length - nodeRadius(d.target)) / length)
+    }
+
     function handleTicks() {
       linkData
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y)
+        .attr('x1', lineX1)
+        .attr('y1', lineY1)
+        .attr('x2', lineX2)
+        .attr('y2', lineY2)
         .attr('class', d => 'level-' + Math.max(d.source.level, d.target.level))
         .attr('stroke-width', d => d.width || 1)
 
