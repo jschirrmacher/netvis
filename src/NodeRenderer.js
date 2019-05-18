@@ -117,7 +117,7 @@ class NodeRenderer {
       while ((word = words.pop())) {
         line.push(word)
         tspan.text(line.join(' '))
-        if (lineCount && tspan.node().getComputedTextLength() > width) {
+        if (line.length > 1 && tspan.node().getComputedTextLength() > width) {
           line.pop()
           tspan.text(line.join(' '))
           lineCount++
