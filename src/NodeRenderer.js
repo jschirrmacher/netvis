@@ -47,6 +47,7 @@ class NodeRenderer {
     const radius = d.radius || 70
     return types.map((type, i) => ({
       type,
+      fontSize: d.fontSize,
       x: radius * Math.cos((i - types.length / 2) * angle),
       y: radius * Math.sin((i - types.length / 2) * angle)
     }))

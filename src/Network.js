@@ -140,7 +140,15 @@ class Network {
       })
   }
 
-  toggleNodes(node, type){
+  getNumClosedLinks(node) {
+    return Object.keys(node.linkedNodes).length - this.getNumOpenLinks(node)
+  }
+
+  getNumOpenLinks(node) {
+    return this.diagram.links.filter(n => n.source.id === node.id || n.target.id === node.id).length
+  }
+
+  toggleNodes(node, type) {
     const links = node.links[type]
     if (links && links.length) {
       const visibleNodeLinks = links.filter(l => this.diagram.nodesConnected(l.target, node))
@@ -245,8 +253,12 @@ class Network {
   }
 
   updateNode(node) {
-    this.computeLinks([node])
-    this.diagram.updateNode(node)
+    this.updateNodes([node])
+  }
+
+  updateNodes(nodes) {
+    this.computeLinks(nodes)
+    nodes.forEach(node => this.diagram.updateNode(node))
     this.diagram.update()
   }
 
