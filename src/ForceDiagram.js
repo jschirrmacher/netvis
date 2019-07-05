@@ -115,6 +115,7 @@ class ForceDiagram {
     nodeEnter.call(nodeRenderer.render.bind(nodeRenderer))
 
     nodeData = nodeEnter.merge(nodeData)
+    nodeData.call(nodeRenderer.update.bind(nodeRenderer))
     this.simulation.nodes(this.nodes).on('tick', () => handleTicks.bind(this)())
 
     this.simulation.alpha(0.3)

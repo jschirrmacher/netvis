@@ -18,6 +18,9 @@ class NodeRenderer {
     }
   }
 
+  update(selector) {
+  }
+
   renderCircle(enter) {
     enter.append('circle')
       .attr('r', d => d.radius || 50)
