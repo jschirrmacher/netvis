@@ -38,13 +38,17 @@ class Network {
         this.nodes = data.nodes
         this.links = this.computeLinks(this.nodes)
 
-        const setBothSidesVisible = d => d.source.visible = d.target.visible = true
-        this.links.filter(d => d.source.open || d.target.open).map(setBothSidesVisible)
-        const links = this.links.filter(d => d.source.visible && d.target.visible)
-        const nodes = this.nodes.filter(d => d.visible)
-        this.setDistancesToNode(nodes[0] || this.nodes[0])
-        this.diagram.add(nodes, links)
-        this.diagram.update()
+        function setBothSidesVisible(l) {
+          l.source.visible = l.target.visible = l.visible = true
+        }
+
+        function linkShouldBeVisible(l) {
+          return l.source.open || l.target.open || (l.source.visible && l.target.visible)
+        }
+
+        this.links.filter(d => linkShouldBeVisible(d)).map(setBothSidesVisible)
+        this.setDistancesToNode(this.nodes.filter(d => d.visible)[0] || this.nodes[0])
+        this.update()
 
         setTimeout(() => {
           document.body.classList.add('initialized')
@@ -86,11 +90,15 @@ class Network {
     })
     return nodes.map(source => {
       return Object.keys(source.links).map(type => {
-        return source.links[type] = source.links[type].map(target => {
-          target = this.getNode((target.target && target.target.id) || target)
-          source.linkedNodes[target.id] = target
-          target.linkedNodes[source.id] = source
-          return handler({id: nextLinkId++, source, target})
+        return source.links[type] = source.links[type].map(info => {
+          if (info.target && info.target.id) {
+            return info
+          } else {
+            const target = this.getNode(info)
+            source.linkedNodes[target.id] = target
+            target.linkedNodes[source.id] = source
+            return handler({id: nextLinkId++, source, target})
+          }
         })
       }).reduce((a, b) => a.concat(b), [])
     }).reduce((a, b) => a.concat(b), [])
@@ -151,17 +159,22 @@ class Network {
   toggleNodes(node, type) {
     const links = node.links[type]
     if (links && links.length) {
-      const visibleNodeLinks = links.filter(l => this.diagram.nodesConnected(l.target, node))
-      const allNodesVisible = visibleNodeLinks.length === links.length
+      const allNodesVisible = !links.some(l => !l.visible)
       if (allNodesVisible) {
-        this.diagram.remove([], links)
-        const nodesToRemove = links.map(l => l.target).filter(n => !this.diagram.getConnections(n).length)
-        this.diagram.remove(nodesToRemove, [])
+        links
+          .map(l => {
+            l.visible = false
+            return l.target
+          })
+          .filter(n => !Object.values(n.links).some(links => links.some(link => link.visible)))
+          .forEach(n => n.visible = false)
       } else {
-        links.forEach(l => l.target.visible = true)
-        this.diagram.add(links.map(l => l.target), links)
+        links.forEach(l => {
+          l.visible = true
+          l.target.visible = true
+        })
       }
-      this.diagram.update()
+      this.update()
     }
   }
 
@@ -171,8 +184,8 @@ class Network {
       .map(link => link.target)
       .filter(node => node.visible = true)
     if (nodes.length) {
-      this.diagram.add(nodes, node.links[type])
-      this.diagram.update()
+      node.links[type].forEach(l => l.visible = true)
+      this.update()
     }
   }
 
@@ -182,12 +195,14 @@ class Network {
 
   hideNodes(node, type) {
     const nodes = (node.links[type] ||[])
-      .map(link => link.target)
+      .map(link => {
+        link.visible = false
+        return link.target
+      })
       .filter(node => node.visible && this.getNumberOfVisibleConnections(node) === 1)
       .filter(node => !(node.visible = false))
     if (nodes.length || node.links[type].length) {
-      this.diagram.remove(nodes, node.links[type])
-      this.diagram.update()
+      this.update()
     }
   }
 
@@ -203,16 +218,13 @@ class Network {
         const otherNode = link.source.id === node.id ? link.target : link.source
         if (this.diagram.getLinkedNodes(otherNode).length === 1) {
           otherNode.visible = otherNode.keepVisible
-          if (!otherNode.visible) {
-            this.diagram.remove([otherNode], [])
-          }
         } else {
-          this.diagram.remove([], [link])
+          link.visible = false
         }
       })
 
     this.diagram.scaleToNode(node, 1)
-    this.diagram.update()
+    this.update()
   }
 
   openNode(node) {
@@ -224,25 +236,28 @@ class Network {
         otherNode.visible = true
         otherNode.x = node.x
         otherNode.y = node.y
-        this.diagram.add([otherNode], [link])
+        link.visible = true
       })
 
     this.diagram.scaleToNode(node, 1)
-    this.diagram.update()
+    this.update()
   }
 
   addNode(node) {
     const links = this.computeLinks([node])
+    node.visible = true
     this.nodes.push(node)
-    links.forEach(link => this.links.push(link))
-    this.diagram.add([node], links)
+    links.forEach(link => {
+      link.visible = true
+      this.links.push(link)
+    })
   }
 
   removeNode(node) {
     this.nodes = this.nodes.filter(n => n.id !== node.id)
     this.links = this.links.filter(l => l.source.id !== node.id && l.target.id !== node.id)
-    this.diagram.remove([node], [])
-    this.diagram.update()
+    node.visible = false
+    this.update()
     if (this.options.handlers.nodeRemoved) {
       this.options.handlers.nodeRemoved(node)
     }
@@ -277,8 +292,9 @@ class Network {
 
   removeLinks(links) {
     const cmpLink = (a, b) => (a.source.id === b.source.id && a.target.id === b.target.id)
-    this.links = this.links.filter(l => !links.some(r => cmpLink(l, r)))
-    this.diagram.remove([], links)
+    this.links = this.links
+      .filter(l => !links.some(r => cmpLink(l, r)))
+      .forEach(l => l.visible = true)
   }
 
   newConnection(node) {
@@ -307,6 +323,8 @@ class Network {
   }
 
   update() {
+    this.diagram.links = this.links.filter(d => d.visible)
+    this.diagram.nodes = this.nodes.filter(d => d.visible)
     this.diagram.update()
   }
 

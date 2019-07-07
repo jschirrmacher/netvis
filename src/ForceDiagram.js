@@ -212,9 +212,7 @@ class ForceDiagram {
   }
 
   updateNode(node) {
-    node = Object.assign(this.nodes.splice(this.nodes.findIndex(n => n.id === node.id), 1)[0], node)
-    this.update()
-    this.nodes.push(node)
+    this.nodes = this.nodes.map(n => n.id === node.id ? node : n)
   }
 
   static fixNode(node) {
