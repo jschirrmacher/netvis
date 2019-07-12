@@ -282,19 +282,14 @@ class Network {
   }
 
   addLinks(links) {
-    this.diagram.add([], links
-      .map(l => ({id: nextLinkId++, source: this.getNode(l.source.id), target: this.getNode(l.target.id)}))
-      .map(l => {
-        this.links.push(l)
-        return l
-      }))
+    links.forEach(l => {
+      this.links.push({id: nextLinkId++, source: this.getNode(l.source.id), target: this.getNode(l.target.id)})
+    })
   }
 
   removeLinks(links) {
     const cmpLink = (a, b) => (a.source.id === b.source.id && a.target.id === b.target.id)
-    this.links = this.links
-      .filter(l => !links.some(r => cmpLink(l, r)))
-      .forEach(l => l.visible = true)
+    this.links = this.links.filter(l => !links.some(r => cmpLink(l, r)))
   }
 
   newConnection(node) {

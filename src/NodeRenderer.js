@@ -18,8 +18,7 @@ class NodeRenderer {
     }
   }
 
-  update(selector) {
-  }
+  update(selector) {} //eslint-disable-line no-unused-vars
 
   renderCircle(enter) {
     enter.append('circle')
